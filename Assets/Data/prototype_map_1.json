@@ -1,0 +1,60 @@
+{
+	"tile": { 
+		[
+		"position_x": "0",
+		"position_y": "0",
+		"terrainType": "0",
+		"name": "Water",
+		"isWalkable": "false",
+		],
+		[
+		"position_x": "1",
+		"position_y": "0",
+		"terrainType": "0",
+		"name": "Water",
+		"isWalkable": "false",
+		],	
+		[
+		"position_x": "2",
+		"position_y": "0",
+		"terrainType": "0",
+		"name": "Water",
+		"isWalkable": "false",
+		],
+		[
+		"position_x": "3",
+		"position_y": "0",
+		"terrainType": "0",
+		"name": "Water",
+		"isWalkable": "false",
+		],		[
+	}
+}
+	
+{
+	"tile": {
+			[	
+				"terrainType": 0,
+				"name": "Water",
+				"isWalkable": "false",
+				{
+					[
+						"position_x": "0",
+						"position_y": "0"
+					],
+					[
+						"position_x": "1",
+						"position_y": "0"
+					],
+					[
+						"position_x": "2",
+						"position_y": "0"
+					],
+					[
+						"position_x": "3",
+						"position_y": "0"
+					],
+				}
+			]
+		}
+}
