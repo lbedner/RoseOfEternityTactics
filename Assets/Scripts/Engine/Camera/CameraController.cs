@@ -14,10 +14,14 @@ public class CameraController : MonoBehaviour {
 	/// </summary>
 	/// <param name="tileMapSizeX">Tile map size x.</param>
 	/// <param name="tileMapSizeY">Tile map size y.</param>
-	public void Init(float tileMapSizeX, float tileMapSizeZ) {
+	/// <param name="tileResolution>Resolution of each tile.</param>"> 
+	public void Init(float tileMapSizeX, float tileMapSizeZ, int tileResolution) {
 		print ("CameraController.Init()");
 		_tilemapSizeX = tileMapSizeX;
 		_tileMapSizeZ = tileMapSizeZ;
+
+		transform.rotation = Quaternion.Euler (90, 0, 0);
+		Camera.main.orthographicSize = Screen.width / (((Screen.width / Screen.height) * 2) * tileResolution);
 	}
 		
 	// Update is called once per frame
@@ -64,6 +68,7 @@ public class CameraController : MonoBehaviour {
 	/// <returns>The to position.</returns>
 	/// <param name="endingPosition">Ending position.</param>
 	public IEnumerator MoveToPosition(Vector3 endingPosition) {
+		print ("CameraController.MoveToPosition()");
 		IsMoving = true;
 		float elapsedTime = 0.0f;
 

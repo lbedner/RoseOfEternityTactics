@@ -6,37 +6,37 @@ using System.Collections.Generic;
 /// </summary>
 public class TurnOrder {
 
-	private List<Unit> _combatants;
+	private List<Unit> _units;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TurnOrder"/> class.
 	/// </summary>
 	public TurnOrder() {
-		_combatants = new List<Unit> ();
+		_units = new List<Unit> ();
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TurnOrder"/>class.
 	/// </summary>
-	/// <param name="combatants">Combatants.</param>
-	public TurnOrder(List<Unit> combatants) {
-		_combatants = combatants;
+	/// <param name="units">Units.</param>
+	public TurnOrder(List<Unit> units) {
+		_units = units;
 	}
 
 	/// <summary>
-	/// Adds the combatant.
+	/// Adds the unit.
 	/// </summary>
-	/// <param name="combatant">Combatant.</param>
-	public void AddCombatant(Unit combatant) {
-		_combatants.Add(combatant);
+	/// <param name="unit">Unit.</param>
+	public void AddCombatant(Unit unit) {
+		_units.Add(unit);
 	}
 
 	/// <summary>
-	/// Removes the combatant.
+	/// Removes the unit.
 	/// </summary>
-	/// <param name="combatant">Combatant.</param>
-	public void RemoveCombatant(Unit combatant) {
-		_combatants.Remove (combatant);
+	/// <param name="unit">Unit.</param>
+	public void RemoveCombatant(Unit unit) {
+		_units.Remove (unit);
 	}
 
 	/// <summary>
@@ -45,27 +45,27 @@ public class TurnOrder {
 	/// <returns>The next up.</returns>
 	public Unit GetNextUp() {
 		if (GetTurnOrderLength () > 0)
-			return _combatants [0];
+			return _units [0];
 		else
 			return null;
 	}
 
 	/// <summary>
-	/// Gets the turn order slot number for a combatant.
+	/// Gets the turn order slot number for a unit.
 	/// </summary>
 	/// <returns>The turn order slot.</returns>
-	/// <param name="combatant">Combatant.</param>
-	public int GetTurnOrderSlotNumber (Unit combatant) {
-		return (_combatants.IndexOf (combatant)) + 1;
+	/// <param name="unit">Unit.</param>
+	public int GetTurnOrderSlotNumber (Unit unit) {
+		return (_units.IndexOf (unit)) + 1;
 	}
 
 	/// <summary>
-	/// Finishs the turn for the combatant, removing them from the front of the collection and adding them to the back.
+	/// Finishs the turn for the unit, removing them from the front of the collection and adding them to the back.
 	/// </summary>
-	/// <param name="combatant">Combatant.</param>
-	public void FinishTurn(Unit combatant) {
-		RemoveCombatant(combatant);
-		AddCombatant(combatant);
+	/// <param name="unit">Unit.</param>
+	public void FinishTurn(Unit unit) {
+		RemoveCombatant(unit);
+		AddCombatant(unit);
 	}
 
 	/// <summary>
@@ -73,6 +73,14 @@ public class TurnOrder {
 	/// </summary>
 	/// <returns>The turn order count.</returns>
 	public int GetTurnOrderLength() {
-		return _combatants.Count;
+		return _units.Count;
+	}
+
+	/// <summary>
+	/// Gets all units.
+	/// </summary>
+	/// <returns>The all units.</returns>
+	public List<Unit> GetAllUnits() {
+		return _units;
 	}
 }

@@ -27,15 +27,9 @@ public class TileMapMouse : MonoBehaviour {
 
 	public TerrainDetailsController terrainDetailsController;
 
-	public Unit[] players;
-
 	// Audio related things
 	public AudioSource cursorMoveSource;
 	public AudioSource confirmationSource;
-	public AudioSource musicCalm;
-	public AudioSource musicFire;
-
-	private bool _playingCalm = true;
 	
 	private TileMap _tileMap;
 	private Pathfinder _pathfinder;
@@ -46,7 +40,6 @@ public class TileMapMouse : MonoBehaviour {
 	private Unit _highlightedCharacter;
 	private Unit _selectedCharacter;
 
-	private Dictionary<Vector3, GameObject> _movementIndicators = new Dictionary<Vector3, GameObject>();
 	private Dictionary<Vector3, GameObject> _attackIndicators = new Dictionary<Vector3, GameObject>();
 
 	private Color _attack_highlight_color = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
@@ -55,14 +48,19 @@ public class TileMapMouse : MonoBehaviour {
 
 	private bool _playerMoveFinished = false;
 
-	private IEnumerator _moveToTiles;
-	
+	private GameManager _gameManager;
+
+	private MusicController _musicController;
+
+	private TileHighlighter _tileHighlighter;
+
 	void Start() {
 		_tileMap = GetComponent<TileMap>();
+		_gameManager = GameManager.Instance;
 		_gameState = GameState.INITIALIZE_TURN;
-		musicCalm.Play ();
-		musicFire.Play();
-		musicFire.volume = 0.0f;
+		_musicController = _gameManager.GetMusicController ();
+		_musicController.Initialize ();
+		_tileHighlighter = new TileHighlighter (_tileMap, movementHighlightCube);
 	}
 
 	public void TransitionGameState(GameState newState) {
@@ -76,9 +74,9 @@ public class TileMapMouse : MonoBehaviour {
 
 		case GameState.INITIALIZE_TURN:
 			ShowCursor (false);
-			Unit unit = _tileMap.GetTurnOrderController ().GetNextUp ();
+			Unit unit = _gameManager.GetTurnOrderController ().GetNextUp ();
 			Debug.Log (string.Format ("Initialzie Turn: {0}", unit));
-			StartCoroutine (_tileMap.GetCameraController ().MoveToPosition (unit.transform.position));
+			StartCoroutine (_gameManager.GetCameraController ().MoveToPosition (unit.transform.position));
 			HighlightCharacter (unit);
 
 			if (unit.IsPlayerControlled)
@@ -89,13 +87,13 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Player is moving cursor around the tile map
 		case GameState.PLAYER_TURN:
-			if (!_tileMap.GetCameraController ().IsMoving) {
+			if (!_gameManager.GetCameraController ().IsMoving) {
 				ShowCursor (true);
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				HandleTerrainMouseOver (ray);
 				HandleCharacterMouseOver (ray);
 
-				if (_selectedCharacter != null && _tileMap.GetTurnOrderController ().GetNextUp () == _selectedCharacter)
+				if (_selectedCharacter != null && _gameManager.GetTurnOrderController ().GetNextUp () == _selectedCharacter)
 					_gameState = GameState.PLAYER_MOVE_SELECTION;
 			}
 			break;
@@ -107,8 +105,8 @@ public class TileMapMouse : MonoBehaviour {
 				_pathfinder = new Pathfinder ();
 				List<Node> generatedPath = _pathfinder.GeneratePath(
 					_tileMap.GetGraph().GetGraph(),
-					(int) WorldCenteredToTileMap(_selectedCharacter.transform.position).x,
-					(int) WorldCenteredToTileMap(_selectedCharacter.transform.position).z,
+					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).x,
+					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).z,
 					(int) _currentTileCoord.x,
 					(int) _currentTileCoord.z
 				);
@@ -123,7 +121,7 @@ public class TileMapMouse : MonoBehaviour {
 		// Player moves to tile
 		case GameState.PLAYER_MOVE_START:
 			ShowCursor (false);
-			RemoveMovementTiles ();
+			_tileHighlighter.RemoveMovementTiles();
 			StartCoroutine (MoveToTiles ());
 			TransitionGameState (GameState.PLAYER_MOVE_STOP);
 			break;
@@ -139,7 +137,7 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Indicate where player can attack
 		case GameState.PLAYER_SHOW_ATTACK_INDICATORS:
-			RemoveMovementTiles ();
+			_tileHighlighter.RemoveMovementTiles();
 			HighlightAttackTiles (_selectedCharacter);
 			TransitionGameState (GameState.PLAYER_ATTACK_SELECTION);
 			break;
@@ -154,12 +152,12 @@ public class TileMapMouse : MonoBehaviour {
 
 		// CPU starts their turn
 		case GameState.CPU_TURN:
-			if (!_tileMap.GetCameraController ().IsMoving) {
-				Unit cpu = _tileMap.GetTurnOrderController ().GetNextUp ();
+			if (!_gameManager.GetCameraController ().IsMoving) {
+				Unit cpu = _gameManager.GetTurnOrderController ().GetNextUp ();
 				_selectedCharacter = cpu;
 
 				// Show terrain related things
-				Vector3 cpuTilemapCoordinates = WorldCenteredToTileMap (cpu.transform.position);
+				Vector3 cpuTilemapCoordinates = TileMapUtil.WorldCenteredToTileMap (cpu.transform.position, _tileMap.tileSize);
 				ShowTerrainUI ((int) cpuTilemapCoordinates.x, (int) cpuTilemapCoordinates.z);
 				_playerCurrentTileCoordinate = cpuTilemapCoordinates;
 
@@ -167,7 +165,7 @@ public class TileMapMouse : MonoBehaviour {
 				cpu.ActivateCharacterSheet ();
 
 				// Show movement tiles
-				HighlightMovementTiles(cpu);
+				_tileHighlighter.HighlightMovementTiles(cpu, _playerCurrentTileCoordinate);
 
 				StartCoroutine (MoveCPU ());
 				TransitionGameState (GameState.CPU_MOVE_STOP);
@@ -184,47 +182,38 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Turn is over for the character
 		case GameState.TURN_OVER:
-			_tileMap.GetTurnOrderController ().FinishTurn (_selectedCharacter);
+			_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
 			_selectedCharacter = null;
-			if (IsEnemyNearby (players)) {
-				if (_playingCalm) {
-					TransitionMusic (musicCalm, musicFire);
-					_playingCalm = false;
-				}
-			} else {
-				if (!_playingCalm) {
-					TransitionMusic (musicFire, musicCalm);
-					_playingCalm = true;
-				}
-			}
+			if (IsEnemyNearby (_gameManager.GetTurnOrderController().GetAllUnits()))
+				_musicController.TransitionMusic (false);
+			else
+				_musicController.TransitionMusic (true);
 			TransitionGameState(GameState.INITIALIZE_TURN);
 			break;
 		}
 	}
 
 	private void HighlightCharacter(Unit character) {
-		selectionCube.position = WorldCenteredToUncentered(character.transform.position);
+		selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, _tileMap.tileSize);
 	}
 
 	private void HandleTerrainMouseOver(Ray ray) {
-		//mouseMove.
+		
 		RaycastHit hitInfo;
 		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
-
-			int x = Mathf.FloorToInt( hitInfo.point.x / _tileMap.tileSize);
-			int z = Mathf.FloorToInt( hitInfo.point.z / _tileMap.tileSize);
-			var mousePos = Input.mousePosition;
-			mousePos.z = 0;
+			
+			// Get hit point in tile map coordinates
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
 
 			// Don't run if still on the same tile
-			if (_currentTileCoord.x != x || _currentTileCoord.z != z) {
-				_currentTileCoord.x = x;
-				_currentTileCoord.z = z;
+			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
+				_currentTileCoord.x = tileMapPoint.x;
+				_currentTileCoord.z = tileMapPoint.z;
 
 				cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
 
 				selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
-				ShowTerrainUI (x, z);
+				ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
 			}
 		}
 	}
@@ -234,58 +223,44 @@ public class TileMapMouse : MonoBehaviour {
 		RaycastHit hitInfo;
 		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 
-			int x = Mathf.FloorToInt( hitInfo.point.x / _tileMap.tileSize);
-			int z = Mathf.FloorToInt( hitInfo.point.z / _tileMap.tileSize);
-			var mousePos = Input.mousePosition;
-			mousePos.z = 0;
+			// Get hit point in tile map coordinates
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
 
 			// Don't run if still on the same tile
-			if (_currentTileCoord.x != x || _currentTileCoord.z != z) {
+			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
 
 				// Don't allow outside movement
-				if (_movementIndicators.ContainsKey (new Vector3 (x, 0, z))) {
-					_currentTileCoord.x = x;
-					_currentTileCoord.z = z;
+				if (_tileHighlighter.IsHighlightedTile(tileMapPoint)) {
+					_currentTileCoord.x = tileMapPoint.x;
+					_currentTileCoord.z = tileMapPoint.z;
 
 					cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
 
 					selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
-					ShowTerrainUI (x, z);
+					ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
 				}
 			}
 		}
 	}
 
+	/// <summary>
+	/// Shows the terrain UI.
+	/// </summary>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
 	private void ShowTerrainUI(int x, int z) {
 		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt (x, z);
 		terrainDetailsController.Activate (tileData);
 	}
 
-	private bool IsRaycastHitNew(RaycastHit raycastHit, Vector3 currentTileCoordinate) {
-		int x = Mathf.FloorToInt( raycastHit.point.x / _tileMap.tileSize);
-		int z = Mathf.FloorToInt( raycastHit.point.z / _tileMap.tileSize);
-		var mousePos = Input.mousePosition;
-		mousePos.z = 0;
+	private bool IsPlayerRaycastHitNew(RaycastHit hintinfo) {
+		
+		// Get hit point in tile map coordinates
+		Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hintinfo.point, _tileMap.tileSize);
 
-		Debug.Log (string.Format("New Tile: {0},{1} - Old Tile: {2},{3}", x, z, currentTileCoordinate.x, currentTileCoordinate.z));
-
-		if (currentTileCoordinate.x != x || currentTileCoordinate.z != z) {
-			currentTileCoordinate.x = x;
-			currentTileCoordinate.z = z;
-			return true;
-		}
-		return false;
-	}
-
-	private bool IsPlayerRaycastHitNew(RaycastHit raycastHit) {
-		int x = Mathf.FloorToInt( raycastHit.point.x / _tileMap.tileSize);
-		int z = Mathf.FloorToInt( raycastHit.point.z / _tileMap.tileSize);
-		var mousePos = Input.mousePosition;
-		mousePos.z = 0;
-
-		if (_playerCurrentTileCoordinate.x != x || _playerCurrentTileCoordinate.z != z) {
-			_playerCurrentTileCoordinate.x = x;
-			_playerCurrentTileCoordinate.z = z;
+		if (_playerCurrentTileCoordinate.x != tileMapPoint.x || _playerCurrentTileCoordinate.z != tileMapPoint.z) {
+			_playerCurrentTileCoordinate.x = tileMapPoint.x;
+			_playerCurrentTileCoordinate.z = tileMapPoint.z;
 
 			return true;
 		}
@@ -300,27 +275,25 @@ public class TileMapMouse : MonoBehaviour {
 		
 		// Iterate over all characters to see if they're being selected and/or highlighted
 		RaycastHit hitInfo;
-		for (int index = 0; index < players.Length; index++) {
-			Unit player = players [index];
-			if (player.GetComponent<Collider> ().Raycast (ray, out hitInfo, Mathf.Infinity)) {
+		foreach (Unit unit in _gameManager.GetTurnOrderController().GetAllUnits()) {
+			if (unit.GetComponent<Collider> ().Raycast (ray, out hitInfo, Mathf.Infinity)) {
 
 				// Only run this if the cursor has moved
 				if (IsPlayerRaycastHitNew(hitInfo)) {
 
 					// Mark player as highlighted and show character sheet
-					Debug.Log (player);
-					_highlightedCharacter = player;
-					player.ActivateCharacterSheet ();
+					Debug.Log (unit);
+					_highlightedCharacter = unit;
+					unit.ActivateCharacterSheet ();
 
 					// Show tiles you can move to
-					HighlightMovementTiles(player);
+					_tileHighlighter.HighlightMovementTiles(unit, _playerCurrentTileCoordinate);
 				}
 
 				// If user has clicked, show combat menu
-				if ((Input.GetMouseButtonDown (0)) && _selectedCharacter == null && player == _tileMap.GetTurnOrderController().GetNextUp()) {
-					_selectedCharacter = player;
+				if ((Input.GetMouseButtonDown (0)) && _selectedCharacter == null && unit == _gameManager.GetTurnOrderController().GetNextUp()) {
+					_selectedCharacter = unit;
 					confirmationSource.PlayOneShot (confirmationSource.clip);
-					//player.ActivateCombatMenu();
 				}
 				return;
 			}
@@ -336,65 +309,9 @@ public class TileMapMouse : MonoBehaviour {
 				_playerCurrentTileCoordinate = Vector3.zero;
 
 				// Delete movement highlight if player is not selected
-				RemoveMovementTiles();
+				_tileHighlighter.RemoveMovementTiles();
 			}
 		}
-	}
-
-	/// <summary>
-	/// Highlights the movement tiles for a character.
-	/// </summary>
-	/// <param name="player">Player.</param>
-	private void HighlightMovementTiles(Unit player) {
-		
-		// Clear out old movement tiles
-		RemoveMovementTiles();
-
-		// Get color, depending on the type of unit
-		Color movementTileColor = player.MovementTileColor;
-
-		int movement = player.movement;
-		float x = _playerCurrentTileCoordinate.x;
-		float z = _playerCurrentTileCoordinate.z;
-
-		// Outer loop handles the straight lines going N, E, S, W
-		for (int index1 = 1; index1 <= movement; index1++) {
-			// Inner loop handles all the other tiles NE, SE, NW, SW
-			for (int index2 = 1; index2 <= movement - index1; index2++) {
-				InstantiateMovementHightlightCube (movement, index2, x + index1, z + index2, movementTileColor); // North East
-				InstantiateMovementHightlightCube (movement, index2, x + index1, z - index2, movementTileColor); // South East
-				InstantiateMovementHightlightCube (movement, index2, x - index1, z + index2, movementTileColor); // North West
-				InstantiateMovementHightlightCube (movement, index2, x - index1, z - index2, movementTileColor); // South West
-			}
-			InstantiateMovementHightlightCube (movement, index1, x, z + index1, movementTileColor); // North
-			InstantiateMovementHightlightCube (movement, index1, x + index1, z, movementTileColor); // East
-			InstantiateMovementHightlightCube (movement, index1, x, z - index1, movementTileColor); // South
-			InstantiateMovementHightlightCube (movement, index1, x - index1, z, movementTileColor); // West
-		}
-	}
-
-	private void InstantiateMovementHightlightCube(int totalMovement, int currentMovement, float x, float z, Color movementTileColor) {
-
-		// Don't go out of boundary
-		if (x < 0 || z < 0 || x >= _tileMap.size_x || z >= _tileMap.size_z )
-			return;
-
-		// Don't highlight unwalkable areas (i.e. mountains or occupied tiles)
-		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt ((int) x, (int) z);
-		if (!tileData.IsWalkable || tileData.Unit != null)
-			return;
-
-		// Create movement highlight cube and set the material's color
-		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.tileSize;
-		GameObject movementHightlightCubeClone = Instantiate (movementHighlightCube.gameObject, vector, Quaternion.identity) as GameObject;
-		movementHightlightCubeClone.transform.Find ("Cube").gameObject.GetComponent<Renderer> ().material.color = movementTileColor;
-		_movementIndicators.Add (new Vector3 (x, 0, z), movementHightlightCubeClone);
-	}
-
-	private void RemoveMovementTiles() {
-		foreach (var go in _movementIndicators.Values)
-			Destroy (go);
-		_movementIndicators.Clear ();
 	}
 
 	/// <summary>
@@ -450,8 +367,8 @@ public class TileMapMouse : MonoBehaviour {
 		int index = 0;
 		while (index < _pathfinder.GetGeneratedPath().Count - 1) {
 			newTile = _pathfinder.GetGeneratedPathAt(index + 1);
-			Vector3 startingPosition = TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.tileSize);
-			Vector3 endingPosition = TileMapToWorldCentered (newTile, _tileMap.tileSize);
+			Vector3 startingPosition = TileMapUtil.TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.tileSize);
+			Vector3 endingPosition = TileMapUtil.TileMapToWorldCentered (newTile, _tileMap.tileSize);
 
 			print (_selectedCharacter);
 			print (startingPosition);
@@ -480,39 +397,15 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
-	public Vector3 TileMapToWorld(Vector3 vector, float tileMapSize) {
-		float x = (vector.x * _tileMap.tileSize);
-		float z = (vector.z * _tileMap.tileSize);
-		return new Vector3 (x, 0, z);
-	}
-
-	public Vector3 TileMapToWorldCentered(Vector3 vector, float tileMapSize) {
-		float x = (vector.x * _tileMap.tileSize) + tileMapSize / 2.0f;
-		float z = (vector.z * _tileMap.tileSize) + tileMapSize / 2.0f;
-		return new Vector3 (x, vector.y, z);
-	}
-
-	public Vector3 WorldCenteredToTileMap(Vector3 vector) {
-		int x = Mathf.FloorToInt( vector.x / _tileMap.tileSize);
-		int z = Mathf.FloorToInt( vector.z / _tileMap.tileSize);
-		return new Vector3 (x, 0, z);
-	}
-
-	public Vector3 WorldCenteredToUncentered(Vector3 vector) {
-		float x = vector.x - _tileMap.tileSize / 2.0f;
-		float z = vector.z - _tileMap.tileSize / 2.0f;
-		return new Vector3 (x, 0, z);
-	}
-
 	public void DrawGeneratedPathLine(List<Node> generatedPath) {
 		if (generatedPath != null) {
 			int index = 0;
 			while (index < generatedPath.Count - 1) {
-				Vector3 start = TileMapToWorldCentered (
+				Vector3 start = TileMapUtil.TileMapToWorldCentered (
 					                new Vector3 (generatedPath [index].x, 10, generatedPath [index].z),
 					                _tileMap.tileSize
 				                );
-				Vector3 end = TileMapToWorldCentered (
+				Vector3 end = TileMapUtil.TileMapToWorldCentered (
 					              new Vector3 (generatedPath [index + 1].x, 10, generatedPath [index + 1].z),
 					              _tileMap.tileSize
 				              );
@@ -535,44 +428,10 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
-	private void CalmToFire() {
-		if (_playingCalm) {
-			TransitionMusic (musicCalm, musicFire);
-			_playingCalm = false;
-		} else {
-			TransitionMusic (musicFire, musicCalm);
-			_playingCalm = true;
-		}
-	}
-
-	private void TransitionMusic(AudioSource audioSource1Stop, AudioSource audioSource2Start) {
-		print ("TransitionMusic");
-		StartCoroutine (FadeOutMusic (audioSource1Stop));
-		StartCoroutine (FadeInMusic (audioSource2Start));
-	}
-
-	private IEnumerator FadeInMusic(AudioSource audioSource) {
-		float volume = 0.0f;
-		while (volume < 1.0f) {
-			volume += Time.deltaTime;
-			audioSource.volume = volume;
-			yield return null;
-		}		
-	}
-
-	private IEnumerator FadeOutMusic(AudioSource audioSource) {
-		float volume = 1.0f;
-		while (volume > 0.0f) {
-			volume -= Time.deltaTime;
-			audioSource.volume = volume;
-			yield return null;
-		}
-	}
-
-	private bool IsEnemyNearby(Unit[] units) {
+	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
 			int movement = unit.movement;
-			Vector3 tileMapPosition = WorldCenteredToTileMap (unit.transform.position);
+			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.tileSize);
 			int x = (int) tileMapPosition.x;
 			int z = (int) tileMapPosition.z;
 

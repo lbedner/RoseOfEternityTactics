@@ -13,16 +13,13 @@ public class TurnOrderController : MonoBehaviour {
 	private TurnOrder _turnOrder;
 
 	/// <summary>
-	/// Initialize this instance.
+	/// Awake this instance.
 	/// </summary>
-	public void Initialize() {
-		print ("TurnOrderController.Initialize()");
+	void Awake() {
+		print ("TurnOrderController.Awake()");
 		_turnOrder = new TurnOrder ();
 		_panel = this.gameObject;
-		print (_turnOrder);
-		print (_panel);
-	}
-		
+	}		
 
 	/// <summary>
 	/// Adds the units to the GUI and underlying data structure.
@@ -39,9 +36,6 @@ public class TurnOrderController : MonoBehaviour {
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void AddUnit(Unit unit) {
-		print (string.Format ("Adding: {0}", unit));
-		print (_turnOrder);
-		print (_panel);
 		Image unitImage = Instantiate (imagePrefab);
 		unitImage.sprite = unit.portrait;
 		unitImage.transform.SetParent (_panel.transform, false);
@@ -78,5 +72,13 @@ public class TurnOrderController : MonoBehaviour {
 	public void FinishTurn(Unit unit) {
 		RemoveUnit (unit);
 		AddUnit (unit);
+	}
+
+	/// <summary>
+	/// Gets all units.
+	/// </summary>
+	/// <returns>The all units.</returns>
+	public List<Unit> GetAllUnits() {
+		return _turnOrder.GetAllUnits ();
 	}
 }

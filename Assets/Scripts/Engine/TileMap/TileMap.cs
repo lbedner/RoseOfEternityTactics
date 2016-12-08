@@ -10,14 +10,9 @@ public class TileMap : MonoBehaviour {
 	public int size_x = 100;
 	public int size_z = 50;
 	public float tileSize = 1.0f;
+	public int tileResolution = 16;
 
 	public Texture2D terrainTiles;
-	public int tileResolution;
-
-	public GameObject terrainDetailsUI;
-
-	public Ally[] allies;
-	public Enemy[] enemies;
 
 	public Ally elyse;
 	public Ally orelle;
@@ -29,89 +24,31 @@ public class TileMap : MonoBehaviour {
 	public Enemy goblin3;
 	public Enemy goblin4;
 
-	public TurnOrderController turnOrderController;
-
 	private TileMapData _tileMapData;
 	private Graph _graph;
-	private TurnOrder _turnOrder;
-	private CameraController _cameraController;
-	
-	// Use this for initialization
-	void Start () {
-	}
 
 	public void Initialize() {
-		InitializeUI ();
-		BuildMesh();
+		print ("TileMap.Initialize()");
+		InitializeTileMap ();
 		InitPlayer ();
-
-		_cameraController = Camera.main.GetComponent ("CameraController") as CameraController;
-		_cameraController.Init (size_x * tileSize, size_z * tileSize);
 
 		// Generate 4 way pathfinding graph
 		_graph = new Graph (size_x, size_z);
 		_graph.Generate4WayGraph ();
-
-		Camera.main.transform.rotation = Quaternion.Euler (90, 0, 0);
-
-		int screen_width = Screen.width;
-		int screen_height = Screen.height;
-
-		Camera.main.orthographicSize = screen_width / (((screen_width / screen_height) * 2) * tileResolution);
-		//Camera.main.orthographicSize = Screen.height / 2;
-		Debug.Log (Camera.main.orthographicSize);
 	}
 
 	/// <summary>
-	/// Chops up tiles sprite sheet and apply to 2D array of colors that will be used for the main texture.
+	/// Initializes the tile map.
 	/// </summary>
-	/// <returns>The up tiles.</returns>
-	Color[][] ChopUpTiles() {
-		int numTilesPerRow = terrainTiles.width / tileResolution;
-		int numRows = terrainTiles.height / tileResolution;
-
-		Color[][] tiles = new Color[numTilesPerRow * numRows][];
-
-		for (int y = 0; y < numRows; y++) {
-			for (int x = 0; x < numTilesPerRow; x++) {
-				tiles [y * numTilesPerRow + x] = terrainTiles.GetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution);
-			}
-		}
-
-		return tiles;
+	public void InitializeTileMap() {
+		BuildMesh();
+		BuildTexture ();
 	}
 
-	void BuildTexture() {
-
-		int texWidth = size_x * tileResolution;
-		int texHeight = size_z * tileResolution;
-		Texture2D texture = new Texture2D (texWidth, texHeight);
-
-		Color[][] tiles = ChopUpTiles ();
-
-		_tileMapData = new TileMapData(size_x, size_z);
-		TileData[,] tileData = _tileMapData.GetTileData ();
-
-		tileData = TileMapDataLoader.LoadTileMapData (size_x, size_z, tileData);
-
-		for (int y = 0; y < size_z; y++) {
-			for (int x = 0; x < size_x; x++) {
-				Color[] p = tiles[(int) tileData[x, y].TerrainType];
-				texture.SetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution, p);
-			}
-		}
-
-		texture.filterMode = FilterMode.Point;
-		texture.wrapMode = TextureWrapMode.Clamp;
-		texture.Apply ();
-
-		MeshRenderer mesh_renderer = GetComponent<MeshRenderer>();
-		mesh_renderer.sharedMaterials [0].mainTexture = texture;
-
-		Debug.Log ("Done Texture!");
-	}
-	
-	public void BuildMesh() {
+	/// <summary>
+	/// Builds the mesh.
+	/// </summary>
+	private void BuildMesh() {
 		
 		int numTiles = size_x * size_z;
 		int numTris = numTiles * 2;
@@ -130,7 +67,6 @@ public class TileMap : MonoBehaviour {
 		int x, z;
 		for(z=0; z < vsize_z; z++) {
 			for(x=0; x < vsize_x; x++) {
-				//vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, Random.Range(-1f, 1f), z*tileSize );
 				vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, 0, z*tileSize );
 				normals[ z * vsize_x + x ] = Vector3.up;
 				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, (float)z / size_z );
@@ -168,9 +104,59 @@ public class TileMap : MonoBehaviour {
 		mesh_filter.mesh = mesh;
 		mesh_collider.sharedMesh = mesh;
 		Debug.Log ("Done Mesh!");
+	}
 
-		BuildTexture ();
+	/// <summary>
+	/// Builds the texture.
+	/// </summary>
+	private void BuildTexture() {
+
+		int texWidth = size_x * tileResolution;
+		int texHeight = size_z * tileResolution;
+		Texture2D texture = new Texture2D (texWidth, texHeight);
+
+		Color[][] tiles = ChopUpTiles ();
+
+		_tileMapData = new TileMapData(size_x, size_z);
+		TileData[,] tileData = _tileMapData.GetTileData ();
+
+		tileData = TileMapDataLoader.LoadTileMapData (size_x, size_z, tileData);
+
+		for (int y = 0; y < size_z; y++) {
+			for (int x = 0; x < size_x; x++) {
+				Color[] p = tiles[(int) tileData[x, y].TerrainType];
+				texture.SetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution, p);
+			}
+		}
+
+		texture.filterMode = FilterMode.Point;
+		texture.wrapMode = TextureWrapMode.Clamp;
+		texture.Apply ();
+
+		MeshRenderer mesh_renderer = GetComponent<MeshRenderer>();
+		mesh_renderer.sharedMaterials [0].mainTexture = texture;
+
+		Debug.Log ("Done Texture!");
 	}	
+		
+	/// <summary>
+	/// Chops up tiles sprite sheet and apply to 2D array of colors that will be used for the main texture.
+	/// </summary>
+	/// <returns>The up tiles.</returns>
+	private Color[][] ChopUpTiles() {
+		int numTilesPerRow = terrainTiles.width / tileResolution;
+		int numRows = terrainTiles.height / tileResolution;
+
+		Color[][] tiles = new Color[numTilesPerRow * numRows][];
+
+		for (int y = 0; y < numRows; y++) {
+			for (int x = 0; x < numTilesPerRow; x++) {
+				tiles [y * numTilesPerRow + x] = terrainTiles.GetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution);
+			}
+		}
+
+		return tiles;
+	}
 
 	/// <summary>
 	/// Gets the tile map data.
@@ -188,61 +174,22 @@ public class TileMap : MonoBehaviour {
 		return _graph;
 	}
 
-	/// <summary>
-	/// Initializes the UI.
-	/// </summary>
-	private void InitializeUI() {
-		terrainDetailsUI.SetActive (false);
-	}
-
 	private void InitPlayer() {
 		print ("TileMap.InitPlayer()");
-		print (elyse);
-		elyse.transform.position = new Vector3 (GetCenteredValue (8), 0.0f, GetCenteredValue (7));
-		orelle.transform.position = new Vector3 (GetCenteredValue (10), 0.0f, GetCenteredValue (8));
-		aramus.transform.position = new Vector3 (GetCenteredValue (10), 0.0f, GetCenteredValue (7));
-		clopon.transform.position = new Vector3 (GetCenteredValue (7), 0.0f, GetCenteredValue (8));
-		goblin1.transform.position = new Vector3 (GetCenteredValue (18), 0.0f, GetCenteredValue (9));
-		goblin2.transform.position = new Vector3 (GetCenteredValue (17), 0.0f, GetCenteredValue (17));
-		goblin3.transform.position = new Vector3 (GetCenteredValue (22), 0.0f, GetCenteredValue (21));
-		goblin4.transform.position = new Vector3 (GetCenteredValue (28), 0.0f, GetCenteredValue (19));
 
-		TileData[,] tileData = _tileMapData.GetTileData ();
-		tileData [8, 7].Unit = elyse;
-		tileData [10, 8].Unit = orelle;
-		tileData [10, 7].Unit = aramus;
-		tileData [7, 8].Unit = clopon;
-		tileData [18, 9].Unit = goblin1;
-		tileData [17, 17].Unit = goblin2;
-		tileData [22, 21].Unit = goblin3;
-		tileData [28, 19].Unit = goblin4;
-
-		turnOrderController.Initialize();
-		foreach (Ally ally in allies) {
-			print (ally);
-			turnOrderController.AddUnit (ally);
-		}
-		foreach (Enemy enemy in enemies)
-			turnOrderController.AddUnit (enemy);
+		InitUnit (elyse, 8, 7);
+		InitUnit (orelle, 10, 8);
+		InitUnit (aramus, 10, 7);
+		InitUnit (clopon, 7, 8);
+		InitUnit (goblin1, 18, 9);
+		InitUnit (goblin2, 17, 17);
+		InitUnit (goblin3, 22, 21);
+		InitUnit (goblin4, 28, 19);
 	}
 
-	private float GetCenteredValue(float value) {
-		return (value * tileSize) + tileSize / 2.0f;
-	}
-
-	public TurnOrderController GetTurnOrderController() {
-		return turnOrderController;
-	}
-
-	public CameraController GetCameraController() {
-		return _cameraController;
-	}
-		
-	private Vector3 TileMapToWorld(Vector3 vector) {
-		float x = (vector.x * tileSize);
-		float y = (vector.y);
-		float z = (vector.z * tileSize);
-		print (new Vector3 (x, y, z));
-		return new Vector3 (x, y, z);
+	private void InitUnit(Unit unit, int x, int z) {
+		unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
+		_tileMapData.GetTileDataAt (x, z).Unit = unit;
+		GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
 	}
 }
