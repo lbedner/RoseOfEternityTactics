@@ -2217,10 +2217,12 @@ MonoBehaviour:
   totalHitPoints: 5
   totalAbilityPoints: 5
   level: 3
-  movement: 3
+  movement: 2
   speed: 3
+  weaponRange: 1
   portrait: {fileID: 21300000, guid: 3152edc3a36087944b3a174e1d3a7ca7, type: 3}
   color: {r: 0.73333335, g: 0, b: 0.3019608, a: 0}
+  attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
   characterSheetController: {fileID: 1898091232}
   combatMenuController: {fileID: 166696115}
 --- !u!1 &1245133976
@@ -2678,8 +2680,10 @@ MonoBehaviour:
   level: 7
   movement: 5
   speed: 3
+  weaponRange: 1
   portrait: {fileID: 21300000, guid: 1cb71ba6b9508b543968daa43ddefaf2, type: 3}
   color: {r: 0.16078432, g: 0.49019608, b: 0.078431375, a: 0}
+  attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
   characterSheetController: {fileID: 1898091232}
   combatMenuController: {fileID: 166696115}
 --- !u!1 &1538945363
@@ -3302,8 +3306,10 @@ MonoBehaviour:
   level: 6
   movement: 2
   speed: 3
+  weaponRange: 2
   portrait: {fileID: 21300000, guid: 9937a35fc617f2741bb4f7ffa8dd1be1, type: 3}
   color: {r: 0.06666667, g: 0.03529412, b: 0.9843137, a: 0}
+  attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
   characterSheetController: {fileID: 1898091232}
   combatMenuController: {fileID: 166696115}
 --- !u!4 &1741389795
@@ -3969,8 +3975,10 @@ MonoBehaviour:
   level: 1
   movement: 4
   speed: 3
+  weaponRange: 2
   portrait: {fileID: 21300000, guid: 07ec904e64324a446a7f78702ecd5410, type: 3}
   color: {r: 0, g: 0.6509804, b: 0.827451, a: 0}
+  attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
   characterSheetController: {fileID: 1898091232}
   combatMenuController: {fileID: 166696115}
 --- !u!1 &2036974037

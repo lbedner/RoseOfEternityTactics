@@ -15,10 +15,13 @@ public abstract class Unit : MonoBehaviour {
 	public int level = 1;
 	public int movement = 4;
 	public int speed = 3;
+	public int weaponRange = 1;
 
 	public Sprite portrait;
 
 	public Color color;
+
+	public Color attackTileColor = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
 
 	public CharacterSheetController characterSheetController;
 	public CombatMenuController combatMenuController;

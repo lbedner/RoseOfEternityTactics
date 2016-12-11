@@ -40,10 +40,6 @@ public class TileMapMouse : MonoBehaviour {
 	private Unit _highlightedCharacter;
 	private Unit _selectedCharacter;
 
-	private Dictionary<Vector3, GameObject> _attackIndicators = new Dictionary<Vector3, GameObject>();
-
-	private Color _attack_highlight_color = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
-
 	private GameState _gameState;
 
 	private bool _playerMoveFinished = false;
@@ -103,15 +99,17 @@ public class TileMapMouse : MonoBehaviour {
 			HandleMovementSelection ();
 			if ((Input.GetMouseButtonDown (0))) {
 				_pathfinder = new Pathfinder ();
-				List<Node> generatedPath = _pathfinder.GeneratePath(
+				_pathfinder.GeneratePath(
 					_tileMap.GetGraph().GetGraph(),
 					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).x,
 					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).z,
 					(int) _currentTileCoord.x,
 					(int) _currentTileCoord.z
 				);
+				/*
 				foreach (var node in generatedPath)
 					Debug.Log(node);
+				*/
 
 				_gameState = GameState.PLAYER_MOVE_START;
 				confirmationSource.PlayOneShot (confirmationSource.clip);
@@ -121,7 +119,7 @@ public class TileMapMouse : MonoBehaviour {
 		// Player moves to tile
 		case GameState.PLAYER_MOVE_START:
 			ShowCursor (false);
-			_tileHighlighter.RemoveMovementTiles();
+			_tileHighlighter.RemoveHighlightedTiles();
 			StartCoroutine (MoveToTiles ());
 			TransitionGameState (GameState.PLAYER_MOVE_STOP);
 			break;
@@ -137,9 +135,6 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Indicate where player can attack
 		case GameState.PLAYER_SHOW_ATTACK_INDICATORS:
-			_tileHighlighter.RemoveMovementTiles();
-			HighlightAttackTiles (_selectedCharacter);
-			TransitionGameState (GameState.PLAYER_ATTACK_SELECTION);
 			break;
 
 		// Select who to attack
@@ -165,7 +160,7 @@ public class TileMapMouse : MonoBehaviour {
 				cpu.ActivateCharacterSheet ();
 
 				// Show movement tiles
-				_tileHighlighter.HighlightMovementTiles(cpu, _playerCurrentTileCoordinate);
+				_tileHighlighter.HighlightTiles(cpu, _playerCurrentTileCoordinate);
 
 				StartCoroutine (MoveCPU ());
 				TransitionGameState (GameState.CPU_MOVE_STOP);
@@ -229,8 +224,8 @@ public class TileMapMouse : MonoBehaviour {
 			// Don't run if still on the same tile
 			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
 
-				// Don't allow outside movement
-				if (_tileHighlighter.IsHighlightedTile(tileMapPoint)) {
+				// Don't allow movement on a non-highlighted or occupied tile
+				if (_tileHighlighter.IsHighlightedMovementTile(tileMapPoint) && !_tileMap.GetTileMapData().GetTileDataAt(tileMapPoint).Unit) {
 					_currentTileCoord.x = tileMapPoint.x;
 					_currentTileCoord.z = tileMapPoint.z;
 
@@ -287,7 +282,7 @@ public class TileMapMouse : MonoBehaviour {
 					unit.ActivateCharacterSheet ();
 
 					// Show tiles you can move to
-					_tileHighlighter.HighlightMovementTiles(unit, _playerCurrentTileCoordinate);
+					_tileHighlighter.HighlightTiles(unit, _playerCurrentTileCoordinate);
 				}
 
 				// If user has clicked, show combat menu
@@ -309,55 +304,14 @@ public class TileMapMouse : MonoBehaviour {
 				_playerCurrentTileCoordinate = Vector3.zero;
 
 				// Delete movement highlight if player is not selected
-				_tileHighlighter.RemoveMovementTiles();
+				_tileHighlighter.RemoveHighlightedTiles();
 			}
 		}
-	}
-
-	/// <summary>
-	/// Highlights the attack tiles for a character.
-	/// </summary>
-	/// <param name="player">Player.</param>
-	private void HighlightAttackTiles(Unit player) {
-		int attackDistance = 1;
-		float x = _playerCurrentTileCoordinate.x;
-		float z = _playerCurrentTileCoordinate.z;
-
-		// Outer loop handles the straight lines going N, E, S, W
-		for (int index1 = 1; index1 <= attackDistance; index1++) {
-			// Inner loop handles all the other tiles NE, SE, NW, SW
-			for (int index2 = 1; index2 <= attackDistance - index1; index2++) {
-				InstantiateAttackHightlightCube (x + index1, z + index2); // North East
-				InstantiateAttackHightlightCube (x + index1, z - index2); // South East
-				InstantiateAttackHightlightCube (x - index1, z + index2); // North West
-				InstantiateAttackHightlightCube (x - index1, z - index2); // South West
-			}
-			InstantiateAttackHightlightCube (x, z + index1); // North
-			InstantiateAttackHightlightCube (x + index1, z); // East
-			InstantiateAttackHightlightCube (x, z - index1); // South
-			InstantiateAttackHightlightCube (x - index1, z); // West
-		}
-	}
-
-	private void InstantiateAttackHightlightCube(float x, float z) {
-
-		// Don't go out of boundary
-		if (x < 0 || z < 0)
-			return;
-
-		// Set color based off of if it's a movement tile, or attack tile
-		Color color = _attack_highlight_color;
-
-		// Create movement highlight cube and set the material's color
-		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.tileSize;
-		GameObject movementHightlightCubeClone = Instantiate (movementHighlightCube.gameObject, vector, Quaternion.identity) as GameObject;
-		movementHightlightCubeClone.transform.Find ("Cube").gameObject.GetComponent<Renderer> ().material.color = color;
-		_attackIndicators.Add (new Vector3 (x, 0, z), movementHightlightCubeClone);
 	}
 
 	private IEnumerator MoveCPU() {
 		_playerMoveFinished = false;
-		yield return new WaitForSeconds (3);
+		yield return new WaitForSeconds (1.5f);
 		_playerMoveFinished = true;
 	}
 
@@ -430,15 +384,15 @@ public class TileMapMouse : MonoBehaviour {
 
 	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
-			int movement = unit.movement;
+			int range = unit.movement + unit.weaponRange;
 			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.tileSize);
 			int x = (int) tileMapPosition.x;
 			int z = (int) tileMapPosition.z;
 
 			// Outer loop handles the straight lines going N, E, S, W
-			for (int index1 = 1; index1 <= movement; index1++) {
+			for (int index1 = 1; index1 <= range; index1++) {
 				// Inner loop handles all the other tiles NE, SE, NW, SW
-				for (int index2 = 1; index2 <= movement - index1; index2++) {
+				for (int index2 = 1; index2 <= range - index1; index2++) {
 					if (IsEmptyNearby (unit, x + index1, z + index2)) // North East
 						return true;
 					if (IsEmptyNearby (unit, x + index1, z - index2)) // South East
