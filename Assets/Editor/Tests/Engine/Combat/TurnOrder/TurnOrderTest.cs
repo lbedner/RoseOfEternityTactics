@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 [TestFixture]
@@ -52,7 +53,7 @@ public class TurnOrderTest {
 	}		
 
 	[Test]
-	public void FinishTurn() {
+	public void TestFinishTurn() {
 		_turnOrder.AddCombatant (_unit1);
 		_turnOrder.AddCombatant (_unit2);
 
@@ -60,5 +61,25 @@ public class TurnOrderTest {
 
 		Assert.AreEqual (1, _turnOrder.GetTurnOrderSlotNumber (_unit2));
 		Assert.AreEqual (2, _turnOrder.GetTurnOrderSlotNumber (_unit1));
+	}
+
+	[Test]
+	public void TestGetTurnOrderLength() {
+		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddCombatant (_unit1);
+
+		Assert.AreEqual (4, _turnOrder.GetTurnOrderLength ());
+	}
+
+	[Test]
+	public void TestGetAllUnits() {
+		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddCombatant (_unit2);
+
+		List<Unit> units = _turnOrder.GetAllUnits ();
+
+		Assert.AreEqual (2, units.Count);
 	}
 }

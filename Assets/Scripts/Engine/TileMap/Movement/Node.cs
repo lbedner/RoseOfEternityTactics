@@ -6,13 +6,21 @@ public class Node {
 	public int x;
 	public int z;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Node"/> class.
+	/// </summary>
 	public Node() {
 		neighbours = new List<Node>();
 	}
 		
+	/// <summary>
+	/// Calculates distance from one node to another.
+	/// </summary>
+	/// <returns>The to.</returns>
+	/// <param name="n">N.</param>
 	public float DistanceTo(Node n) {
 		if(n == null) {
-			Debug.LogError("WTF?");
+			return 0.0f;
 		}
 
 		return Vector2.Distance(
@@ -21,6 +29,10 @@ public class Node {
 		);
 	}
 
+	/// <summary>
+	/// Returns a <see cref="System.String"/> that represents the current <see cref="Node"/>.
+	/// </summary>
+	/// <returns>A <see cref="System.String"/> that represents the current <see cref="Node"/>.</returns>
 	public override string ToString ()
 	{
 		return string.Format ("[Node: x={0}, y={1}, neighbors={2}]", x, z, neighbours);

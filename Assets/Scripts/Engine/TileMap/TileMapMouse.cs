@@ -188,6 +188,14 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Gets the tile highlighter.
+	/// </summary>
+	/// <returns>The tile highlighter.</returns>
+	public TileHighlighter GetTileHighlighter() {
+		return _tileHighlighter;
+	}
+
 	private void HighlightCharacter(Unit character) {
 		selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, _tileMap.tileSize);
 	}

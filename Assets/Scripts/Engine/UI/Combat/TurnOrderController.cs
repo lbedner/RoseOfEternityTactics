@@ -39,6 +39,7 @@ public class TurnOrderController : MonoBehaviour {
 		Image unitImage = Instantiate (imagePrefab);
 		unitImage.sprite = unit.portrait;
 		unitImage.transform.SetParent (_panel.transform, false);
+		unitImage.GetComponent<TurnOrderImage> ().Unit = unit;
 
 		_images.Add (unit, unitImage);
 		_turnOrder.AddCombatant (unit);
