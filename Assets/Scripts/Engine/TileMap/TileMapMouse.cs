@@ -98,19 +98,17 @@ public class TileMapMouse : MonoBehaviour {
 		case GameState.PLAYER_MOVE_SELECTION:
 			HandleMovementSelection ();
 			if ((Input.GetMouseButtonDown (0))) {
-				_pathfinder = new Pathfinder ();
+				_pathfinder = new Pathfinder (_tileMap.GetTileMapData(), _tileMap.GetGraph().GetGraph());
 				_pathfinder.GeneratePath(
-					_tileMap.GetGraph().GetGraph(),
 					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).x,
 					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).z,
 					(int) _currentTileCoord.x,
 					(int) _currentTileCoord.z
 				);
 				/*
-				foreach (var node in generatedPath)
+				foreach (var node in _pathfinder.GetGeneratedPath())
 					Debug.Log(node);
 				*/
-
 				_gameState = GameState.PLAYER_MOVE_START;
 				confirmationSource.PlayOneShot (confirmationSource.clip);
 			}

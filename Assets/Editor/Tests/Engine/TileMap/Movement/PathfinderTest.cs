@@ -1,60 +1,96 @@
 ﻿using UnityEngine;
 using NUnit.Framework;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PathfinderTest {
 
+	private const int MAP_SQUARE_SIZE = 10;
+
+	private TileMapData _tileMapData;
 	private Node[,] _nodeGrapth;
-	private Pathfinder _pathfinder;
+	private Pathfinder _validStraightPathfinder;
+	private Pathfinder _invalidPathfinder;
+	private Pathfinder _validIgnoreUnWalkablePathfinder;
 
 	[SetUp]
 	public void Setup() {
-		Graph graph = new Graph (10, 10);
+		_tileMapData = new TileMapData (MAP_SQUARE_SIZE, MAP_SQUARE_SIZE);
+		TileData[,] tileData = _tileMapData.GetTileData ();
+		for (int x = 0; x < MAP_SQUARE_SIZE; x++) {
+			for (int z = 0; z < MAP_SQUARE_SIZE; z++) {
+				tileData [x, z] = GetGrassTileData ();
+			}
+		}
+
+		// Add un-walkable tiles in middle of tilemap
+		tileData [4, 4] = GetWaterTileData ();
+		tileData [5, 4] = GetWaterTileData ();
+		tileData [6, 4] = GetWaterTileData ();
+
+		Graph graph = new Graph (MAP_SQUARE_SIZE, MAP_SQUARE_SIZE);
 		graph.Generate4WayGraph ();
 		_nodeGrapth = graph.GetGraph ();
 
-		_pathfinder = new Pathfinder ();
+		_validStraightPathfinder = new Pathfinder (_tileMapData, _nodeGrapth);
+		_validStraightPathfinder.GeneratePath (0, 0, 5, 0);
+
+		_invalidPathfinder = new Pathfinder (_tileMapData, _nodeGrapth);
+		_invalidPathfinder.GeneratePath (0, 0, 0, 0);
+
+		_validIgnoreUnWalkablePathfinder = new Pathfinder (_tileMapData, _nodeGrapth);
+		_validIgnoreUnWalkablePathfinder.GeneratePath (3, 4, 7, 4);
 	}
 
 	[Test]
 	public void TestGeneratePathValidCount() {
-		_pathfinder.GeneratePath (_nodeGrapth, 0, 0, 5, 0);
-
-		Assert.AreEqual (6, _pathfinder.GetGeneratedPath ().Count);
+		Assert.AreEqual (6, _validStraightPathfinder.GetGeneratedPath ().Count);
 	}
 
 	[Test]
 	public void TestGenerateValidStraightPath() {
-		_pathfinder.GeneratePath (_nodeGrapth, 0, 0, 5, 0);
-
-		foreach (Node node in _pathfinder.GetGeneratedPath())
+		foreach (Node node in _validStraightPathfinder.GetGeneratedPath())
 			Assert.AreEqual (0, node.z);
 	}
 
 	[Test]
-	public void TestGenerateInvalidPath() {
-		_pathfinder.GeneratePath (_nodeGrapth, 0, 0, 0, 0);
+	public void TestGeneratePathAvoidUnWalkableTiles() {
+		List<Node> generatedPath = _validIgnoreUnWalkablePathfinder.GetGeneratedPath ();
 
-		Assert.Null(_pathfinder.GetGeneratedPath ());
+		Assert.AreEqual (7, generatedPath.Count);
+
+		foreach (Node node in generatedPath) {
+			TileData tileData = _tileMapData.GetTileDataAt (node.x, node.z);
+			Assert.AreEqual (TileData.TerrainTypeEnum.GRASS, tileData.TerrainType);
+		}
+	}
+
+	[Test]
+	public void TestGenerateInvalidPath() {
+		Assert.Null(_invalidPathfinder.GetGeneratedPath ());
 	}
 
 	[Test]
 	public void TestGetGeneratedPathAt() {
-		_pathfinder.GeneratePath (_nodeGrapth, 0, 0, 5, 0);
-
-		Assert.AreEqual (new Vector3 (0, 0, 0), _pathfinder.GetGeneratedPathAt (0));
-		Assert.AreEqual (new Vector3 (1, 0, 0), _pathfinder.GetGeneratedPathAt (1));
-		Assert.AreEqual (new Vector3 (2, 0, 0), _pathfinder.GetGeneratedPathAt (2));
-		Assert.AreEqual (new Vector3 (3, 0, 0), _pathfinder.GetGeneratedPathAt (3));
-		Assert.AreEqual (new Vector3 (4, 0, 0), _pathfinder.GetGeneratedPathAt (4));
-		Assert.AreEqual (new Vector3 (5, 0, 0), _pathfinder.GetGeneratedPathAt (5));
+		Assert.AreEqual (new Vector3 (0, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (0));
+		Assert.AreEqual (new Vector3 (1, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (1));
+		Assert.AreEqual (new Vector3 (2, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (2));
+		Assert.AreEqual (new Vector3 (3, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (3));
+		Assert.AreEqual (new Vector3 (4, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (4));
+		Assert.AreEqual (new Vector3 (5, 0, 0), _validStraightPathfinder.GetGeneratedPathAt (5));
 	}
 
 	[Test]
 	public void TestClear() {
-		_pathfinder.GeneratePath (_nodeGrapth, 0, 0, 5, 0);
-		_pathfinder.Clear ();
+		_validStraightPathfinder.Clear ();
 
-		Assert.AreEqual (0, _pathfinder.GetGeneratedPath ().Count);
+		Assert.AreEqual (0, _validStraightPathfinder.GetGeneratedPath ().Count);
+	}
+
+	private TileData GetGrassTileData() {
+		return new TileData (TileData.TerrainTypeEnum.GRASS, true, "Grass", 0, 0, 0, 0);
+	}
+
+	private TileData GetWaterTileData() {
+		return new TileData (TileData.TerrainTypeEnum.WATER, false, "Water", 0, 0, 0, 0);
 	}
 }
