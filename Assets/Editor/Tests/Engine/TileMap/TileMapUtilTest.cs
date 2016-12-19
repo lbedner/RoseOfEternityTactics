@@ -8,12 +8,14 @@ public class TileMapUtilTest {
 	private Vector3 _tileCoordinates;
 	private Vector3 _worldCoordinates;
 	private Vector3 _worldCoordinatesCentered;
+	private Vector3 _invalidTile;
 
 	[SetUp]
 	public void Setup() {
 		_tileCoordinates = new Vector3 (3, 0, 3);
 		_worldCoordinates = new Vector3 (6, 0, 6);
 		_worldCoordinatesCentered = new Vector3 (7, 0, 7);
+		_invalidTile = new Vector3 (Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
 	}
 
 	[Test]
@@ -38,5 +40,16 @@ public class TileMapUtilTest {
 	public void TestWorldCenteredToUncentered() {
 		Vector3 actual = TileMapUtil.WorldCenteredToUncentered (_worldCoordinatesCentered, TILE_SIZE);
 		Assert.AreEqual (_worldCoordinates, actual);
+	}
+
+	[Test]
+	public void TestGetInvalidTile() {
+		Vector3 actual = TileMapUtil.GetInvalidTile ();
+		Assert.AreEqual (_invalidTile, actual);
+	}
+
+	[Test]
+	public void TestIsInvalidTile() {
+		Assert.IsTrue (TileMapUtil.IsInvalidTile (_invalidTile));
 	}
 }

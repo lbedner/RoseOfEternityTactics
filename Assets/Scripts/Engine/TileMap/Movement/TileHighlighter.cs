@@ -143,7 +143,7 @@ public class TileHighlighter {
 	private void HighlightTile(Unit unit, float x, float z, Color movementTileColor, HighlightType highlightType) {
 
 		// Don't go out of boundary
-		if (x < 0 || z < 0 || x >= _tileMap.size_x || z >= _tileMap.size_z )
+		if (!TileMapUtil.IsInsideTileMapBoundary (_tileMap.GetTileMapData (), (int) x, (int) z))
 			return;
 
 		// Don't try to overwrite an existing highlighted area

@@ -115,6 +115,8 @@ public class Pathfinder {
 	/// <returns>The generated path at the specified index.</returns>
 	/// <param name="index">Index.</param>
 	public Vector3 GetGeneratedPathAt(int index) {
+		if (_generatedPath == null || _generatedPath.Count <= 0)
+			return TileMapUtil.GetInvalidTile ();
 		return new Vector3 (_generatedPath[index].x, 0, _generatedPath[index].z);
 	}
 
@@ -122,7 +124,8 @@ public class Pathfinder {
 	/// Clear the generated path.
 	/// </summary>
 	public void Clear() {
-		_generatedPath.Clear ();
+		if (_generatedPath != null)
+			_generatedPath.Clear ();
 	}
 
 	/// <summary>

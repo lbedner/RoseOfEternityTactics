@@ -3,13 +3,18 @@ public class TileMapData {
 	
 	private TileData[,] _tileData;
 
+	private int _width;
+	private int _height;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TileMapData"/>class.
 	/// </summary>
 	/// <param name="width">Width of tile map.</param>
 	/// <param name="height">Height of tile map.</param>
-	public TileMapData(int width, int height) {	
+	public TileMapData(int width, int height) {
 		_tileData = new TileData[width, height];
+		_width = width;
+		_height = height;
 	}
 
 	/// <summary>
@@ -38,4 +43,16 @@ public class TileMapData {
 	public TileData[,] GetTileData() {
 		return _tileData;
 	}
+
+	/// <summary>
+	/// Gets the width.
+	/// </summary>
+	/// <returns>The width.</returns>
+	public int GetWidth() {return _width;}
+
+	/// <summary>
+	/// Gets the height.
+	/// </summary>
+	/// <returns>The height.</returns>
+	public int GetHeight() {return _height;}
 }

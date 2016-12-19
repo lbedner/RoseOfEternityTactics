@@ -317,7 +317,7 @@ public class TileMapMouse : MonoBehaviour {
 
 	private IEnumerator MoveCPU() {
 		_playerMoveFinished = false;
-		yield return new WaitForSeconds (1.5f);
+		yield return new WaitForSeconds (1.0f);
 		_playerMoveFinished = true;
 	}
 
@@ -325,7 +325,7 @@ public class TileMapMouse : MonoBehaviour {
 		Vector3 oldTile = _pathfinder.GetGeneratedPathAt(0);
 		Vector3 newTile = Vector3.zero;
 		int index = 0;
-		while (index < _pathfinder.GetGeneratedPath().Count - 1) {
+		while (_pathfinder.GetGeneratedPath() != null && index < _pathfinder.GetGeneratedPath().Count - 1) {
 			newTile = _pathfinder.GetGeneratedPathAt(index + 1);
 			Vector3 startingPosition = TileMapUtil.TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.tileSize);
 			Vector3 endingPosition = TileMapUtil.TileMapToWorldCentered (newTile, _tileMap.tileSize);
@@ -341,9 +341,11 @@ public class TileMapMouse : MonoBehaviour {
 		_pathfinder.Clear();
 
 		// After move is finished, swap out tile unit is standing on
-		TileMapData tileMapData = _tileMap.GetTileMapData();
-		TileData oldTileData = tileMapData.GetTileDataAt (oldTile);
-		oldTileData.SwapUnits(tileMapData.GetTileDataAt(newTile));
+		if (!TileMapUtil.IsInvalidTile (oldTile)) {
+			TileMapData tileMapData = _tileMap.GetTileMapData ();
+			TileData oldTileData = tileMapData.GetTileDataAt (oldTile);
+			oldTileData.SwapUnits (tileMapData.GetTileDataAt (newTile));
+		}
 		yield break;
 	}
 
@@ -399,29 +401,41 @@ public class TileMapMouse : MonoBehaviour {
 			for (int index1 = 1; index1 <= range; index1++) {
 				// Inner loop handles all the other tiles NE, SE, NW, SW
 				for (int index2 = 1; index2 <= range - index1; index2++) {
-					if (IsEmptyNearby (unit, x + index1, z + index2)) // North East
+					if (IsEnemyNearby (unit, x + index1, z + index2)) // North East
 						return true;
-					if (IsEmptyNearby (unit, x + index1, z - index2)) // South East
+					if (IsEnemyNearby (unit, x + index1, z - index2)) // South East
 						return true;
-					if (IsEmptyNearby (unit, x - index1, z + index2)) // North West
+					if (IsEnemyNearby (unit, x - index1, z + index2)) // North West
 						return true; 
-					if (IsEmptyNearby (unit, x - index1, z - index2)) // South West
+					if (IsEnemyNearby (unit, x - index1, z - index2)) // South West
 						return true; 
 				}
-				if (IsEmptyNearby (unit, x, z + index1)) // North
+				if (IsEnemyNearby (unit, x, z + index1)) // North
 					return true; 
-				if (IsEmptyNearby (unit, x + index1, z)) // East
+				if (IsEnemyNearby (unit, x + index1, z)) // East
 					return true; 
-				if (IsEmptyNearby (unit, x, z - index1)) // South
+				if (IsEnemyNearby (unit, x, z - index1)) // South
 					return true; 
-				if (IsEmptyNearby (unit, x - index1, z)) // West
+				if (IsEnemyNearby (unit, x - index1, z)) // West
 					return true; 
 			}
 		}
 		return false;
 	}
 
-	private bool IsEmptyNearby(Unit unit, int x, int z) {
+	/// <summary>
+	/// Determines whether an enemy is nearby the unit.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is enemy nearby the specified unit x z; otherwise, <c>false</c>.</returns>
+	/// <param name="unit">Unit.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	private bool IsEnemyNearby(Unit unit, int x, int z) {
+		
+		// Don't go out of boundary
+		if (!TileMapUtil.IsInsideTileMapBoundary (_tileMap.GetTileMapData (), x, z))
+			return false;
+		
 		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt (x, z);
 		Unit targetUnit = tileData.Unit;
 
