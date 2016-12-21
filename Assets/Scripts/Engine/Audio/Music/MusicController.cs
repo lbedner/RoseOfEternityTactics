@@ -26,7 +26,6 @@ public class MusicController : MonoBehaviour {
 	/// <param name="IsTransitionCalm">Determines what type of track to transition to.</param>
 	/// </summary>
 	public void TransitionMusic(bool isTransitionCalm) {
-		print ("MusicController.TransitionMusic()");
 
 		// Bail out if there is nothing to transition to or already on that type of music
 		if (musicFire == null  || (isTransitionCalm && isMusicCalm) || (!isTransitionCalm && !isMusicCalm))

@@ -68,7 +68,6 @@ public class CameraController : MonoBehaviour {
 	/// <returns>The to position.</returns>
 	/// <param name="endingPosition">Ending position.</param>
 	public IEnumerator MoveToPosition(Vector3 endingPosition) {
-		print ("CameraController.MoveToPosition()");
 		IsMoving = true;
 		float elapsedTime = 0.0f;
 
@@ -77,7 +76,6 @@ public class CameraController : MonoBehaviour {
 
 		float distance = Vector3.Distance (startingPosition, endingPosition);
 		float timeToMove = distance * 0.0078125f;
-		print (timeToMove);
 
 		while (elapsedTime < timeToMove) {
 			transform.position = Vector3.Lerp (startingPosition, endingPosition, (elapsedTime / timeToMove));

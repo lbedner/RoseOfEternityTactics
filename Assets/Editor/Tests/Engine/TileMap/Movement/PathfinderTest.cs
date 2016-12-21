@@ -38,7 +38,7 @@ public class PathfinderTest {
 		_invalidPathfinder.GeneratePath (0, 0, 0, 0);
 
 		_validIgnoreUnWalkablePathfinder = new Pathfinder (_tileMapData, _nodeGrapth);
-		_validIgnoreUnWalkablePathfinder.GeneratePath (3, 4, 7, 4);
+		_validIgnoreUnWalkablePathfinder.GeneratePath (new Vector3(3, 0, 4), new Vector3(7, 0, 4));
 	}
 
 	[Test]

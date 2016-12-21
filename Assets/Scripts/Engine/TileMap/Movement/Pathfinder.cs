@@ -21,6 +21,16 @@ public class Pathfinder {
 	/// Generates the path.
 	/// </summary>
 	/// <returns>The path.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="target">Target.</param>
+	public List<Node> GeneratePath(Vector3 source, Vector3 target) {
+		return GeneratePath ((int)source.x, (int)source.z, (int)target.x, (int)target.z);
+	}
+
+	/// <summary>
+	/// Generates the path.
+	/// </summary>
+	/// <returns>The path.</returns>
 	/// <param name="source_x">Source x.</param>
 	/// <param name="source_z">Source z.</param>
 	/// <param name="target_x">Target x.</param>
@@ -118,6 +128,15 @@ public class Pathfinder {
 		if (_generatedPath == null || _generatedPath.Count <= 0)
 			return TileMapUtil.GetInvalidTile ();
 		return new Vector3 (_generatedPath[index].x, 0, _generatedPath[index].z);
+	}
+
+	/// <summary>
+	/// Removes the generated path at index.
+	/// </summary>
+	/// <param name="index">Index.</param>
+	public void RemoveGeneratedPathAt(int index) {
+		if (_generatedPath != null && _generatedPath.Count > 0)
+			_generatedPath.RemoveAt(index);
 	}
 
 	/// <summary>

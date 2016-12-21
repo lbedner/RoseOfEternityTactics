@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class TileMapMouse : MonoBehaviour {
 
 	public enum GameState {
+		INITIALIZE,
 		INITIALIZE_TURN,		
 		PLAYER_TURN,
 		PLAYER_MOVE_SELECTION,
@@ -49,14 +50,15 @@ public class TileMapMouse : MonoBehaviour {
 	private MusicController _musicController;
 
 	private TileHighlighter _tileHighlighter;
+	private TileDiscoverer _tileDiscoverer;
 
 	void Start() {
+		print ("TileMapMouse.Start()");
 		_tileMap = GetComponent<TileMap>();
 		_gameManager = GameManager.Instance;
-		_gameState = GameState.INITIALIZE_TURN;
 		_musicController = _gameManager.GetMusicController ();
 		_musicController.Initialize ();
-		_tileHighlighter = new TileHighlighter (_tileMap, movementHighlightCube);
+		_gameState = GameState.INITIALIZE;
 	}
 
 	public void TransitionGameState(GameState newState) {
@@ -68,10 +70,16 @@ public class TileMapMouse : MonoBehaviour {
 
 		switch (_gameState) {
 
+		case GameState.INITIALIZE:
+			print ("TileMapMouse.GameState.INITIALIZE");
+			Initialize ();
+			TransitionGameState (GameState.INITIALIZE_TURN);
+			break;			
+
 		case GameState.INITIALIZE_TURN:
 			ShowCursor (false);
 			Unit unit = _gameManager.GetTurnOrderController ().GetNextUp ();
-			Debug.Log (string.Format ("Initialzie Turn: {0}", unit));
+			//Debug.Log (string.Format ("Initialzie Turn: {0}", unit));
 			StartCoroutine (_gameManager.GetCameraController ().MoveToPosition (unit.transform.position));
 			HighlightCharacter (unit);
 
@@ -98,13 +106,7 @@ public class TileMapMouse : MonoBehaviour {
 		case GameState.PLAYER_MOVE_SELECTION:
 			HandleMovementSelection ();
 			if ((Input.GetMouseButtonDown (0))) {
-				_pathfinder = new Pathfinder (_tileMap.GetTileMapData(), _tileMap.GetGraph().GetGraph());
-				_pathfinder.GeneratePath(
-					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).x,
-					(int) TileMapUtil.WorldCenteredToTileMap(_selectedCharacter.transform.position, _tileMap.tileSize).z,
-					(int) _currentTileCoord.x,
-					(int) _currentTileCoord.z
-				);
+				_pathfinder.GeneratePath(_selectedCharacter.Tile, _currentTileCoord);
 				/*
 				foreach (var node in _pathfinder.GetGeneratedPath())
 					Debug.Log(node);
@@ -146,6 +148,7 @@ public class TileMapMouse : MonoBehaviour {
 		// CPU starts their turn
 		case GameState.CPU_TURN:
 			if (!_gameManager.GetCameraController ().IsMoving) {
+
 				Unit cpu = _gameManager.GetTurnOrderController ().GetNextUp ();
 				_selectedCharacter = cpu;
 
@@ -158,9 +161,16 @@ public class TileMapMouse : MonoBehaviour {
 				cpu.ActivateCharacterSheet ();
 
 				// Show movement tiles
-				_tileHighlighter.HighlightTiles(cpu, _playerCurrentTileCoordinate);
+				_tileHighlighter.HighlightTiles(cpu, _playerCurrentTileCoordinate, false);
 
+				// Get AI Action
+				// TODO: Refactor the shit out of all of this. I'm so not proud of this.
+				AI ai = new ZoneAI(_selectedCharacter, _tileMap.GetTileMapData(), _tileDiscoverer, _pathfinder);
+				Action action = ai.GetAction ();
+
+				print (string.Format ("Start CPU Turn: {0}", _selectedCharacter));
 				StartCoroutine (MoveCPU ());
+				//StartCoroutine(MoveToTiles());
 				TransitionGameState (GameState.CPU_MOVE_STOP);
 			}
 			break;
@@ -175,6 +185,7 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Turn is over for the character
 		case GameState.TURN_OVER:
+			_tileHighlighter.RemoveHighlightedTiles();
 			_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
 			_selectedCharacter = null;
 			if (IsEnemyNearby (_gameManager.GetTurnOrderController().GetAllUnits()))
@@ -192,6 +203,15 @@ public class TileMapMouse : MonoBehaviour {
 	/// <returns>The tile highlighter.</returns>
 	public TileHighlighter GetTileHighlighter() {
 		return _tileHighlighter;
+	}
+
+	/// <summary>
+	/// Initialize this instance.
+	/// </summary>
+	private void Initialize() {
+		_tileHighlighter = new TileHighlighter (_tileMap, movementHighlightCube);
+		_tileDiscoverer = new TileDiscoverer (_tileMap.GetTileMapData ());
+		_pathfinder = new Pathfinder (_tileMap.GetTileMapData(), _tileMap.GetGraph().GetGraph());
 	}
 
 	private void HighlightCharacter(Unit character) {
@@ -316,9 +336,9 @@ public class TileMapMouse : MonoBehaviour {
 	}
 
 	private IEnumerator MoveCPU() {
-		_playerMoveFinished = false;
 		yield return new WaitForSeconds (1.0f);
-		_playerMoveFinished = true;
+		StartCoroutine(MoveToTiles());
+		TransitionGameState (GameState.CPU_MOVE_STOP);
 	}
 
 	private IEnumerator MoveToTiles() {
@@ -330,9 +350,6 @@ public class TileMapMouse : MonoBehaviour {
 			Vector3 startingPosition = TileMapUtil.TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.tileSize);
 			Vector3 endingPosition = TileMapUtil.TileMapToWorldCentered (newTile, _tileMap.tileSize);
 
-			print (_selectedCharacter);
-			print (startingPosition);
-			print(endingPosition);
 			yield return StartCoroutine(MoveToTile(_selectedCharacter, startingPosition, endingPosition));
 			index++;
 			yield return null;
@@ -345,6 +362,7 @@ public class TileMapMouse : MonoBehaviour {
 			TileMapData tileMapData = _tileMap.GetTileMapData ();
 			TileData oldTileData = tileMapData.GetTileDataAt (oldTile);
 			oldTileData.SwapUnits (tileMapData.GetTileDataAt (newTile));
+			_selectedCharacter.Tile = newTile;
 		}
 		yield break;
 	}
@@ -440,10 +458,8 @@ public class TileMapMouse : MonoBehaviour {
 		Unit targetUnit = tileData.Unit;
 
 		if (targetUnit != null) {
-			if (targetUnit.IsPlayerControlled != unit.IsPlayerControlled) {
-				print (string.Format ("{0} - {1}", unit, targetUnit));
+			if (targetUnit.IsPlayerControlled != unit.IsPlayerControlled)
 				return true;
-			}
 		}
 		return false;
 	}

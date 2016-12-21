@@ -177,19 +177,20 @@ public class TileMap : MonoBehaviour {
 	private void InitPlayer() {
 		print ("TileMap.InitPlayer()");
 
-		InitUnit (elyse, 8, 7);
-		InitUnit (orelle, 10, 8);
-		InitUnit (aramus, 10, 7);
-		InitUnit (clopon, 7, 8);
 		InitUnit (goblin1, 18, 9);
 		InitUnit (goblin2, 17, 17);
 		InitUnit (goblin3, 22, 21);
 		InitUnit (goblin4, 28, 19);
+		InitUnit (elyse, 8, 7);
+		InitUnit (orelle, 10, 8);
+		InitUnit (aramus, 10, 7);
+		InitUnit (clopon, 7, 8);
 	}
 
 	private void InitUnit(Unit unit, int x, int z) {
 		unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
 		_tileMapData.GetTileDataAt (x, z).Unit = unit;
+		unit.Tile = new Vector3 (x, 0, z);
 		GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
 	}
 }

@@ -18,6 +18,8 @@ public class TileHighlighter {
 
 	private TileMap _tileMap;
 
+	private TileDiscoverer _tileDiscoverer;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TileHighlighter"/>class.
 	/// </summary>
@@ -26,6 +28,7 @@ public class TileHighlighter {
 	public TileHighlighter(TileMap tileMap, Transform highlightCube) {
 		_tileMap = tileMap;
 		_highlightCube = highlightCube;
+		_tileDiscoverer = new TileDiscoverer (_tileMap.GetTileMapData());
 	}
 
 	/// <summary>
@@ -54,10 +57,11 @@ public class TileHighlighter {
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	/// <param name="unitCurrentTileCoordinate">Unit current tile coordinate.</param>
-	public void HighlightTiles(Unit unit, Vector3 unitCurrentTileCoordinate) {
+	public void HighlightTiles(Unit unit, Vector3 unitCurrentTileCoordinate, bool showAttackTiles = true) {
 		RemoveHighlightedTiles();
 		HighlightMovementTiles (unit, unitCurrentTileCoordinate);
-		HighlightAttackTiles (unit);
+		if (showAttackTiles)
+			HighlightAttackTiles (unit);
 	}
 
 	/// <summary>
@@ -113,24 +117,9 @@ public class TileHighlighter {
 	/// <param name="tileColor">Tile color.</param>
 	/// <param name="highlightType">Highlight type.</param>
 	private void HighlightTilesInRange(Unit unit, float x, float z, int range, Color tileColor, HighlightType highlightType) {
-
-		// Outer loop handles the straight lines going N, E, S, W
-		for (int index1 = 1; index1 <= range; index1++) {
-			HighlightTile (unit, x, z + index1, tileColor, highlightType);
-			HighlightTile (unit, x + index1, z, tileColor, highlightType);
-			HighlightTile (unit, x, z - index1, tileColor, highlightType);
-			HighlightTile (unit, x - index1, z, tileColor, highlightType);
-
-			if (range > 1) {
-				// Inner loop handles all the other tiles NE, SE, NW, SW
-				for (int index2 = 1; index2 <= range - index1; index2++) {
-					HighlightTile (unit, x + index1, z + index2, tileColor, highlightType); // North East
-					HighlightTile (unit, x + index1, z - index2, tileColor, highlightType); // South East
-					HighlightTile (unit, x - index1, z + index2, tileColor, highlightType); // North West
-					HighlightTile (unit, x - index1, z - index2, tileColor, highlightType); // South West
-				}
-			}
-		}
+		Dictionary<Vector3, Object> discoveredTiles = _tileDiscoverer.DiscoverTilesInRange ((int) x, (int) z, range);
+		foreach (Vector3 tile in discoveredTiles.Keys)
+			HighlightTile (unit, tile.x, tile.z, tileColor, highlightType);
 	}
 
 	/// <summary>
@@ -141,10 +130,6 @@ public class TileHighlighter {
 	/// <param name="movementTileColor">Movement tile color.</param>
 	/// <param name="isMovement">Determines if this is a tile you can move to.</param>
 	private void HighlightTile(Unit unit, float x, float z, Color movementTileColor, HighlightType highlightType) {
-
-		// Don't go out of boundary
-		if (!TileMapUtil.IsInsideTileMapBoundary (_tileMap.GetTileMapData (), (int) x, (int) z))
-			return;
 
 		// Don't try to overwrite an existing highlighted area
 		Vector3 key = new Vector3(x, 0, z);
@@ -163,7 +148,7 @@ public class TileHighlighter {
 		}
 		// Don't highlight tiles occupied by allies for attacks
 		else if (highlightType == HighlightType.ATTACK) {
-			if (tileData.Unit && (unit.IsPlayerControlled == tileData.Unit.IsPlayerControlled))
+			if (tileData.Unit && unit.IsFriendlyUnit(tileData.Unit))
 				return;
 		}
 

@@ -38,9 +38,20 @@ public abstract class Unit : MonoBehaviour {
 	public int CurrentHitPoints { get; set; }
 	public int CurrentAbilityPoints { get; set; }
 
+	public Vector3 Tile { get; set; }
+
 	// Implement these in children classes
 	public abstract Color MovementTileColor { get; }
 	public abstract bool IsPlayerControlled { get; }
+
+	/// <summary>
+	/// Determines whether this instance is friendly to the specified unit.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is friendly to the specified unit; otherwise, <c>false</c>.</returns>
+	/// <param name="unit">Unit.</param>
+	public bool IsFriendlyUnit(Unit unit) {
+		return IsPlayerControlled == unit.IsPlayerControlled;
+	}
 
 	public void ActivateCharacterSheet() {
 		characterSheetController.Activate(this);
