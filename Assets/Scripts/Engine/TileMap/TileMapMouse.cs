@@ -19,6 +19,7 @@ public class TileMapMouse : MonoBehaviour {
 		CPU_MOVE_STOP,
 		COMBAT_MENU,
 		TURN_OVER,
+		UNDO,
 	}
 
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
@@ -27,6 +28,7 @@ public class TileMapMouse : MonoBehaviour {
 	public Transform movementHighlightCube;
 
 	public TerrainDetailsController terrainDetailsController;
+	public ActionController actionController;
 
 	// Audio related things
 	public AudioSource cursorMoveSource;
@@ -43,7 +45,10 @@ public class TileMapMouse : MonoBehaviour {
 
 	private GameState _gameState;
 
+	private Action _action;
+
 	private bool _playerMoveFinished = false;
+	private bool _unitAnimationPlaying = false;
 
 	private GameManager _gameManager;
 
@@ -52,6 +57,10 @@ public class TileMapMouse : MonoBehaviour {
 	private TileHighlighter _tileHighlighter;
 	private TileDiscoverer _tileDiscoverer;
 
+	private GameStateAction _gameStateAction;
+	private GameStateOriginator _gameStateOriginator;
+	private GameStateCaretaker _gameStateCaretaker;
+
 	void Start() {
 		print ("TileMapMouse.Start()");
 		_tileMap = GetComponent<TileMap>();
@@ -59,11 +68,22 @@ public class TileMapMouse : MonoBehaviour {
 		_musicController = _gameManager.GetMusicController ();
 		_musicController.Initialize ();
 		_gameState = GameState.INITIALIZE;
+		_gameStateAction = new GameStateAction ();
+		_gameStateOriginator = new GameStateOriginator ();
+		_gameStateCaretaker = new GameStateCaretaker ();
 	}
 
 	public void TransitionGameState(GameState newState) {
 		_gameState = newState;
-	}		
+	}
+
+	public void TransitionGameStateToTurnOver() {
+		TransitionGameState (GameState.TURN_OVER);
+	}
+
+	public void TransitionGameStateToShowAttackIndicators() {
+		TransitionGameState (GameState.PLAYER_SHOW_ATTACK_INDICATORS);
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -71,7 +91,6 @@ public class TileMapMouse : MonoBehaviour {
 		switch (_gameState) {
 
 		case GameState.INITIALIZE:
-			print ("TileMapMouse.GameState.INITIALIZE");
 			Initialize ();
 			TransitionGameState (GameState.INITIALIZE_TURN);
 			break;			
@@ -97,8 +116,19 @@ public class TileMapMouse : MonoBehaviour {
 				HandleTerrainMouseOver (ray);
 				HandleCharacterMouseOver (ray);
 
-				if (_selectedCharacter != null && _gameManager.GetTurnOrderController ().GetNextUp () == _selectedCharacter)
+				if (_selectedCharacter != null && _gameManager.GetTurnOrderController ().GetNextUp () == _selectedCharacter) {
+					
+					//_gameStateAction.GameState = GameState.PLAYER_TURN;
+					//_gameStateAction.GameState = GameState.PLAYER_MOVE_SELECTION;
+					//_gameStateAction.ShowCombatMenu = false;
+					//_gameStateAction.UnitTile = _selectedCharacter.Tile;
+					//_gameStateAction.ShowCursor = true;
+
+					//_gameStateOriginator.GameStateAction = _gameStateAction;
+					//_gameStateCaretaker.Add (_gameStateOriginator.StoreInMemento ());
+
 					_gameState = GameState.PLAYER_MOVE_SELECTION;
+				}
 			}
 			break;
 
@@ -129,20 +159,59 @@ public class TileMapMouse : MonoBehaviour {
 			if (_playerMoveFinished) {
 				_playerMoveFinished = false;
 				_playerCurrentTileCoordinate = _currentTileCoord;
-				TransitionGameState (GameState.TURN_OVER);
+				TransitionGameState (GameState.COMBAT_MENU);
+				ShowCursor (true);
 			}
-			break;
-
-		// Indicate where player can attack
-		case GameState.PLAYER_SHOW_ATTACK_INDICATORS:
-			break;
-
-		// Select who to attack
-		case GameState.PLAYER_ATTACK_SELECTION:
 			break;
 
 		// Player can make choices from combat menu
 		case GameState.COMBAT_MENU:
+			/*
+			if (Input.GetKey (KeyCode.Escape)) {
+				print ("COMABT_MENU.ESC");
+				//_selectedCharacter.DeactivateCombatMenu ();
+				TransitionGameState (GameState.UNDO);
+			}*/
+			_selectedCharacter.ActivateCombatMenu ();
+			break;
+
+		case GameState.UNDO:
+			GameStateMemento memento = _gameStateCaretaker.Get (0);
+			GameStateAction gameStateAction = _gameStateOriginator.RestoreFromMemenrto (memento);
+
+			if (_selectedCharacter.Tile != gameStateAction.UnitTile) {
+				_selectedCharacter.transform.position = TileMapUtil.TileMapToWorldCentered (gameStateAction.UnitTile, _tileMap.tileSize);
+				_selectedCharacter.Tile = gameStateAction.UnitTile;
+				HighlightCharacter (_selectedCharacter);
+			}
+			if (gameStateAction.ShowCombatMenu)
+				_selectedCharacter.ActivateCombatMenu ();
+			else
+				_selectedCharacter.DeactivateCombatMenu ();
+			ShowCursor (gameStateAction.ShowCursor);
+			TransitionGameState (gameStateAction.GameState);
+			break;
+
+		// Indicate where player can attack
+		case GameState.PLAYER_SHOW_ATTACK_INDICATORS:
+			_selectedCharacter.DeactivateCombatMenu ();
+			_tileHighlighter.HighlightAttackTiles (_selectedCharacter);
+			HandleActionSelection ();
+			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit) {
+				
+				Unit defender = _tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit;
+				/*
+				Combat combat = new Combat (_selectedCharacter, defender);
+				combat.Begin ();
+				StartCoroutine(PlayAttackAnimations (_selectedCharacter, defender));
+				TransitionGameState (GameState.TURN_OVER);
+				*/
+				StartCoroutine (PerformAction (_selectedCharacter, defender));
+			}
+			break;
+
+		// Select who to attack
+		case GameState.PLAYER_ATTACK_SELECTION:
 			break;
 
 		// CPU starts their turn
@@ -165,12 +234,12 @@ public class TileMapMouse : MonoBehaviour {
 
 				// Get AI Action
 				// TODO: Refactor the shit out of all of this. I'm so not proud of this.
-				AI ai = new ZoneAI(_selectedCharacter, _tileMap.GetTileMapData(), _tileDiscoverer, _pathfinder);
+				AI ai = new KamiKazeAI(_selectedCharacter, _tileMap.GetTileMapData(), _tileDiscoverer, _pathfinder);
 				Action action = ai.GetAction ();
+				_action = action;
 
 				print (string.Format ("Start CPU Turn: {0}", _selectedCharacter));
 				StartCoroutine (MoveCPU ());
-				//StartCoroutine(MoveToTiles());
 				TransitionGameState (GameState.CPU_MOVE_STOP);
 			}
 			break;
@@ -179,20 +248,36 @@ public class TileMapMouse : MonoBehaviour {
 		case GameState.CPU_MOVE_STOP:
 			if (_playerMoveFinished) {
 				_playerMoveFinished = false;
-				TransitionGameState (GameState.TURN_OVER);
+
+				// Perform attack if close enough
+				print (_action);
+				Unit defender = _action.Target;
+				if (defender) {
+					//Combat combat = new Combat (_selectedCharacter, defender);
+					//combat.Begin ();
+					StartCoroutine (PerformAction (_selectedCharacter, defender));
+					//StartCoroutine (PlayAttackAnimations (_selectedCharacter, defender));
+				}
+				else
+					TransitionGameState (GameState.TURN_OVER);
 			}
 			break;
 
 		// Turn is over for the character
 		case GameState.TURN_OVER:
-			_tileHighlighter.RemoveHighlightedTiles();
-			_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
-			_selectedCharacter = null;
-			if (IsEnemyNearby (_gameManager.GetTurnOrderController().GetAllUnits()))
-				_musicController.TransitionMusic (false);
-			else
-				_musicController.TransitionMusic (true);
-			TransitionGameState(GameState.INITIALIZE_TURN);
+			print ("GameState.TURN_OVER");
+			print (_unitAnimationPlaying);
+			if (!_unitAnimationPlaying) {
+				_selectedCharacter.DeactivateCombatMenu ();
+				_tileHighlighter.RemoveHighlightedTiles ();
+				_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
+				_selectedCharacter = null;
+				if (IsEnemyNearby (_gameManager.GetTurnOrderController ().GetAllUnits ()))
+					_musicController.TransitionMusic (false);
+				else
+					_musicController.TransitionMusic (true);
+				TransitionGameState (GameState.INITIALIZE_TURN);
+			}
 			break;
 		}
 	}
@@ -252,6 +337,31 @@ public class TileMapMouse : MonoBehaviour {
 
 				// Don't allow movement on a non-highlighted or occupied tile
 				if (_tileHighlighter.IsHighlightedMovementTile(tileMapPoint) && !_tileMap.GetTileMapData().GetTileDataAt(tileMapPoint).Unit) {
+					_currentTileCoord.x = tileMapPoint.x;
+					_currentTileCoord.z = tileMapPoint.z;
+
+					cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
+
+					selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
+					ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
+				}
+			}
+		}
+	}
+
+	private void HandleActionSelection() {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hitInfo;
+		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
+
+			// Get hit point in tile map coordinates
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
+
+			// Don't run if still on the same tile
+			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
+
+				// Don't allow movement on a non-highlighted or occupied tile
+				if (_tileHighlighter.IsHighlightedAttackTile(tileMapPoint)) {
 					_currentTileCoord.x = tileMapPoint.x;
 					_currentTileCoord.z = tileMapPoint.z;
 
@@ -335,12 +445,105 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator MoveCPU() {
-		yield return new WaitForSeconds (1.0f);
-		StartCoroutine(MoveToTiles());
-		TransitionGameState (GameState.CPU_MOVE_STOP);
+	/// <summary>
+	/// Performs the action of the attacker against the defender.
+	/// </summary>
+	/// <returns>The action.</returns>
+	/// <param name="attacker">Attacker.</param>
+	/// <param name="defender">Defender.</param>
+	private IEnumerator PerformAction(Unit attacker, Unit defender) {
+
+		actionController.Activate (attacker.weaponName);
+		yield return new WaitForSeconds (0.5f);
+		new Combat (_selectedCharacter, defender).Begin ();
+		StartCoroutine (PlayAttackAnimations (attacker, defender));
+		yield return new WaitForSeconds (0.5f);
+		TransitionGameState (GameState.TURN_OVER);
+		yield return null;
 	}
 
+	/// <summary>
+	/// Plays the attack animations.
+	/// </summary>
+	/// <returns>The attack animations.</returns>
+	/// <param name="attacker">Attacker.</param>
+	/// <param name="defender">Defender.</param>
+	private IEnumerator PlayAttackAnimations(Unit attacker, Unit defender) {
+
+		_unitAnimationPlaying = true;
+
+		Vector3 startingPosition = attacker.Tile;
+
+		//determine which way to swing, dependent on the direction the enemu is
+		float endingX = startingPosition.x;
+		float endingY = startingPosition.y;
+		float endingZ = startingPosition.z;
+
+		Unit.TileDirection facing = attacker.GetFacing (defender);
+		switch (facing) {
+		case Unit.TileDirection.NORTH:
+			endingZ += 0.5f;
+			break;
+		case Unit.TileDirection.EAST:
+			endingX += 0.5f;
+			break;
+		case Unit.TileDirection.SOUTH:
+			endingZ -= 0.5f;
+			break;
+		case Unit.TileDirection.WEST:
+			endingX -= 0.5f;
+			break;
+		}
+
+		Vector3 endingPosition = new Vector3 (endingX, endingY, endingZ);
+
+		print (startingPosition);
+		print (endingPosition);
+
+		yield return StartCoroutine (PlayAttackAnimation (attacker, startingPosition, endingPosition));
+		yield return StartCoroutine (PlayAttackAnimation (attacker, endingPosition, startingPosition));
+
+		actionController.Deactivate ();
+
+		_unitAnimationPlaying = false;
+
+		yield return null;
+	}
+
+	/// <summary>
+	/// Plays an attack animation.
+	/// </summary>
+	/// <returns>The attack animation.</returns>
+	/// <param name="unit">Unit.</param>
+	/// <param name="startingPosition">Starting position.</param>
+	/// <param name="endingPosition">Ending position.</param>
+	private IEnumerator PlayAttackAnimation(Unit unit, Vector3 startingPosition, Vector3 endingPosition) {
+		float elapsedTime = 0.0f;
+		float timeToMove = 0.25f;
+		while (elapsedTime < timeToMove) {
+			unit.transform.position = Vector3.Lerp (
+				TileMapUtil.TileMapToWorldCentered(startingPosition, _tileMap.tileSize),
+				TileMapUtil.TileMapToWorldCentered(endingPosition, _tileMap.tileSize),
+				elapsedTime / timeToMove
+			);
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
+	}
+
+	/// <summary>
+	/// Moves the CPU.
+	/// </summary>
+	/// <returns>The CPU.</returns>
+	private IEnumerator MoveCPU() {
+		StartCoroutine(MoveToTiles());
+		TransitionGameState (GameState.CPU_MOVE_STOP);
+		yield return null;
+	}
+
+	/// <summary>
+	/// Moves a unit across x tiles.
+	/// </summary>
 	private IEnumerator MoveToTiles() {
 		Vector3 oldTile = _pathfinder.GetGeneratedPathAt(0);
 		Vector3 newTile = Vector3.zero;
@@ -367,6 +570,13 @@ public class TileMapMouse : MonoBehaviour {
 		yield break;
 	}
 
+	/// <summary>
+	/// Moves a unit to a tile.
+	/// </summary>
+	/// <returns>The to tile.</returns>
+	/// <param name="character">Character.</param>
+	/// <param name="startingPosition">Starting position.</param>
+	/// <param name="endingPosition">Ending position.</param>
 	private IEnumerator MoveToTile(Unit character, Vector3 startingPosition, Vector3 endingPosition) {
 		float elapsedTime = 0.0f;
 		float timeToMove = 0.125f;
@@ -397,6 +607,10 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Determines if the mouse cursor should be shown.
+	/// </summary>
+	/// <param name="showCursor">If set to <c>true</c> show cursor.</param>
 	private void ShowCursor(bool showCursor) {
 		if (showCursor) {
 			Cursor.lockState = CursorLockMode.None;
@@ -408,6 +622,11 @@ public class TileMapMouse : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Determines whether there are nearby enemies.
+	/// </summary>
+	/// <returns><c>true</c> if there are nearby enemies; otherwise, <c>false</c>.</returns>
+	/// <param name="units">Units.</param>
 	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
 			int range = unit.movement + unit.weaponRange;
@@ -462,5 +681,45 @@ public class TileMapMouse : MonoBehaviour {
 				return true;
 		}
 		return false;
+	}
+
+	public class GameStateAction {
+		public GameState GameState { get; set; }
+		public Vector3 UnitTile { get; set; }
+		public bool ShowCombatMenu { get; set; }
+		public bool ShowCursor { get; set; }
+	}		
+		
+	public class GameStateMemento {
+		public GameStateAction GameStateAction { get; set; }
+
+		public GameStateMemento(GameStateAction gameStateAction) {
+			GameStateAction = gameStateAction;
+		}
+	}
+
+	public class GameStateOriginator {
+		public GameStateAction GameStateAction { get; set; }
+
+		public GameStateMemento StoreInMemento() {
+			return new GameStateMemento (GameStateAction);
+		}
+
+		public GameStateAction RestoreFromMemenrto(GameStateMemento memento) {
+			GameStateAction = memento.GameStateAction;
+			return GameStateAction;
+		}
+	}
+
+	public class GameStateCaretaker {
+		private List<GameStateMemento> gameStates = new List<GameStateMemento> ();
+
+		public void Add(GameStateMemento memento) {
+			gameStates.Add (memento);
+		}
+
+		public GameStateMemento Get(int index) {
+			return gameStates [index];
+		}
 	}
 }

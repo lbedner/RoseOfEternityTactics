@@ -4,6 +4,16 @@ using System.Collections;
 
 public abstract class Unit : MonoBehaviour {
 
+	/// <summary>
+	/// Tile direction.
+	/// </summary>
+	public enum TileDirection {
+		NORTH,
+		EAST,
+		SOUTH,
+		WEST,
+	}
+
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
 
 	public string firstName = "Unknown";
@@ -17,7 +27,11 @@ public abstract class Unit : MonoBehaviour {
 	public int speed = 3;
 	public int weaponRange = 1;
 
+	public string weaponName;
+
 	public Sprite portrait;
+
+	public Image healthbar;
 
 	public Color color;
 
@@ -51,6 +65,40 @@ public abstract class Unit : MonoBehaviour {
 	/// <param name="unit">Unit.</param>
 	public bool IsFriendlyUnit(Unit unit) {
 		return IsPlayerControlled == unit.IsPlayerControlled;
+	}
+
+	/// <summary>
+	/// Updates the healthbar.
+	/// </summary>
+	public void UpdateHealthbar() {
+
+		// Get health % and clamp it between 0 and 1 so the health bar image doesn't go haywire
+		float healthPercent = Mathf.Clamp ((float)CurrentHitPoints / (float)totalHitPoints, 0.0f, 1.0f);
+
+		// Update the health bar scale in order to show it go up/down
+		Vector3 currentScale = healthbar.rectTransform.localScale;
+		healthbar.rectTransform.localScale = new Vector3 (healthPercent, currentScale.y, currentScale.z);
+	}
+
+	/// <summary>
+	/// Gets facing direction in relation to the passed in unit.
+	/// </summary>
+	/// <returns>The facing.</returns>
+	/// <param name="unit">Unit.</param>
+	public TileDirection GetFacing(Unit unit) {
+		TileDirection facing = TileDirection.NORTH;
+		Vector3 targetTile = unit.Tile;
+
+		if (targetTile.z > Tile.z)
+			facing = TileDirection.NORTH;
+		else if (targetTile.x > Tile.x)
+			facing = TileDirection.EAST;
+		else if (targetTile.z < Tile.z)
+			facing = TileDirection.SOUTH;
+		else if (targetTile.x < Tile.x)
+			facing = TileDirection.WEST;
+
+		return facing;
 	}
 
 	public void ActivateCharacterSheet() {

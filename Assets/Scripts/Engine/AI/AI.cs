@@ -41,9 +41,12 @@ public abstract class AI {
 	/// <returns>The action.</returns>
 	public Action GetAction() {
 		Action action = new Action ();
-		action.Target = GetTarget();
-		action.TargetTile = GetTargetTile (action.Target);
+
+		Unit target = GetTarget();
+		action.TargetTile = GetTargetTile (target);
 		action.Pathfinder = GetPathfinder();
+		if (IsTargetWithinRange (target))
+			action.Target = target;
 		return action;
 	}
 
@@ -99,5 +102,15 @@ public abstract class AI {
 			else
 				break;						
 		}
+	}
+
+	/// <summary>
+	/// Determines whether the target is within range of the movement and ability.
+	/// </summary>
+	/// <returns><c>true</c> if the target is within range of the movement and ability; otherwise, <c>false</c>.</returns>
+	/// <param name="target">Target.</param>
+	private bool IsTargetWithinRange(Unit target) {
+		Dictionary<Vector3, Object> tilesInRange = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, _self.movement + _self.weaponRange);
+		return tilesInRange.ContainsKey (target.Tile);
 	}
 }

@@ -6,12 +6,14 @@ public class TileHighlighter {
 	// Different types of hightlight types
 	private enum HighlightType {
 		MOVEMENT,
+		MOVEMENT_ATTACK,
 		ATTACK,
 	}
 
 	// Holds the current highlighted tiles
 	private Dictionary<Vector3, GameObject> _movementTiles = new Dictionary<Vector3, GameObject>();
-	private Dictionary<Vector3, GameObject> _attackTiles   = new Dictionary<Vector3, GameObject>();
+	private Dictionary<Vector3, GameObject> _movementAttackTiles = new Dictionary<Vector3, GameObject>();
+	private Dictionary<Vector3, GameObject> _attackTiles = new Dictionary<Vector3, GameObject>();
 
 	// Used to show "highlighting" of a tile
 	private Transform _highlightCube;
@@ -38,18 +40,30 @@ public class TileHighlighter {
 		foreach (var go in _movementTiles.Values)
 			GameObject.Destroy (go);
 		_movementTiles.Clear ();
+		foreach (var go in _movementAttackTiles.Values)
+			GameObject.Destroy (go);
+		_movementAttackTiles.Clear ();
 		foreach (var go in _attackTiles.Values)
 			GameObject.Destroy (go);
 		_attackTiles.Clear ();
 	}
 
 	/// <summary>
-	/// Determines whether the tile is highlighted or not.
+	/// Determines whether the movement tile is highlighted or not.
 	/// </summary>
-	/// <returns><c>true</c> if the tile is highlighted; otherwise, <c>false</c>.</returns>
+	/// <returns><c>true</c> if the movement tile is highlighted; otherwise, <c>false</c>.</returns>
 	/// <param name="tileCoordinates">Tile coordinates.</param>
 	public bool IsHighlightedMovementTile(Vector3 tileCoordinates) {
 		return _movementTiles.ContainsKey (tileCoordinates);
+	}
+
+	/// <summary>
+	/// Determines whether the attack tile is highlighted or not.
+	/// </summary>
+	/// <returns><c>true</c> if the attack tile is highlighted; otherwise, <c>false</c>.</returns>
+	/// <param name="tileCoordinates">Tile coordinates.</param>
+	public bool IsHighlightedAttackTile(Vector3 tileCoordinates) {
+		return _attackTiles.ContainsKey (tileCoordinates);
 	}
 
 	/// <summary>
@@ -57,11 +71,20 @@ public class TileHighlighter {
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	/// <param name="unitCurrentTileCoordinate">Unit current tile coordinate.</param>
-	public void HighlightTiles(Unit unit, Vector3 unitCurrentTileCoordinate, bool showAttackTiles = true) {
+	public void HighlightTiles(Unit unit, Vector3 unitCurrentTileCoordinate, bool showMovementAttackTiles = true) {
 		RemoveHighlightedTiles();
 		HighlightMovementTiles (unit, unitCurrentTileCoordinate);
-		if (showAttackTiles)
-			HighlightAttackTiles (unit);
+		if (showMovementAttackTiles)
+			HighlightMovementAttackTiles (unit);
+	}
+
+	/// <summary>
+	/// Highlights the attack tiles.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	public void HighlightAttackTiles(Unit unit) {
+		RemoveHighlightedTiles ();
+		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.weaponRange, unit.attackTileColor, HighlightType.ATTACK);
 	}
 
 	/// <summary>
@@ -89,10 +112,10 @@ public class TileHighlighter {
 	/// Highlights the attack tiles.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	private void HighlightAttackTiles(Unit unit) {
+	private void HighlightMovementAttackTiles(Unit unit) {
 	
 		Color tileColor = unit.attackTileColor;
-		HighlightType highlightType = HighlightType.ATTACK;
+		HighlightType highlightType = HighlightType.MOVEMENT_ATTACK;
 		int range = unit.weaponRange;
 
 		// Iterate over all starting tiles where the attack tiles will be highlighted from
@@ -133,7 +156,7 @@ public class TileHighlighter {
 
 		// Don't try to overwrite an existing highlighted area
 		Vector3 key = new Vector3(x, 0, z);
-		if (_attackTiles.ContainsKey (key) || _movementTiles.ContainsKey (key))
+		if (_movementAttackTiles.ContainsKey (key) || _movementTiles.ContainsKey (key))
 			return;
 
 		// Don't highlight orphaned tile if unit can't get to it
@@ -147,7 +170,7 @@ public class TileHighlighter {
 				return;
 		}
 		// Don't highlight tiles occupied by allies for attacks
-		else if (highlightType == HighlightType.ATTACK) {
+		else if (highlightType == HighlightType.MOVEMENT_ATTACK || highlightType == HighlightType.ATTACK) {
 			if (tileData.Unit && unit.IsFriendlyUnit(tileData.Unit))
 				return;
 		}
@@ -161,6 +184,9 @@ public class TileHighlighter {
 		switch (highlightType) {
 		case HighlightType.MOVEMENT:
 			_movementTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
+			break;
+		case HighlightType.MOVEMENT_ATTACK:
+			_movementAttackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
 			break;
 		case HighlightType.ATTACK:
 			_attackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
@@ -177,7 +203,7 @@ public class TileHighlighter {
 	private bool IsOrphanedTile(Vector3 tile, HighlightType highlightType) {
 
 		// Don't perform this check for attack tiles
-		if (highlightType == HighlightType.ATTACK)
+		if (highlightType == HighlightType.MOVEMENT_ATTACK || highlightType == HighlightType.ATTACK)
 			return false;
 
 		// If no highlighted tiles exist, this is the first one, so skip the check

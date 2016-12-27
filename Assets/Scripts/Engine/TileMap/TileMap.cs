@@ -177,14 +177,14 @@ public class TileMap : MonoBehaviour {
 	private void InitPlayer() {
 		print ("TileMap.InitPlayer()");
 
+		InitUnit (orelle, 10, 8);
+		InitUnit (aramus, 10, 7);
 		InitUnit (goblin1, 18, 9);
 		InitUnit (goblin2, 17, 17);
 		InitUnit (goblin3, 22, 21);
 		InitUnit (goblin4, 28, 19);
-		InitUnit (elyse, 8, 7);
-		InitUnit (orelle, 10, 8);
-		InitUnit (aramus, 10, 7);
-		InitUnit (clopon, 7, 8);
+		InitUnit (elyse, 9, 7);
+		InitUnit (clopon, 9, 8);
 	}
 
 	private void InitUnit(Unit unit, int x, int z) {

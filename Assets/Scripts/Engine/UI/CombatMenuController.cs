@@ -15,6 +15,12 @@ public class CombatMenuController : MonoBehaviour {
 	public Text uiItem;
 	public Text uiEndTurn;
 
+	public Button move;
+	public Button attack;
+	public Button ability;
+	public Button item;
+	public Button endTurn;
+
 	/// <summary>
 	/// Activate the combat menu.
 	/// </summary>
