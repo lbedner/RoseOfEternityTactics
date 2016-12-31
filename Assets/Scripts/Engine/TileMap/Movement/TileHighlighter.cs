@@ -34,7 +34,7 @@ public class TileHighlighter {
 	}
 
 	/// <summary>
-	/// Removes the movement tiles.
+	/// Removes the highlighted tiles.
 	/// </summary>
 	public void RemoveHighlightedTiles() {
 		foreach (var go in _movementTiles.Values)

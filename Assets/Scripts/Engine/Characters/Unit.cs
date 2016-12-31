@@ -40,13 +40,15 @@ public abstract class Unit : MonoBehaviour {
 	public CharacterSheetController characterSheetController;
 	public CombatMenuController combatMenuController;
 
+	private UnitAnimationController _unitAnimationController;
+
 	private bool isSelected = false;
 
 	// Use this for initialization
 	void Start () {
-		transform.Find("Capsule").gameObject.GetComponent<Renderer> ().material.color = color;
 		CurrentHitPoints = totalHitPoints;
 		CurrentAbilityPoints = totalAbilityPoints;
+		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
 	}
 
 	public int CurrentHitPoints { get; set; }
@@ -57,6 +59,14 @@ public abstract class Unit : MonoBehaviour {
 	// Implement these in children classes
 	public abstract Color MovementTileColor { get; }
 	public abstract bool IsPlayerControlled { get; }
+
+	/// <summary>
+	/// Gets the animation controller.
+	/// </summary>
+	/// <returns>The animation controller.</returns>
+	public UnitAnimationController GetAnimationController() {
+		return _unitAnimationController;
+	}
 
 	/// <summary>
 	/// Determines whether this instance is friendly to the specified unit.
@@ -86,19 +96,91 @@ public abstract class Unit : MonoBehaviour {
 	/// <returns>The facing.</returns>
 	/// <param name="unit">Unit.</param>
 	public TileDirection GetFacing(Unit unit) {
-		TileDirection facing = TileDirection.NORTH;
-		Vector3 targetTile = unit.Tile;
+		return GetFacing (unit.Tile);
+	}
 
-		if (targetTile.z > Tile.z)
+	/// <summary>
+	/// Gets facing direction in relation to the passed in Vector.
+	/// </summary>
+	/// <returns>The facing.</returns>
+	/// <param name="target">Target.</param>
+	public TileDirection GetFacing(Vector3 target) {
+		return GetFacing(Tile, target);
+	}
+
+	/// <summary>
+	/// Gets facing direction from source to target Vector.
+	/// </summary>
+	/// <returns>The facing.</returns>
+	/// <param name="target">Target tile.</param>
+	public TileDirection GetFacing(Vector3 source, Vector3 target) {
+		TileDirection facing = TileDirection.NORTH;
+
+		if (IsFacingNorth (source, target)) {
 			facing = TileDirection.NORTH;
-		else if (targetTile.x > Tile.x)
-			facing = TileDirection.EAST;
-		else if (targetTile.z < Tile.z)
+			if (IsFacingEast (source, target)) {
+				if ((target.x - Tile.x) > target.z - Tile.z)
+					facing = TileDirection.EAST;
+			} else if (IsFacingWest (source, target)) {
+				if ((Tile.x - target.x) > target.z - Tile.z)
+					facing = TileDirection.WEST;
+			}
+		} else if (IsFacingSouth (source, target)) {
 			facing = TileDirection.SOUTH;
-		else if (targetTile.x < Tile.x)
+			if (IsFacingEast (source, target)) {
+				if ((target.x - Tile.x) > target.z - Tile.z)
+					facing = TileDirection.EAST;
+			} else if (IsFacingWest (source, target)) {
+				if ((Tile.x - target.x) > target.z - Tile.z)
+					facing = TileDirection.WEST;
+			}
+		}
+		else if (IsFacingEast(source, target))
+			facing = TileDirection.EAST;
+		else if (IsFacingWest(source, target))
 			facing = TileDirection.WEST;
 
 		return facing;
+	}
+
+	/// <summary>
+	/// Determines whether this instance is facing north.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is facing north; otherwise, <c>false</c>.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="target">Target.</param>
+	private bool IsFacingNorth(Vector3 source, Vector3 target) {
+		return target.z > source.z;
+	}
+		
+	/// <summary>
+	/// Determines whether this instance is facing east.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is facing east; otherwise, <c>false</c>.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="target">Target.</param>
+	private bool IsFacingEast(Vector3 source, Vector3 target) {
+		return target.x > source.x;
+	}
+		
+	/// <summary>
+	/// Determines whether this instance is facing south.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is facing south; otherwise, <c>false</c>.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="target">Target.</param>
+	private bool IsFacingSouth(Vector3 source, Vector3 target) {
+		return target.z < source.z;
+	}
+		
+	/// <summary>
+	/// Determines whether this instance is facing west.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is facing west; otherwise, <c>false</c>.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="target">Target.</param>
+	private bool IsFacingWest(Vector3 source, Vector3 target) {
+		return target.x < source.x;
 	}
 
 	public void ActivateCharacterSheet() {

@@ -137,10 +137,10 @@ public class TileMapMouse : MonoBehaviour {
 			HandleMovementSelection ();
 			if ((Input.GetMouseButtonDown (0))) {
 				_pathfinder.GeneratePath(_selectedCharacter.Tile, _currentTileCoord);
-				/*
-				foreach (var node in _pathfinder.GetGeneratedPath())
-					Debug.Log(node);
-				*/
+
+				//foreach (var node in _pathfinder.GetGeneratedPath())
+				//	Debug.Log(node);
+				
 				_gameState = GameState.PLAYER_MOVE_START;
 				confirmationSource.PlayOneShot (confirmationSource.clip);
 			}
@@ -200,12 +200,6 @@ public class TileMapMouse : MonoBehaviour {
 			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit) {
 				
 				Unit defender = _tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit;
-				/*
-				Combat combat = new Combat (_selectedCharacter, defender);
-				combat.Begin ();
-				StartCoroutine(PlayAttackAnimations (_selectedCharacter, defender));
-				TransitionGameState (GameState.TURN_OVER);
-				*/
 				StartCoroutine (PerformAction (_selectedCharacter, defender));
 			}
 			break;
@@ -253,10 +247,7 @@ public class TileMapMouse : MonoBehaviour {
 				print (_action);
 				Unit defender = _action.Target;
 				if (defender) {
-					//Combat combat = new Combat (_selectedCharacter, defender);
-					//combat.Begin ();
 					StartCoroutine (PerformAction (_selectedCharacter, defender));
-					//StartCoroutine (PlayAttackAnimations (_selectedCharacter, defender));
 				}
 				else
 					TransitionGameState (GameState.TURN_OVER);
@@ -265,8 +256,6 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Turn is over for the character
 		case GameState.TURN_OVER:
-			print ("GameState.TURN_OVER");
-			print (_unitAnimationPlaying);
 			if (!_unitAnimationPlaying) {
 				_selectedCharacter.DeactivateCombatMenu ();
 				_tileHighlighter.RemoveHighlightedTiles ();
@@ -299,6 +288,10 @@ public class TileMapMouse : MonoBehaviour {
 		_pathfinder = new Pathfinder (_tileMap.GetTileMapData(), _tileMap.GetGraph().GetGraph());
 	}
 
+	/// <summary>
+	/// Highlights the character.
+	/// </summary>
+	/// <param name="character">Character.</param>
 	private void HighlightCharacter(Unit character) {
 		selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, _tileMap.tileSize);
 	}
@@ -453,11 +446,12 @@ public class TileMapMouse : MonoBehaviour {
 	/// <param name="defender">Defender.</param>
 	private IEnumerator PerformAction(Unit attacker, Unit defender) {
 
+		_tileHighlighter.RemoveHighlightedTiles ();
 		actionController.Activate (attacker.weaponName);
 		yield return new WaitForSeconds (0.5f);
 		new Combat (_selectedCharacter, defender).Begin ();
-		StartCoroutine (PlayAttackAnimations (attacker, defender));
-		yield return new WaitForSeconds (0.5f);
+		yield return StartCoroutine (PlayAttackAnimations (attacker, defender));
+		yield return new WaitForSeconds (1.5f);
 		TransitionGameState (GameState.TURN_OVER);
 		yield return null;
 	}
@@ -472,63 +466,27 @@ public class TileMapMouse : MonoBehaviour {
 
 		_unitAnimationPlaying = true;
 
-		Vector3 startingPosition = attacker.Tile;
-
-		//determine which way to swing, dependent on the direction the enemu is
-		float endingX = startingPosition.x;
-		float endingY = startingPosition.y;
-		float endingZ = startingPosition.z;
-
+		//determine which way to swing, dependent on the direction the enemy is
 		Unit.TileDirection facing = attacker.GetFacing (defender);
+		UnitAnimationController animationController = attacker.GetAnimationController ();
 		switch (facing) {
 		case Unit.TileDirection.NORTH:
-			endingZ += 0.5f;
+			animationController.AttackNorth ();
 			break;
 		case Unit.TileDirection.EAST:
-			endingX += 0.5f;
+			animationController.AttackEast ();
 			break;
 		case Unit.TileDirection.SOUTH:
-			endingZ -= 0.5f;
+			animationController.AttackSouth ();
 			break;
 		case Unit.TileDirection.WEST:
-			endingX -= 0.5f;
+			animationController.AttackWest ();
 			break;
 		}
 
-		Vector3 endingPosition = new Vector3 (endingX, endingY, endingZ);
-
-		print (startingPosition);
-		print (endingPosition);
-
-		yield return StartCoroutine (PlayAttackAnimation (attacker, startingPosition, endingPosition));
-		yield return StartCoroutine (PlayAttackAnimation (attacker, endingPosition, startingPosition));
-
 		actionController.Deactivate ();
-
 		_unitAnimationPlaying = false;
-
 		yield return null;
-	}
-
-	/// <summary>
-	/// Plays an attack animation.
-	/// </summary>
-	/// <returns>The attack animation.</returns>
-	/// <param name="unit">Unit.</param>
-	/// <param name="startingPosition">Starting position.</param>
-	/// <param name="endingPosition">Ending position.</param>
-	private IEnumerator PlayAttackAnimation(Unit unit, Vector3 startingPosition, Vector3 endingPosition) {
-		float elapsedTime = 0.0f;
-		float timeToMove = 0.25f;
-		while (elapsedTime < timeToMove) {
-			unit.transform.position = Vector3.Lerp (
-				TileMapUtil.TileMapToWorldCentered(startingPosition, _tileMap.tileSize),
-				TileMapUtil.TileMapToWorldCentered(endingPosition, _tileMap.tileSize),
-				elapsedTime / timeToMove
-			);
-			elapsedTime += Time.deltaTime;
-			yield return null;
-		}
 	}
 
 	/// <summary>
@@ -536,7 +494,7 @@ public class TileMapMouse : MonoBehaviour {
 	/// </summary>
 	/// <returns>The CPU.</returns>
 	private IEnumerator MoveCPU() {
-		StartCoroutine(MoveToTiles());
+		yield return StartCoroutine(MoveToTiles());
 		TransitionGameState (GameState.CPU_MOVE_STOP);
 		yield return null;
 	}
@@ -578,8 +536,9 @@ public class TileMapMouse : MonoBehaviour {
 	/// <param name="startingPosition">Starting position.</param>
 	/// <param name="endingPosition">Ending position.</param>
 	private IEnumerator MoveToTile(Unit character, Vector3 startingPosition, Vector3 endingPosition) {
+		PlayWalkingAnimation (character, startingPosition, endingPosition);
 		float elapsedTime = 0.0f;
-		float timeToMove = 0.125f;
+		float timeToMove = 0.25f;
 		while (elapsedTime < timeToMove) {
 			character.transform.position = Vector3.Lerp (startingPosition, endingPosition, (elapsedTime / timeToMove));
 			elapsedTime += Time.deltaTime;
@@ -681,6 +640,40 @@ public class TileMapMouse : MonoBehaviour {
 				return true;
 		}
 		return false;
+	}
+
+	/// <summary>
+	/// Plays the walking animation.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="sourceTile">Source tile.</param>
+	/// <param name="targetTile">Target tile.</param>
+	private void PlayWalkingAnimation(Unit unit, Vector3 sourceTile, Vector3 targetTile) {
+
+		// Only run if there is an animation controller
+		if (unit.GetAnimationController()) {
+
+			// Get tile direction
+			Unit.TileDirection tileDirection = unit.GetFacing (
+				TileMapUtil.WorldCenteredToTileMap (sourceTile, _tileMap.tileSize),
+				TileMapUtil.WorldCenteredToTileMap (targetTile, _tileMap.tileSize)
+			);
+
+			switch (tileDirection) {
+			case Unit.TileDirection.NORTH:
+				unit.GetAnimationController ().WalkNorth ();
+				break;
+			case Unit.TileDirection.EAST:
+				unit.GetAnimationController ().WalkEast ();
+				break;
+			case Unit.TileDirection.WEST:
+				unit.GetAnimationController ().WalkWest ();
+				break;
+			case Unit.TileDirection.SOUTH:
+				unit.GetAnimationController ().WalkSouth ();
+				break;
+			}
+		}
 	}
 
 	public class GameStateAction {

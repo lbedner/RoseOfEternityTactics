@@ -4,6 +4,16 @@
 public class TileData {
 
 	/// <summary>
+	/// Different terrain types in the game.
+	/// </summary>
+	public enum TerrainTypeEnum {
+		WATER,
+		GRASS,
+		DESERT,
+		MOUNTAINS,
+	}
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="TileData"/> class.
 	/// </summary>
 	/// <param name="terrainTypeEnum">Terrain type enum.</param>
@@ -32,16 +42,6 @@ public class TileData {
 		AccuracyModifier = accuracyModifier;
 		MovementModifier = movementModifier;
 		Unit = unit;
-	}
-
-	/// <summary>
-	/// Different terrain types in the game.
-	/// </summary>
-	public enum TerrainTypeEnum {
-		WATER,
-		GRASS,
-		DESERT,
-		MOUNTAINS,
 	}
 		
 	/// <summary>

@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour {
 		_tileMapSizeZ = tileMapSizeZ;
 
 		transform.rotation = Quaternion.Euler (90, 0, 0);
-		Camera.main.orthographicSize = Screen.width / (((Screen.width / Screen.height) * 2) * tileResolution);
+		Camera.main.orthographicSize = Screen.width / (((Screen.width / Screen.height) * 2) * 16);
 	}
 		
 	// Update is called once per frame

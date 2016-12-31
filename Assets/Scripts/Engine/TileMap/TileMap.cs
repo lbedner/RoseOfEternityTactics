@@ -14,15 +14,15 @@ public class TileMap : MonoBehaviour {
 
 	public Texture2D terrainTiles;
 
-	public Ally elyse;
+	public Ally sinteres;
 	public Ally orelle;
 	public Ally aramus;
-	public Ally clopon;
+	public Ally jarl;
 
-	public Enemy goblin1;
-	public Enemy goblin2;
-	public Enemy goblin3;
-	public Enemy goblin4;
+	public Enemy pettyMuck1;
+	public Enemy pettyMuck2;
+	public Enemy pettyMuck3;
+	public Enemy pettyMuck4;
 
 	private TileMapData _tileMapData;
 	private Graph _graph;
@@ -177,14 +177,14 @@ public class TileMap : MonoBehaviour {
 	private void InitPlayer() {
 		print ("TileMap.InitPlayer()");
 
+		InitUnit (sinteres, 9, 7);
 		InitUnit (orelle, 10, 8);
 		InitUnit (aramus, 10, 7);
-		InitUnit (goblin1, 18, 9);
-		InitUnit (goblin2, 17, 17);
-		InitUnit (goblin3, 22, 21);
-		InitUnit (goblin4, 28, 19);
-		InitUnit (elyse, 9, 7);
-		InitUnit (clopon, 9, 8);
+		InitUnit (jarl, 9, 8);
+		InitUnit (pettyMuck1, 18, 9);
+		InitUnit (pettyMuck2, 17, 17);
+		InitUnit (pettyMuck3, 22, 21);
+		InitUnit (pettyMuck4, 28, 19);
 	}
 
 	private void InitUnit(Unit unit, int x, int z) {
