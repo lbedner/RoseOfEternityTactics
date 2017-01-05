@@ -33,14 +33,15 @@ public abstract class Unit : MonoBehaviour {
 
 	public Image healthbar;
 
-	public Color color;
-
+	public Color damagedColor = Color.red;
 	public Color attackTileColor = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
 
 	public CharacterSheetController characterSheetController;
 	public CombatMenuController combatMenuController;
 
 	private UnitAnimationController _unitAnimationController;
+
+	private SpriteRenderer _spriteRenderer;
 
 	private bool isSelected = false;
 
@@ -49,6 +50,7 @@ public abstract class Unit : MonoBehaviour {
 		CurrentHitPoints = totalHitPoints;
 		CurrentAbilityPoints = totalAbilityPoints;
 		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
+		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
 	}
 
 	public int CurrentHitPoints { get; set; }
@@ -88,6 +90,10 @@ public abstract class Unit : MonoBehaviour {
 		// Update the health bar scale in order to show it go up/down
 		Vector3 currentScale = healthbar.rectTransform.localScale;
 		healthbar.rectTransform.localScale = new Vector3 (healthPercent, currentScale.y, currentScale.z);
+	}
+
+	public Canvas GetCanvas() {
+		return transform.Find ("Canvas").GetComponent<Canvas> ();
 	}
 
 	/// <summary>
@@ -141,6 +147,19 @@ public abstract class Unit : MonoBehaviour {
 			facing = TileDirection.WEST;
 
 		return facing;
+	}
+
+	/// <summary>
+	/// This will color the unit to indicate that they've been hit
+	/// </summary>
+	/// <param name="showDamageColor">If set to <c>true</c> show damage color.</param>
+	public void ShowDamagedColor(bool showDamageColor) {
+		if (_spriteRenderer) {
+			if (showDamageColor)
+				_spriteRenderer.color = damagedColor;
+			else
+				_spriteRenderer.color = Color.white;
+		}
 	}
 
 	/// <summary>

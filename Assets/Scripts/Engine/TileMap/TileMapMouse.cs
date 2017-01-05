@@ -14,6 +14,7 @@ public class TileMapMouse : MonoBehaviour {
 		PLAYER_MOVE_START,
 		PLAYER_MOVE_STOP,
 		PLAYER_SHOW_ATTACK_INDICATORS,
+		PLAYER_ATTACK,
 		PLAYER_ATTACK_SELECTION,
 		CPU_TURN,
 		CPU_MOVE_STOP,
@@ -49,6 +50,7 @@ public class TileMapMouse : MonoBehaviour {
 
 	private bool _playerMoveFinished = false;
 	private bool _unitAnimationPlaying = false;
+	private bool _isAttacking = false;
 
 	private GameManager _gameManager;
 
@@ -96,7 +98,7 @@ public class TileMapMouse : MonoBehaviour {
 			break;			
 
 		case GameState.INITIALIZE_TURN:
-			ShowCursor (false);
+			ShowCursorAndTileSelector (false);
 			Unit unit = _gameManager.GetTurnOrderController ().GetNextUp ();
 			//Debug.Log (string.Format ("Initialzie Turn: {0}", unit));
 			StartCoroutine (_gameManager.GetCameraController ().MoveToPosition (unit.transform.position));
@@ -111,7 +113,7 @@ public class TileMapMouse : MonoBehaviour {
 		// Player is moving cursor around the tile map
 		case GameState.PLAYER_TURN:
 			if (!_gameManager.GetCameraController ().IsMoving) {
-				ShowCursor (true);
+				ShowCursorAndTileSelector (true);
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				HandleTerrainMouseOver (ray);
 				HandleCharacterMouseOver (ray);
@@ -148,7 +150,7 @@ public class TileMapMouse : MonoBehaviour {
 		
 		// Player moves to tile
 		case GameState.PLAYER_MOVE_START:
-			ShowCursor (false);
+			ShowCursorAndTileSelector (false);
 			_tileHighlighter.RemoveHighlightedTiles();
 			StartCoroutine (MoveToTiles ());
 			TransitionGameState (GameState.PLAYER_MOVE_STOP);
@@ -172,6 +174,7 @@ public class TileMapMouse : MonoBehaviour {
 				//_selectedCharacter.DeactivateCombatMenu ();
 				TransitionGameState (GameState.UNDO);
 			}*/
+			ShowTileSelector (false);
 			_selectedCharacter.ActivateCombatMenu ();
 			break;
 
@@ -194,11 +197,19 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Indicate where player can attack
 		case GameState.PLAYER_SHOW_ATTACK_INDICATORS:
+			ShowTileSelector (true);
 			_selectedCharacter.DeactivateCombatMenu ();
 			_tileHighlighter.HighlightAttackTiles (_selectedCharacter);
 			HandleActionSelection ();
-			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit) {
-				
+			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit)
+				TransitionGameState (GameState.PLAYER_ATTACK);
+			break;
+
+		// Attack selected enemy
+		case GameState.PLAYER_ATTACK:
+			if (!_isAttacking) {
+				_isAttacking = true;
+				ShowCursorAndTileSelector (false);
 				Unit defender = _tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit;
 				StartCoroutine (PerformAction (_selectedCharacter, defender));
 			}
@@ -245,9 +256,9 @@ public class TileMapMouse : MonoBehaviour {
 
 				// Perform attack if close enough
 				print (_action);
-				Unit defender = _action.Target;
-				if (defender) {
-					StartCoroutine (PerformAction (_selectedCharacter, defender));
+				Unit target = _action.Target;
+				if (target) {
+					StartCoroutine (PerformAction (_selectedCharacter, target));
 				}
 				else
 					TransitionGameState (GameState.TURN_OVER);
@@ -406,7 +417,6 @@ public class TileMapMouse : MonoBehaviour {
 				if (IsPlayerRaycastHitNew(hitInfo)) {
 
 					// Mark player as highlighted and show character sheet
-					Debug.Log (unit);
 					_highlightedCharacter = unit;
 					unit.ActivateCharacterSheet ();
 
@@ -450,9 +460,13 @@ public class TileMapMouse : MonoBehaviour {
 		actionController.Activate (attacker.weaponName);
 		yield return new WaitForSeconds (0.5f);
 		new Combat (_selectedCharacter, defender).Begin ();
+		defender.ShowDamagedColor (true);
 		yield return StartCoroutine (PlayAttackAnimations (attacker, defender));
-		yield return new WaitForSeconds (1.5f);
+		yield return new WaitForSeconds (1.0f);
+		defender.ShowDamagedColor (false);
+		yield return new WaitForSeconds (0.5f);
 		TransitionGameState (GameState.TURN_OVER);
+		_isAttacking = false;
 		yield return null;
 	}
 
@@ -579,6 +593,23 @@ public class TileMapMouse : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 		}
+	}
+
+	/// <summary>
+	/// Shows the tile selector.
+	/// </summary>
+	/// <param name="showTileSelector">If set to <c>true</c> show tile selector.</param>
+	private void ShowTileSelector(bool showTileSelector) {
+		selectionCube.gameObject.SetActive (showTileSelector);
+	}
+
+	/// <summary>
+	/// Shows the cursor and tile selector.
+	/// </summary>
+	/// <param name="show">If set to <c>true</c> show.</param>
+	private void ShowCursorAndTileSelector(bool show) {
+		ShowCursor(show);
+		ShowTileSelector(show);
 	}
 
 	/// <summary>

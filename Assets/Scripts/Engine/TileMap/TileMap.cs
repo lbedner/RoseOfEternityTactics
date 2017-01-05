@@ -178,8 +178,8 @@ public class TileMap : MonoBehaviour {
 		print ("TileMap.InitPlayer()");
 
 		InitUnit (sinteres, 9, 7);
-		InitUnit (orelle, 10, 8);
 		InitUnit (aramus, 10, 7);
+		InitUnit (orelle, 10, 8);
 		InitUnit (jarl, 9, 8);
 		InitUnit (pettyMuck1, 18, 9);
 		InitUnit (pettyMuck2, 17, 17);
