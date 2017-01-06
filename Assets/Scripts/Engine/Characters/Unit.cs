@@ -19,6 +19,8 @@ public abstract class Unit : MonoBehaviour {
 	public string firstName = "Unknown";
 	public string lastName = "";
 
+	public string @class = "";
+
 	// Core attributes
 	public int totalHitPoints = 1;
 	public int totalAbilityPoints = 1;
@@ -49,6 +51,7 @@ public abstract class Unit : MonoBehaviour {
 	void Start () {
 		CurrentHitPoints = totalHitPoints;
 		CurrentAbilityPoints = totalAbilityPoints;
+		CurrentExperiencePoints = 0;
 		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
 		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
 	}
@@ -56,11 +59,21 @@ public abstract class Unit : MonoBehaviour {
 	public int CurrentHitPoints { get; set; }
 	public int CurrentAbilityPoints { get; set; }
 
+	public int CurrentExperiencePoints { get; set; }
+
 	public Vector3 Tile { get; set; }
 
 	// Implement these in children classes
 	public abstract Color MovementTileColor { get; }
 	public abstract bool IsPlayerControlled { get; }
+
+	/// <summary>
+	/// Gets the full name.
+	/// </summary>
+	/// <returns>The full name.</returns>
+	public string GetFullName() {
+		return string.Format ("{0} {1}".Trim (), firstName, lastName);
+	}
 
 	/// <summary>
 	/// Gets the animation controller.
@@ -83,13 +96,21 @@ public abstract class Unit : MonoBehaviour {
 	/// Updates the healthbar.
 	/// </summary>
 	public void UpdateHealthbar() {
+		UpdateAttributeBar (healthbar, CurrentHitPoints, totalHitPoints);
+	}
+
+	/// <summary>
+	/// Updates an attribute bar.
+	/// </summary>
+	/// <param name="hitPointsBar">Hit points bar.</param>
+	public void UpdateAttributeBar(Image attributeBar, int currentValue, int totalValue) {
 
 		// Get health % and clamp it between 0 and 1 so the health bar image doesn't go haywire
-		float healthPercent = Mathf.Clamp ((float)CurrentHitPoints / (float)totalHitPoints, 0.0f, 1.0f);
+		float percent = Mathf.Clamp ((float)currentValue / (float)totalValue, 0.0f, 1.0f);
 
 		// Update the health bar scale in order to show it go up/down
-		Vector3 currentScale = healthbar.rectTransform.localScale;
-		healthbar.rectTransform.localScale = new Vector3 (healthPercent, currentScale.y, currentScale.z);
+		Vector3 currentScale = attributeBar.rectTransform.localScale;
+		attributeBar.rectTransform.localScale = new Vector3 (percent, currentScale.y, currentScale.z);
 	}
 
 	public Canvas GetCanvas() {

@@ -15,6 +15,7 @@ public class TileMapMouse : MonoBehaviour {
 		PLAYER_MOVE_STOP,
 		PLAYER_SHOW_ATTACK_INDICATORS,
 		PLAYER_ATTACK,
+		PLAYER_ATTACK_CONFIRMATION,
 		PLAYER_ATTACK_SELECTION,
 		CPU_TURN,
 		CPU_MOVE_STOP,
@@ -34,6 +35,10 @@ public class TileMapMouse : MonoBehaviour {
 	// Audio related things
 	public AudioSource cursorMoveSource;
 	public AudioSource confirmationSource;
+
+	public GameObject head2HeadPanel;
+
+	private GameObject _head2HeadPanelConfirmation;
 	
 	private TileMap _tileMap;
 	private Pathfinder _pathfinder;
@@ -73,18 +78,36 @@ public class TileMapMouse : MonoBehaviour {
 		_gameStateAction = new GameStateAction ();
 		_gameStateOriginator = new GameStateOriginator ();
 		_gameStateCaretaker = new GameStateCaretaker ();
+		_head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
 	}
 
+	/// <summary>
+	/// Transitions the state of the game.
+	/// </summary>
+	/// <param name="newState">New state.</param>
 	public void TransitionGameState(GameState newState) {
 		_gameState = newState;
 	}
 
+	/// <summary>
+	/// Transitions the game state to turn over.
+	/// </summary>
 	public void TransitionGameStateToTurnOver() {
 		TransitionGameState (GameState.TURN_OVER);
 	}
 
+	/// <summary>
+	/// Transitions the game state to show attack indicators.
+	/// </summary>
 	public void TransitionGameStateToShowAttackIndicators() {
 		TransitionGameState (GameState.PLAYER_SHOW_ATTACK_INDICATORS);
+	}
+
+	/// <summary>
+	/// Transitions the game state to player attack.
+	/// </summary>
+	public void TransitionGameStateToPlayerAttack() {
+		TransitionGameState (GameState.PLAYER_ATTACK);
 	}
 
 	// Update is called once per frame
@@ -202,12 +225,22 @@ public class TileMapMouse : MonoBehaviour {
 			_tileHighlighter.HighlightAttackTiles (_selectedCharacter);
 			HandleActionSelection ();
 			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit)
-				TransitionGameState (GameState.PLAYER_ATTACK);
+				TransitionGameState (GameState.PLAYER_ATTACK_CONFIRMATION);
+			break;
+		
+		// Pop up head 2 head confirmation panel
+		case GameState.PLAYER_ATTACK_CONFIRMATION:
+			if (!head2HeadPanel.activeInHierarchy) {
+				_gameManager.GetSourceHead2HeadPanelController ().Load (_selectedCharacter, Head2HeadPanelController.Head2HeadState.ATTACKING);
+				_gameManager.GetTargetHead2HeadPanelController ().Load (_tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit, Head2HeadPanelController.Head2HeadState.DEFENDING);
+				head2HeadPanel.SetActive (true);
+			}
 			break;
 
 		// Attack selected enemy
 		case GameState.PLAYER_ATTACK:
 			if (!_isAttacking) {
+				head2HeadPanel.SetActive (false);
 				_isAttacking = true;
 				ShowCursorAndTileSelector (false);
 				Unit defender = _tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit;
@@ -258,7 +291,7 @@ public class TileMapMouse : MonoBehaviour {
 				print (_action);
 				Unit target = _action.Target;
 				if (target) {
-					StartCoroutine (PerformAction (_selectedCharacter, target));
+					StartCoroutine(CPUPerformAction(_selectedCharacter, target));
 				}
 				else
 					TransitionGameState (GameState.TURN_OVER);
@@ -447,6 +480,28 @@ public class TileMapMouse : MonoBehaviour {
 			}
 		}
 	}
+
+	/// <summary>
+	/// CPUs performs an action.
+	/// </summary>
+	/// <returns>The perform action.</returns>
+	/// <param name="attacker">Attacker.</param>
+	/// <param name="defender">Defender.</param>
+	private IEnumerator CPUPerformAction(Unit attacker, Unit defender) {
+
+		// Show head 2 head panel for a bit
+		_gameManager.GetSourceHead2HeadPanelController ().Load (attacker, Head2HeadPanelController.Head2HeadState.ATTACKING);
+		_gameManager.GetTargetHead2HeadPanelController ().Load (defender, Head2HeadPanelController.Head2HeadState.DEFENDING);
+		_head2HeadPanelConfirmation.SetActive (false);
+		head2HeadPanel.SetActive (true);
+
+		yield return new WaitForSeconds (2.0f);
+		head2HeadPanel.SetActive (false);
+		_head2HeadPanelConfirmation.SetActive (true);
+
+		// Continue performing action
+		StartCoroutine (PerformAction (attacker, defender));
+	}		
 
 	/// <summary>
 	/// Performs the action of the attacker against the defender.
