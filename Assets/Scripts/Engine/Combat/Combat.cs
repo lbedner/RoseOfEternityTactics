@@ -32,6 +32,14 @@ public class Combat {
 
 		// If dead, then destroy
 		if (_defender.CurrentHitPoints <= 0) {
+
+			// Show death animation
+			GameObject deathAnimation = Resources.Load<GameObject>("Prefabs/Characters/Animations/Death/DeathParent");
+			GameObject instance = GameObject.Instantiate (deathAnimation);
+			Vector3 defenderPosition = _defender.transform.position;
+			instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
+			GameObject.Destroy (instance, 2.0f);
+
 			GameManager.Instance.GetTurnOrderController ().RemoveUnit (_defender);
 			GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (_defender.Tile).Unit = null;
 			GameObject.Destroy (_defender.gameObject, 1.0f);

@@ -44,7 +44,6 @@ public class Head2HeadPanelController : MonoBehaviour {
 		unit.UpdateAttributeBar (abilityPointsBar, unit.CurrentAbilityPoints, unit.totalAbilityPoints);
 
 		// Experience Points
-		print(unit.CurrentExperiencePoints);
 		experiencePoints.text = string.Format ("{0}/100", unit.CurrentExperiencePoints);
 		unit.UpdateAttributeBar (experiencePointsBar, unit.CurrentExperiencePoints, 100);
 
