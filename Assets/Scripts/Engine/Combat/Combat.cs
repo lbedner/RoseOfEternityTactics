@@ -24,7 +24,6 @@ public class Combat {
 
 		// Damage defender
 		_defender.CurrentHitPoints -= damage;
-		Debug.Log (string.Format ("{0}: {1} Damage -> {2}", _attacker, damage, _defender));
 
 		// Show pop up text for damage
 		PopupTextController.Initialize(_defender.GetCanvas());

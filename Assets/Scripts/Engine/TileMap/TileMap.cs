@@ -188,9 +188,11 @@ public class TileMap : MonoBehaviour {
 	}
 
 	private void InitUnit(Unit unit, int x, int z) {
-		unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
-		_tileMapData.GetTileDataAt (x, z).Unit = unit;
-		unit.Tile = new Vector3 (x, 0, z);
-		GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
+		if (unit && unit.gameObject.activeSelf) {
+			unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
+			_tileMapData.GetTileDataAt (x, z).Unit = unit;
+			unit.Tile = new Vector3 (x, 0, z);
+			GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
+		}
 	}
 }

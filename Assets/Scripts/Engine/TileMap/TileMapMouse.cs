@@ -68,6 +68,8 @@ public class TileMapMouse : MonoBehaviour {
 	private GameStateOriginator _gameStateOriginator;
 	private GameStateCaretaker _gameStateCaretaker;
 
+	private List<Unit> _intendedActionTargets = new List<Unit> ();
+
 	void Start() {
 		print ("TileMapMouse.Start()");
 		_tileMap = GetComponent<TileMap>();
@@ -224,8 +226,9 @@ public class TileMapMouse : MonoBehaviour {
 			_selectedCharacter.DeactivateCombatMenu ();
 			_tileHighlighter.HighlightAttackTiles (_selectedCharacter);
 			HandleActionSelection ();
-			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData().GetTileDataAt(_currentTileCoord).Unit)
+			if ((Input.GetMouseButtonDown (0)) && _tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit) {
 				TransitionGameState (GameState.PLAYER_ATTACK_CONFIRMATION);
+			}
 			break;
 		
 		// Pop up head 2 head confirmation panel
@@ -240,6 +243,7 @@ public class TileMapMouse : MonoBehaviour {
 		// Attack selected enemy
 		case GameState.PLAYER_ATTACK:
 			if (!_isAttacking) {
+				ClearActionTargets ();
 				head2HeadPanel.SetActive (false);
 				_isAttacking = true;
 				ShowCursorAndTileSelector (false);
@@ -291,6 +295,7 @@ public class TileMapMouse : MonoBehaviour {
 				print (_action);
 				Unit target = _action.Target;
 				if (target) {
+					HighlightActionTarget (target);
 					StartCoroutine(CPUPerformAction(_selectedCharacter, target));
 				}
 				else
@@ -406,9 +411,31 @@ public class TileMapMouse : MonoBehaviour {
 
 					selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
 					ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
+
+					ClearActionTargets ();
+					Unit unit = _tileMap.GetTileMapData ().GetTileDataAt (tileMapPoint).Unit;
+					if (unit)
+						HighlightActionTarget (unit);
 				}
 			}
 		}
+	}
+
+	private void HighlightActionTargets(List<Unit> targets) {
+		foreach (Unit unit in targets) {
+			HighlightActionTarget (unit);
+		}
+	}
+
+	private void HighlightActionTarget(Unit unit) {
+		_intendedActionTargets.Add (unit);
+		unit.ShowDamagedColor (true);
+	}
+
+	private void ClearActionTargets() {
+		foreach (Unit unit in _intendedActionTargets)
+			unit.ShowDamagedColor(false);
+		_intendedActionTargets.Clear ();
 	}
 
 	/// <summary>
@@ -500,6 +527,7 @@ public class TileMapMouse : MonoBehaviour {
 		_head2HeadPanelConfirmation.SetActive (true);
 
 		// Continue performing action
+		ClearActionTargets ();
 		StartCoroutine (PerformAction (attacker, defender));
 	}		
 
