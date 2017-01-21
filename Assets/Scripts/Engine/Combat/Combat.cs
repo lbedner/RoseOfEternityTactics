@@ -6,6 +6,8 @@ public class Combat {
 	private Unit _attacker;
 	private Unit _defender;
 
+	private int _awardedExperience;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Combat"/> class.
 	/// </summary>
@@ -27,7 +29,7 @@ public class Combat {
 
 		// Show pop up text for damage
 		PopupTextController.Initialize(_defender.GetCanvas());
-		PopupTextController.CreatePopupText (damage.ToString (), _defender.transform.position);
+		PopupTextController.CreatePopupText (damage.ToString (), _defender.transform.position, Color.red);
 
 		// If dead, then destroy
 		if (_defender.GetHitPointsAttribute().CurrentValue <= 0) {
@@ -47,7 +49,15 @@ public class Combat {
 
 		// Give out XP
 		ExperienceManager manager = new ExperienceManager();
-		manager.AwardCombatExperience (_attacker, _defender);
+		_awardedExperience = manager.AwardCombatExperience (_attacker, _defender);
+	}
+
+	/// <summary>
+	/// Gets the awarded experience.
+	/// </summary>
+	/// <returns>The awarded experience.</returns>
+	public int GetAwardedExperience() {
+		return _awardedExperience;
 	}
 
 	/// <summary>

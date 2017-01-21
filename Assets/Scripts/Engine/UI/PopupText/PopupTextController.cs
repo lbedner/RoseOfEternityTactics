@@ -21,10 +21,10 @@ public class PopupTextController : MonoBehaviour {
 	/// </summary>
 	/// <param name="text">Text.</param>
 	/// <param name="position">Position.</param>
-	public static void CreatePopupText(string text, Vector3 position) {
+	public static void CreatePopupText(string text, Vector3 position, Color color) {
 		PopupText instance = Instantiate (_popupText);
 		instance.transform.SetParent (_canvas.transform, false);
 		instance.transform.position = position;
-		instance.SetText (text);
+		instance.SetText (text, color);
 	}
 }

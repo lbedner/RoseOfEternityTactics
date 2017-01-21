@@ -20,11 +20,14 @@ public class PopupText : MonoBehaviour {
 	/// Sets the text of the popup.
 	/// </summary>
 	/// <param name="popupText">Popup text.</param>
-	public void SetText(string text) {
+	public void SetText(string text, Color color) {
 
 		// Set the text for the popup
 		Text popupText = animator.GetComponent<Text> ();
 		popupText.text = text;
+
+		// Set color
+		popupText.color = color;
 
 		// We have to set the Z coordinate to 0 so the text doesn't get obscured by anything else
 		RectTransform rectTransform = (RectTransform)transform;

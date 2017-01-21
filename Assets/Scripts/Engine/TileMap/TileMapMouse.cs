@@ -542,12 +542,20 @@ public class TileMapMouse : MonoBehaviour {
 		_tileHighlighter.RemoveHighlightedTiles ();
 		actionController.Activate (attacker.weaponName);
 		yield return new WaitForSeconds (0.5f);
-		new Combat (_selectedCharacter, defender).Begin ();
+		Combat combat = new Combat (_selectedCharacter, defender);
+		combat.Begin ();
 		defender.ShowDamagedColor (true);
 		yield return StartCoroutine (PlayAttackAnimations (attacker, defender));
 		yield return new WaitForSeconds (1.0f);
 		defender.ShowDamagedColor (false);
-		yield return new WaitForSeconds (0.5f);
+
+		// Show XP floaty text
+		int awardedExperience = combat.GetAwardedExperience();
+		PopupTextController.Initialize(attacker.GetCanvas());
+		PopupTextController.CreatePopupText (string.Format("+ {0} XP", awardedExperience), attacker.transform.position, Color.yellow);
+
+		yield return new WaitForSeconds (1.0f);
+
 		TransitionGameState (GameState.TURN_OVER);
 		_isAttacking = false;
 		yield return null;
