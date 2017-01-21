@@ -23,17 +23,17 @@ public class Combat {
 		int damage = GetDamage ();
 
 		// Damage defender
-		_defender.CurrentHitPoints -= damage;
+		_defender.GetHitPointsAttribute().Decrement(damage);
 
 		// Show pop up text for damage
 		PopupTextController.Initialize(_defender.GetCanvas());
 		PopupTextController.CreatePopupText (damage.ToString (), _defender.transform.position);
 
 		// If dead, then destroy
-		if (_defender.CurrentHitPoints <= 0) {
+		if (_defender.GetHitPointsAttribute().CurrentValue <= 0) {
 
 			// Show death animation
-			GameObject deathAnimation = Resources.Load<GameObject>("Prefabs/Characters/Animations/Death/DeathParent");
+			GameObject deathAnimation = Resources.Load<GameObject> ("Prefabs/Characters/Animations/Death/DeathParent");
 			GameObject instance = GameObject.Instantiate (deathAnimation);
 			Vector3 defenderPosition = _defender.transform.position;
 			instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
@@ -42,9 +42,12 @@ public class Combat {
 			GameManager.Instance.GetTurnOrderController ().RemoveUnit (_defender);
 			GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (_defender.Tile).Unit = null;
 			GameObject.Destroy (_defender.gameObject, 1.0f);
-		}
-		else
+		} else
 			_defender.UpdateHealthbar ();
+
+		// Give out XP
+		ExperienceManager manager = new ExperienceManager();
+		manager.AwardCombatExperience (_attacker, _defender);
 	}
 
 	/// <summary>
@@ -52,7 +55,7 @@ public class Combat {
 	/// </summary>
 	/// <returns>The damage.</returns>
 	private int GetDamage() {
-		int damage = _attacker.level * 2;
+		int damage = (int) _attacker.GetLevelAttribute().CurrentValue * 2;
 		return damage;
 	}
 }

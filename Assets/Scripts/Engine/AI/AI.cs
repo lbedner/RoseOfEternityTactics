@@ -91,7 +91,7 @@ public abstract class AI {
 		_pathfinder.GeneratePath(unit.Tile, targetTile);
 
 		// Get movement tiles for unit so unreachable tiles can be filtered from the generated path
-		Dictionary<Vector3, Object> tiles = _tileDiscoverer.DiscoverTilesInRange (unit.Tile, unit.movement);
+		Dictionary<Vector3, Object> tiles = _tileDiscoverer.DiscoverTilesInRange (unit.Tile, (int) unit.GetMovementAttribute().CurrentValue);
 
 		// Lop off tiles from path that aren't within range or that are occupied
 		for (int index = _pathfinder.GetGeneratedPath ().Count - 1; index >= 0; index--) {
@@ -110,7 +110,7 @@ public abstract class AI {
 	/// <returns><c>true</c> if the target is within range of the movement and ability; otherwise, <c>false</c>.</returns>
 	/// <param name="target">Target.</param>
 	private bool IsTargetWithinRange(Unit target) {
-		Dictionary<Vector3, Object> tilesInRange = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, _self.movement + _self.weaponRange);
+		Dictionary<Vector3, Object> tilesInRange = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, (int) _self.GetMovementAttribute().CurrentValue + _self.weaponRange);
 		return tilesInRange.ContainsKey (target.Tile);
 	}
 }

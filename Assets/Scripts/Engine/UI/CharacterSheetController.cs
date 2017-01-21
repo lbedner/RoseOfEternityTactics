@@ -23,12 +23,12 @@ public class CharacterSheetController : MonoBehaviour {
 			unit.portrait,
 			unit.firstName,
 			unit.lastName,
-			unit.level,
-			unit.CurrentHitPoints,
-			unit.totalHitPoints,
-			unit.CurrentAbilityPoints,
-			unit.totalAbilityPoints,
-			unit.movement
+			(int) unit.GetLevelAttribute().CurrentValue,
+			(int) unit.GetHitPointsAttribute().CurrentValue,
+			(int) unit.GetHitPointsAttribute().MaximumValue,
+			(int) unit.GetAbilityPointsAttribute().CurrentValue,
+			(int) unit.GetAbilityPointsAttribute().MaximumValue,
+			(int) unit.GetMovementAttribute().CurrentValue
 		);
 	}		
 

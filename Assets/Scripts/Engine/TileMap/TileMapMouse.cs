@@ -702,7 +702,7 @@ public class TileMapMouse : MonoBehaviour {
 	/// <param name="units">Units.</param>
 	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
-			int range = unit.movement + unit.weaponRange;
+			int range = (int) unit.GetMovementAttribute().CurrentValue + unit.weaponRange;
 			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.tileSize);
 			int x = (int) tileMapPosition.x;
 			int z = (int) tileMapPosition.z;

@@ -29,27 +29,34 @@ public class Head2HeadPanelController : MonoBehaviour {
 	public Text usedAbility;
 
 	public void Load(Unit unit, Head2HeadState head2HeadState) {
+		int currentLevel = (int) unit.GetLevelAttribute ().CurrentValue;
+
 		portrait.sprite = unit.portrait;
 
 		name.text = unit.GetFullName ();
-		level.text = string.Format ("Level: {0}", unit.level);
+		level.text = string.Format ("Level: {0}", currentLevel);
 		@class.text = unit.@class;
 
 		// Hit Points
-		hitPoints.text = string.Format ("{0}/{1}", unit.CurrentHitPoints, unit.totalHitPoints);
-		unit.UpdateAttributeBar (hitPointsBar, unit.CurrentHitPoints, unit.totalHitPoints);
+		int currentHitPoints = (int) unit.GetHitPointsAttribute ().CurrentValue;
+		int maxHitPoints = (int) unit.GetHitPointsAttribute ().MaximumValue;
+		hitPoints.text = string.Format ("{0}/{1}", currentHitPoints, maxHitPoints);
+		unit.UpdateAttributeBar (hitPointsBar, currentHitPoints, maxHitPoints);
 
 		// Ability Points
-		abilityPoints.text = string.Format ("{0}/{1}", unit.CurrentAbilityPoints, unit.totalAbilityPoints);
-		unit.UpdateAttributeBar (abilityPointsBar, unit.CurrentAbilityPoints, unit.totalAbilityPoints);
+		int currentAbilityPoints = (int) unit.GetAbilityPointsAttribute().CurrentValue;
+		int maxAbilityPoints = (int)unit.GetAbilityPointsAttribute ().MaximumValue;
+		abilityPoints.text = string.Format ("{0}/{1}", currentAbilityPoints, maxAbilityPoints);
+		unit.UpdateAttributeBar (abilityPointsBar, currentAbilityPoints, maxAbilityPoints);
 
 		// Experience Points
-		experiencePoints.text = string.Format ("{0}/100", unit.CurrentExperiencePoints);
-		unit.UpdateAttributeBar (experiencePointsBar, unit.CurrentExperiencePoints, 100);
+		int xp = (int) unit.GetExperienceAttribute().CurrentValue;
+		experiencePoints.text = string.Format ("{0}/100", xp);
+		unit.UpdateAttributeBar (experiencePointsBar, xp, 100);
 
 		// TODO: Mock up rest of attributes, at some point, pull them from Combat class
 		if (head2HeadState == Head2HeadState.ATTACKING) {
-			damage.text = string.Format ("Dmg: {0}", unit.level * 2);
+			damage.text = string.Format ("Dmg: {0}", currentLevel * 2);
 			attackHitPercent.text = string.Format ("Hit: {0}%", 100);
 			crititalHitPercent.text = string.Format ("Crit: {0}%", 0);
 			usedAbility.text = unit.weaponName;

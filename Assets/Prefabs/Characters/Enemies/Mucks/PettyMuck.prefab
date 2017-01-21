@@ -140,16 +140,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstName: Petty Muck
   lastName: 
-  totalHitPoints: 10
-  totalAbilityPoints: 7
-  level: 4
-  movement: 4
-  speed: 3
+  class: 
+  _totalHitPoints: 10
+  _totalAbilityPoints: 5
+  _level: 4
+  _movement: 5
+  _speed: 3
   weaponRange: 1
   weaponName: Muck
   portrait: {fileID: 21300000, guid: 7338caadcf68b41f9b03591e985c95d0, type: 3}
   healthbar: {fileID: 11460912}
-  color: {r: 0.09373508, g: 0.27843142, b: 0.088442914, a: 0}
+  damagedColor: {r: 1, g: 0, b: 0, a: 1}
   attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
   characterSheetController: {fileID: 0}
   combatMenuController: {fileID: 0}

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System.Collections.Generic;
+
+using RoseOfEternity;
 
 public abstract class Unit : MonoBehaviour {
 
@@ -16,17 +18,19 @@ public abstract class Unit : MonoBehaviour {
 
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
 
+	public Dictionary<int, int> test;
+
 	public string firstName = "Unknown";
 	public string lastName = "";
 
 	public string @class = "";
 
 	// Core attributes
-	public int totalHitPoints = 1;
-	public int totalAbilityPoints = 1;
-	public int level = 1;
-	public int movement = 4;
-	public int speed = 3;
+	[SerializeField] private int _totalHitPoints = 1;
+	[SerializeField] private int _totalAbilityPoints = 1;
+	[SerializeField] private int _level = 1;
+	[SerializeField] private int _movement = 4;
+	[SerializeField] private int _speed = 3;
 	public int weaponRange = 1;
 
 	public string weaponName;
@@ -47,17 +51,21 @@ public abstract class Unit : MonoBehaviour {
 
 	private bool isSelected = false;
 
+	private AttributeCollection _attributeCollection;
+
 	// Use this for initialization
 	void Start () {
-		CurrentHitPoints = totalHitPoints;
-		CurrentAbilityPoints = totalAbilityPoints;
+		CurrentHitPoints = _totalHitPoints;
+		CurrentAbilityPoints = _totalAbilityPoints;
 		CurrentExperiencePoints = 0;
 		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
 		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
+		_attributeCollection = AttributeLoader.GetLoadedAttributes ();
+		SetAttributes();
 	}
 
-	public int CurrentHitPoints { get; set; }
-	public int CurrentAbilityPoints { get; set; }
+	private int CurrentHitPoints { get; set; }
+	private int CurrentAbilityPoints { get; set; }
 
 	public int CurrentExperiencePoints { get; set; }
 
@@ -96,7 +104,7 @@ public abstract class Unit : MonoBehaviour {
 	/// Updates the healthbar.
 	/// </summary>
 	public void UpdateHealthbar() {
-		UpdateAttributeBar (healthbar, CurrentHitPoints, totalHitPoints);
+		UpdateAttributeBar (healthbar, (int) GetHitPointsAttribute().CurrentValue, (int) GetHitPointsAttribute().MaximumValue);
 	}
 
 	/// <summary>
@@ -243,5 +251,61 @@ public abstract class Unit : MonoBehaviour {
 			combatMenuController.Deactivate ();
 			isSelected = false;
 		}
+	}
+
+	// ---------------- ATTRIBUTES WRAPPERS ---------------- //
+
+	public Attribute GetAttribute(AttributeEnums.AttributeType type) {
+		return _attributeCollection.Get (type);
+	}
+
+	public Attribute GetExperienceAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.EXPERIENCE);
+	}
+
+	public Attribute GetLevelAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.LEVEL);
+	}
+
+	public Attribute GetHitPointsAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.HIT_POINTS);
+	}
+
+	public Attribute GetAbilityPointsAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.ABILITY_POINTS);
+	}
+
+	public Attribute GetMovementAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.MOVEMENT);
+	}
+
+	public Attribute GetSpeedAttribute() {
+		return GetAttribute (AttributeEnums.AttributeType.SPEED);
+	}
+
+	/// <summary>
+	/// Sets the attributes for the unit.
+	/// </summary>
+	private void SetAttributes() {
+
+		// Level
+		GetLevelAttribute().CurrentValue = _level;
+
+		// Hit points
+		GetHitPointsAttribute().MaximumValue = _totalHitPoints;
+		GetHitPointsAttribute().CurrentValue = CurrentHitPoints;
+
+		// Ability Points
+		GetAbilityPointsAttribute().MaximumValue = _totalAbilityPoints;
+		GetAbilityPointsAttribute ().CurrentValue = CurrentAbilityPoints;
+
+		// Level
+		GetLevelAttribute().CurrentValue = _level;
+
+		// Movement
+		GetMovementAttribute().CurrentValue = _movement;
+
+		// Speed
+		GetSpeedAttribute().CurrentValue = _speed;
 	}
 }

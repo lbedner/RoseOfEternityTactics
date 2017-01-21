@@ -96,7 +96,7 @@ public class TileHighlighter {
 
 		Color tileColor = unit.MovementTileColor;
 		HighlightType highlightType = HighlightType.MOVEMENT;
-		int range = unit.movement;
+		int range = (int) unit.GetMovementAttribute().CurrentValue;
 
 		float x = unitCurrentTileCoordinate.x;
 		float z = unitCurrentTileCoordinate.z;
