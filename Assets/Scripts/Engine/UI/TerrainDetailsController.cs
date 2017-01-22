@@ -7,9 +7,8 @@ using System.Collections;
 /// </summary>
 public class TerrainDetailsController : MonoBehaviour {
 
-	private const string NOT_APPLICABLE = "N/A";
-
 	public Text uiTerrain;
+
 	public Text uiDefenseModifier;
 	public Text uiDodgeModifier;
 	public Text uiAccuracyModifier;
@@ -48,10 +47,11 @@ public class TerrainDetailsController : MonoBehaviour {
 		string movementModifier
 	) {
 		uiTerrain.text = terrain;
-		uiDefenseModifier.text = string.Format("Defense Modifier: {0}", isWalkable ? defenseModifier : NOT_APPLICABLE);
-		uiDodgeModifier.text = string.Format("Dodge Modifier: {0}", isWalkable ? dodgeModifier : NOT_APPLICABLE);
-		uiAccuracyModifier.text = string.Format("Accuracy Modifier: {0}", isWalkable ? accuracyModifier : NOT_APPLICABLE);
-		uiMovementModifier.text = string.Format("Movement Modifier: {0}", isWalkable ? movementModifier : NOT_APPLICABLE);
+
+		SetModifier (uiDefenseModifier, defenseModifier);
+		SetModifier (uiDodgeModifier, dodgeModifier);
+		SetModifier (uiAccuracyModifier, accuracyModifier);
+		SetModifier (uiMovementModifier, movementModifier);
 
 		this.gameObject.SetActive (true);
 	}
@@ -61,5 +61,23 @@ public class TerrainDetailsController : MonoBehaviour {
 	/// </summary>
 	public void Deactivate() {
 		this.gameObject.SetActive (false);
+	}
+
+	/// <summary>
+	/// Sets the modifier.
+	/// </summary>
+	/// <param name="modifier">Modifier.</param>
+	/// <param name="modifierValue">Modifier value.</param>
+	private void SetModifier(Text modifier, string modifierValue) {
+		Color color = Color.white;
+		int value = int.Parse (modifierValue);
+
+		if (value < 0)
+			color = Color.red;
+		else if (value > 0)
+			color = Color.green;
+			
+		modifier.text = modifierValue;
+		modifier.color = color;
 	}
 }
