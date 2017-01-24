@@ -237,6 +237,7 @@ public class TileMapMouse : MonoBehaviour {
 				_gameManager.GetSourceHead2HeadPanelController ().Load (_selectedCharacter, Head2HeadPanelController.Head2HeadState.ATTACKING);
 				_gameManager.GetTargetHead2HeadPanelController ().Load (_tileMap.GetTileMapData ().GetTileDataAt (_currentTileCoord).Unit, Head2HeadPanelController.Head2HeadState.DEFENDING);
 				head2HeadPanel.SetActive (true);
+				_selectedCharacter.DeactivateCharacterSheet ();
 			}
 			break;
 
@@ -519,6 +520,7 @@ public class TileMapMouse : MonoBehaviour {
 		// Show head 2 head panel for a bit
 		_gameManager.GetSourceHead2HeadPanelController ().Load (attacker, Head2HeadPanelController.Head2HeadState.ATTACKING);
 		_gameManager.GetTargetHead2HeadPanelController ().Load (defender, Head2HeadPanelController.Head2HeadState.DEFENDING);
+		attacker.DeactivateCharacterSheet ();
 		_head2HeadPanelConfirmation.SetActive (false);
 		head2HeadPanel.SetActive (true);
 
