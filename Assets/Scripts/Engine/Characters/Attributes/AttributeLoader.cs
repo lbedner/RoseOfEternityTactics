@@ -3,6 +3,9 @@ using System.Collections;
 using RoseOfEternity;
 
 public class AttributeLoader {
+
+	private static Attribute _strengthAttribute = new Attribute ("Strength", "STR", "Strength Description", 10, 1, 100);
+	private static Attribute _criticalChanceAttribute = new Attribute ("Critical Chance", "Crit %", "Chance of critical attack", 10, 0, 100);
 	
 	/// <summary>
 	/// Gets the loaded attributes.
@@ -31,6 +34,46 @@ public class AttributeLoader {
 		AddNewAttribute(attributes, AttributeEnums.AttributeType.SPEED, "Speed", "SPD", "Determines how often unit can perform an action", 0, 0, 100);
 
 		return attributes;
+	}
+
+	public static AttributeCollection GetSwordOfGalladoranAttributes() {
+		return GetWeaponAttributes (5, 10);
+	}
+
+	public static AttributeCollection GetDaishanDaggerAttributes() {
+		return GetWeaponAttributes (3, 25);
+	}
+
+	public static AttributeCollection GetOrelleWeaponAttributes() {
+		return GetWeaponAttributes (7, 20);
+	}
+
+	public static AttributeCollection GetJarlWeaponAttributes() {
+		return GetWeaponAttributes (4, 5);
+	}
+
+	public static AttributeCollection GetMuckWeaponAttributes() {
+		return GetWeaponAttributes (2, 8);
+	}
+
+	private static AttributeCollection GetWeaponAttributes(int strength, int criticalPercent) {
+
+		AttributeCollection attributes = new AttributeCollection ();
+
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.STRENGTH, _strengthAttribute, strength);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.CRITICAL_CHANCE, _criticalChanceAttribute, criticalPercent);
+
+		return attributes;
+	}
+		
+
+	private static void AddNewAttribute(
+		AttributeCollection attributes,
+		AttributeEnums.AttributeType type,
+		Attribute attribute,
+		float currentValue)
+	{
+		AddNewAttribute (attributes, type, attribute.Name, attribute.ShortName, attribute.ToolTip, currentValue, attribute.MinimumValue, attribute.MaximumValue);
 	}
 
 	/// <summary>

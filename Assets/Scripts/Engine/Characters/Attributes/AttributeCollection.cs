@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 using RoseOfEternity;
 
 public class AttributeCollection {
@@ -34,5 +35,17 @@ public class AttributeCollection {
 	/// </summary>
 	public int Count() {
 		return _attributes.Count;
+	}
+
+	/// <summary>
+	/// Returns a <see cref="System.String"/> that represents the current <see cref="AttributeCollection"/>.
+	/// </summary>
+	/// <returns>A <see cref="System.String"/> that represents the current <see cref="AttributeCollection"/>.</returns>
+	public override string ToString ()
+	{
+		StringBuilder sb = new StringBuilder ();
+		foreach (Attribute attribute in _attributes.Values)
+			sb.Append (attribute.ToString ());
+		return sb.ToString ();
 	}
 }

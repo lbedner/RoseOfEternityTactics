@@ -9,5 +9,7 @@ public class AttributeEnums {
 		ABILITY_POINTS,
 		MOVEMENT,
 		SPEED,
+		STRENGTH,
+		CRITICAL_CHANCE,
 	}
 }

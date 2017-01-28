@@ -65,7 +65,10 @@ public class Combat {
 	/// </summary>
 	/// <returns>The damage.</returns>
 	private int GetDamage() {
-		int damage = (int) _attacker.GetLevelAttribute().CurrentValue * 2;
+		Item weapon = _attacker.GetItemInSlot (InventorySlots.Slot.RIGHT_HAND);
+		int strength = (int) weapon.GetAttribute (AttributeEnums.AttributeType.STRENGTH).CurrentValue;
+
+		int damage = (int) _attacker.GetLevelAttribute().CurrentValue * strength;
 		return damage;
 	}
 }

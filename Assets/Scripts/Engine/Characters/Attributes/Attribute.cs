@@ -6,11 +6,7 @@ namespace RoseOfEternity {
 	[System.Serializable]
 	public class Attribute {
 
-		[SerializeField] private string _name;
-		[SerializeField] private string _shortName;
-		[SerializeField] private string _toolTip;
-		[SerializeField] private float _minimumValue;
-		[SerializeField] private float _currentValue;
+		private float _currentValue;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RoseOfEternity.Attribute"/> class.
@@ -22,25 +18,26 @@ namespace RoseOfEternity {
 		/// <param name="minimumValue">Minimum value.</param>
 		/// <param name="maximumValue">Maximum value.</param>
 		public Attribute(string name, string shortName, string toolTip, float currentValue, float minimumValue, float maximumValue) {
-			_name = name;
-			_shortName = shortName;
-			_toolTip = toolTip;
-			_minimumValue = minimumValue;
+			Name = name;
+			ShortName = shortName;
+			ToolTip = toolTip;
+			MinimumValue = minimumValue;
 			MaximumValue = maximumValue;
-			CurrentValue = currentValue;
+			_currentValue = currentValue;
 		}
+
+		// Properties
+		public string Name { get; private set; }
+		public string ShortName { get; private set; }
+		public string ToolTip { get; private set; }
+		public float MinimumValue { get; private set; }
+		public float MaximumValue { get; set; }
 
 		/// <summary>
 		/// Gets or sets the current value. When setting, value will be clamped to the min/max.
 		/// </summary>
 		/// <value>The current value.</value>
-		public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, _minimumValue, MaximumValue); }}
-
-		/// <summary>
-		/// Gets or sets the maximum value.
-		/// </summary>
-		/// <value>The maximum value.</value>
-		public float MaximumValue { get; set; }
+		public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
 
 		/// <summary>
 		/// Increment the current value.
@@ -56,6 +53,15 @@ namespace RoseOfEternity {
 		/// <param name="decrementValue">Decrement value.</param>
 		public void Decrement(float decrementValue) {
 			CurrentValue -= decrementValue;
+		}
+
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the current <see cref="RoseOfEternity.Attribute"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents the current <see cref="RoseOfEternity.Attribute"/>.</returns>
+		public override string ToString ()
+		{
+			return string.Format ("[Attribute: Name={0}, CurrentValue={1}]", Name, CurrentValue);
 		}
 	}
 }

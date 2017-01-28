@@ -52,6 +52,8 @@ public abstract class Unit : MonoBehaviour {
 	private bool isSelected = false;
 
 	private AttributeCollection _attributeCollection;
+	private Inventory _inventory;
+	private InventorySlots _inventorySlots;
 
 	// Use this for initialization
 	void Start () {
@@ -61,6 +63,33 @@ public abstract class Unit : MonoBehaviour {
 		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
 		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
 		_attributeCollection = AttributeLoader.GetLoadedAttributes ();
+
+		print (firstName);
+		_inventorySlots = new InventorySlots ();
+		string weaponName = "Sword of Galladoran";
+		if (firstName == "Sinteres") {
+			_inventory = ItemLoader.GetSinteresItems ();
+			weaponName = "Daishan Dagger";
+		}
+		else if (firstName == "Aramus") {
+			_inventory = ItemLoader.GetLoadedItems ();
+			weaponName = "Sword of Galladoran";
+		}
+		else if (firstName == "Jarl") {
+			_inventory = ItemLoader.GetJarlItems ();
+			weaponName = "Wand of Power";
+		}
+		else if (firstName == "Orelle") {
+			_inventory = ItemLoader.GetOrelleItems ();
+			weaponName = "Dundalan Axe";
+		}
+		else if (firstName == "Petty Muck") {
+			_inventory = ItemLoader.GetMuckItems ();
+			weaponName = "Muck";
+		}
+		print (_inventory);
+
+		_inventorySlots.Add(InventorySlots.Slot.RIGHT_HAND, _inventory, _inventory.GetFirstItemByName(weaponName));
 		SetAttributes();
 	}
 
@@ -307,5 +336,9 @@ public abstract class Unit : MonoBehaviour {
 
 		// Speed
 		GetSpeedAttribute().CurrentValue = _speed;
+	}
+
+	public Item GetItemInSlot(InventorySlots.Slot slot) {
+		return _inventorySlots.Get (slot);
 	}
 }
