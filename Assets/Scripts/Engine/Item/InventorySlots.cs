@@ -7,7 +7,8 @@ public class InventorySlots  {
 	/// <summary>
 	/// All available slots.
 	/// </summary>
-	public enum Slot {
+	public enum SlotType {
+		ANY,
 		RIGHT_HAND,
 		LEFT_HAND,
 		HEAD,
@@ -18,56 +19,62 @@ public class InventorySlots  {
 		RING_1,
 		RING_2,
 		AMULET,
+		CONSUMABLE,
+		MONSTER,
 	}
 
-	private Dictionary<Slot, Item> _items = new Dictionary<Slot, Item>();
+	private Dictionary<SlotType, Item> _items = new Dictionary<SlotType, Item>();
 
 	/// <summary>
 	/// Add the item to the specified slot.
-	/// If an item already exists in the slot, remove it and put back into the inventory.
 	/// </summary>
-	/// <param name="slot">Slot.</param>
-	/// <param name="inventory">Inventory.</param>
 	/// <param name="item">Item.</param>
-	public void Add(Slot slot, Inventory inventory, Item item) {
-		if (_items.ContainsKey (slot)) {
+	public void Add(Item item) {
 
-			// Remove currently equipped item and put back into inventory
-			Remove (slot, inventory);
+		// Get inventory slot from item
+		InventorySlots.SlotType slotType = item.SlotType;
+		if (_items.ContainsKey (slotType)) {
+
+			// Remove currently equipped item
+			Remove (slotType);
 		}
 
-		// Remove item from inventory
-		inventory.Remove(item);
-
 		// Add item to slot
-		_items.Add (slot, item);
+		_items.Add (slotType, item);
 	}
 
 	/// <summary>
-	/// Remove the item from the specified slot and put back into the specified inventory.
+	/// Remove the item from the specified slot.
 	/// </summary>
-	/// <param name="slot">Slot.</param>
-	/// <param name="inventory">Inventory.</param>
-	public void Remove(Slot slot, Inventory inventory) {
-		if (_items.ContainsKey(slot)) {
+	/// <param name="slotType">Slot.</param>
+	public Item Remove(SlotType slotType) {
+		if (_items.ContainsKey(slotType)) {
 
 			// Remove item from item slot
-			Item item = _items[slot];
-			_items.Remove (slot);
+			Item item = _items[slotType];
+			_items.Remove (slotType);
 
-			// Put item back into inventory
-			inventory.Add(item);
+			return item;
 		}
+		return null;
 	}
 
 	/// <summary>
 	/// Get an item by the specified slot.
 	/// </summary>
-	/// <param name="slot">Slot.</param>
-	public Item Get(Slot slot) {
-		if (_items.ContainsKey (slot))
-			return _items [slot];
+	/// <param name="slotType">Slot.</param>
+	public Item Get(SlotType slotType) {
+		if (_items.ContainsKey (slotType))
+			return _items [slotType];
 		return null;
+	}
+
+	/// <summary>
+	/// Gets the inventory slots.
+	/// </summary>
+	/// <returns>The inventory slots.</returns>
+	public Dictionary<SlotType, Item> GetInventorySlots() {
+		return _items;
 	}
 
 	/// <summary>

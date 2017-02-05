@@ -15,15 +15,51 @@ public class ItemTest {
 		AttributeEnums.AttributeType type = AttributeEnums.AttributeType.ABILITY_POINTS;
 		attributes.Add (type, a1);
 
-		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", attributes);
+		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", attributes, InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
 
 		Assert.NotNull (i1.GetAttribute (type));
 	}
 
 	[Test]
 	public void TestGetAttributesFailiure() {
-		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection ());
+		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_1);
 
 		Assert.Null(i1.GetAttribute(AttributeEnums.AttributeType.ABILITY_POINTS));
+	}
+
+	[Test]
+	public void TestGetTierColor() {
+		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_1);
+		Assert.AreEqual (i1.Tier1Color, i1.TierColor);
+
+		i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_2);
+		Assert.AreEqual (i1.Tier2Color, i1.TierColor);
+
+		i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_3);
+		Assert.AreEqual (i1.Tier3Color, i1.TierColor);
+
+		i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_4);
+		Assert.AreEqual (i1.Tier4Color, i1.TierColor);
+
+		i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
+		Assert.AreEqual (i1.Tier5Color, i1.TierColor);
+	}
+
+	[Test]
+	public void TestGetTierName() {
+		Item i = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_1);
+		Assert.AreEqual (Item.TIER_1_NAME, i.TierName);
+
+		i = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_2);
+		Assert.AreEqual (Item.TIER_2_NAME, i.TierName);
+
+		i = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_3);
+		Assert.AreEqual (Item.TIER_3_NAME, i.TierName);
+
+		i = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_4);
+		Assert.AreEqual (Item.TIER_4_NAME, i.TierName);
+
+		i = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
+		Assert.AreEqual (Item.TIER_5_NAME, i.TierName);
 	}
 }

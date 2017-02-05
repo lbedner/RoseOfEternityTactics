@@ -22,6 +22,7 @@ public class TileMapMouse : MonoBehaviour {
 		COMBAT_MENU,
 		TURN_OVER,
 		UNDO,
+		SHOW_UNIT_MENU,
 	}
 
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
@@ -49,6 +50,7 @@ public class TileMapMouse : MonoBehaviour {
 	private Unit _highlightedCharacter;
 	private Unit _selectedCharacter;
 
+	private GameState _previousGameState;
 	private GameState _gameState;
 
 	private Action _action;
@@ -60,6 +62,8 @@ public class TileMapMouse : MonoBehaviour {
 	private GameManager _gameManager;
 
 	private MusicController _musicController;
+
+	private UnitMenuController _unitMenuController;
 
 	private TileHighlighter _tileHighlighter;
 	private TileDiscoverer _tileDiscoverer;
@@ -81,6 +85,8 @@ public class TileMapMouse : MonoBehaviour {
 		_gameStateOriginator = new GameStateOriginator ();
 		_gameStateCaretaker = new GameStateCaretaker ();
 		_head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
+		_unitMenuController = _gameManager.GetUnitMenuController ();
+		_unitMenuController.Initialize ();
 	}
 
 	/// <summary>
@@ -88,6 +94,7 @@ public class TileMapMouse : MonoBehaviour {
 	/// </summary>
 	/// <param name="newState">New state.</param>
 	public void TransitionGameState(GameState newState) {
+		_previousGameState = _gameState;
 		_gameState = newState;
 	}
 
@@ -122,10 +129,21 @@ public class TileMapMouse : MonoBehaviour {
 			TransitionGameState (GameState.INITIALIZE_TURN);
 			break;			
 
+		case GameState.SHOW_UNIT_MENU:
+			
+			// Hide Unit Menu
+			if (Input.GetKeyDown (KeyCode.I)) {
+				HideUnitMenu ();
+				TransitionGameState (_previousGameState);
+				break;
+			}
+
+			ShowUnitMenu ();
+			break;
+
 		case GameState.INITIALIZE_TURN:
 			ShowCursorAndTileSelector (false);
 			Unit unit = _gameManager.GetTurnOrderController ().GetNextUp ();
-			//Debug.Log (string.Format ("Initialzie Turn: {0}", unit));
 			StartCoroutine (_gameManager.GetCameraController ().MoveToPosition (unit.transform.position));
 			HighlightCharacter (unit);
 
@@ -137,7 +155,9 @@ public class TileMapMouse : MonoBehaviour {
 
 		// Player is moving cursor around the tile map
 		case GameState.PLAYER_TURN:
+			
 			if (!_gameManager.GetCameraController ().IsMoving) {
+
 				ShowCursorAndTileSelector (true);
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				HandleTerrainMouseOver (ray);
@@ -155,6 +175,12 @@ public class TileMapMouse : MonoBehaviour {
 					//_gameStateCaretaker.Add (_gameStateOriginator.StoreInMemento ());
 
 					_gameState = GameState.PLAYER_MOVE_SELECTION;
+				}
+
+				// Bring up Unit Menu
+				if (Input.GetKeyDown (KeyCode.I)) {
+					TransitionGameState (GameState.SHOW_UNIT_MENU);
+					break;
 				}
 			}
 			break;
@@ -798,6 +824,16 @@ public class TileMapMouse : MonoBehaviour {
 				break;
 			}
 		}
+	}
+
+	private void ShowUnitMenu() {
+		_unitMenuController.Activate (_gameManager.GetTurnOrderController ().GetNextUp ());
+		//ShowTileSelector (false);
+	}
+
+	private void HideUnitMenu() {
+		_unitMenuController.Deactivate();
+		//ShowTileSelector (true);
 	}
 
 	public class GameStateAction {

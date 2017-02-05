@@ -38,6 +38,14 @@ public class TileMap : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the allies.
+	/// </summary>
+	/// <returns>The allies.</returns>
+	public List<Unit> GetAllies() {
+		return new List<Unit> () { aramus, sinteres, orelle, jarl };
+	}
+
+	/// <summary>
 	/// Initializes the tile map.
 	/// </summary>
 	public void InitializeTileMap() {

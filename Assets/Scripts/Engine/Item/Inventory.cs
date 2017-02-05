@@ -4,13 +4,23 @@ using System.Collections.Generic;
 
 public class Inventory {
 	private List<Item> _items = new List<Item> ();
+	private int _capacity;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Inventory"/> class.
+	/// </summary>
+	/// <param name="capacity">Capacity.</param>
+	//public Inventory(int capacity) {
+	//	_capacity = capacity;
+	//}
 
 	/// <summary>
 	/// Add the specified item.
 	/// </summary>
 	/// <param name="item">Item.</param>
 	public void Add(Item item) {
-		_items.Add (item);
+		//if (Count() <= _capacity)
+			_items.Add (item);
 	}
 
 	/// <summary>
@@ -18,8 +28,10 @@ public class Inventory {
 	/// </summary>
 	/// <param name="item">Item.</param>
 	public void Remove(Item item) {
-		if (_items.Contains(item))
-			_items.Remove (item);
+		if (_items.Contains (item)) {
+			//_items.Remove (item);
+			_items [_items.IndexOf (item)] = null;
+		}
 	}
 
 	/// <summary>
@@ -50,10 +62,36 @@ public class Inventory {
 	}
 
 	/// <summary>
-	/// Number of items in the inventory.
+	/// Insert the specified item at the index.
+	/// If index doesn't exist, it just gets added to the end of the collection.
+	/// </summary>
+	/// <param name="item">Item.</param>
+	/// <param name="index">Index.</param>
+	public void Upsert(Item item, int index) {
+		if (index + 1 > _items.Count)
+			Add (item);
+		else
+			_items [index] = item;
+	}
+
+	/// <summary>
+	/// Get the item by index.
+	/// </summary>
+	/// <param name="index">Index.</param>
+	public Item Get(int index) {
+		return _items [index];
+	}
+
+	/// <summary>
+	/// Number of items in the inventory (disregards "null")
 	/// </summary>
 	public int Count() {
-		return _items.Count;
+		int count = 0;
+		foreach (Item item in _items) {
+			if (item != null)
+				count++;
+		}
+		return count;
 	}
 
 	/// <summary>
@@ -63,8 +101,12 @@ public class Inventory {
 	public override string ToString ()
 	{
 		StringBuilder sb = new StringBuilder ();
-		foreach (Item item in _items)
-			sb.Append (item.ToString ());
+		foreach (Item item in _items) {
+			string s = "[NO ITEM]";
+			if (item != null)
+				s = string.Format("[{0}]", item.Name);
+			sb.Append (s);
+		}
 		return sb.ToString ();		
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Game manager, implemented as a Singleton.
@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour {
 	private Head2HeadPanelController _sourceHead2HeadPanelController;
 	[SerializeField]
 	private Head2HeadPanelController _targetHead2HeadPanelController;
+	[SerializeField]
+	private UnitMenuController _unitMenuController;
 
 	/// <summary>
 	/// Gets the instance.
@@ -51,6 +53,14 @@ public class GameManager : MonoBehaviour {
 
 		// Initialize tilemap
 		_tileMap.Initialize ();
+	}
+
+	/// <summary>
+	/// Gets the allies.
+	/// </summary>
+	/// <returns>The allies.</returns>
+	public List<Unit> GetAllies() {
+		return _tileMap.GetAllies ();
 	}
 
 	/// <summary>
@@ -88,4 +98,10 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The source head2 head panel controller.</returns>
 	public Head2HeadPanelController GetTargetHead2HeadPanelController() {return _targetHead2HeadPanelController;}
+
+	/// <summary>
+	/// Gets the unit menu controller.
+	/// </summary>
+	/// <returns>The unit menu controller.</returns>
+	public UnitMenuController GetUnitMenuController() {return _unitMenuController;}
 }

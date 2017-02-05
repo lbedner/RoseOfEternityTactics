@@ -11,42 +11,28 @@ public class InventorySlotsTest {
 
 	[SetUp]
 	public void TestSetup() {
-		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection ());
-		_inventory = new Inventory ();
-
-		_inventory.Add (_i1);
+		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5);
 		_slots = new InventorySlots ();
 	}
 
 	[Test]
 	public void TestAddAndGet() {
 
-		string itemName = "armor";
-
-		// Make sure the inventory has the item
-		Assert.AreEqual(_i1, _inventory.GetFirstItemByName(itemName));
-
-		_slots.Add (InventorySlots.Slot.BODY, _inventory, _i1);
-
-		// Make sure item is removed from the inventory
-		Assert.Null(_inventory.GetFirstItemByName(itemName));
+		_slots.Add (_i1);
 
 		// Make sure the item is added to the slot
-		Assert.AreEqual(_i1, _slots.Get(InventorySlots.Slot.BODY));
+		Assert.AreEqual(_i1, _slots.Get(InventorySlots.SlotType.BODY));
 	}
 
 	[Test]
 	public void TestRemove() {
 
-		string itemName = "armor";
+		_slots.Add (_i1);
 
-		_slots.Add (InventorySlots.Slot.BODY, _inventory, _i1);
+		Assert.NotNull (_slots.Get (InventorySlots.SlotType.BODY));
 
-		Assert.NotNull (_slots.Get (InventorySlots.Slot.BODY));
+		_slots.Remove (InventorySlots.SlotType.BODY);
 
-		_slots.Remove (InventorySlots.Slot.BODY, _inventory);
-
-		Assert.Null (_slots.Get (InventorySlots.Slot.BODY));
-		Assert.AreEqual (_i1, _inventory.GetFirstItemByName (itemName));
+		Assert.Null (_slots.Get (InventorySlots.SlotType.BODY));
 	}
 }

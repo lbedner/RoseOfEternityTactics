@@ -8,7 +8,7 @@ public class AttributeCollection {
 	/// <summary>
 	/// The attributes.
 	/// </summary>
-	public Dictionary<AttributeEnums.AttributeType, Attribute> _attributes = new Dictionary<AttributeEnums.AttributeType, Attribute>();
+	private Dictionary<AttributeEnums.AttributeType, Attribute> _attributes = new Dictionary<AttributeEnums.AttributeType, Attribute>();
 
 	/// <summary>
 	/// Add the specified type and attribute.
@@ -21,13 +21,21 @@ public class AttributeCollection {
 	}
 
 	/// <summary>
-	/// Get the specified type.
+	/// Get the specified type of attribute.
 	/// </summary>
 	/// <param name="type">Type.</param>
 	public Attribute Get(AttributeEnums.AttributeType type) {
 		if (_attributes.ContainsKey (type))
 			return _attributes [type];
 		return null;
+	}
+
+	/// <summary>
+	/// Gets the attributes.
+	/// </summary>
+	/// <returns>The attributes.</returns>
+	public Dictionary<AttributeEnums.AttributeType, Attribute> GetAttributes() {
+		return _attributes;
 	}
 
 	/// <summary>

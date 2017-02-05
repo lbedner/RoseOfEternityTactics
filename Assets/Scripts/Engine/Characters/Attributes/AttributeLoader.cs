@@ -4,8 +4,15 @@ using RoseOfEternity;
 
 public class AttributeLoader {
 
-	private static Attribute _strengthAttribute = new Attribute ("Strength", "STR", "Strength Description", 10, 1, 100);
-	private static Attribute _criticalChanceAttribute = new Attribute ("Critical Chance", "Crit %", "Chance of critical attack", 10, 0, 100);
+	private static Attribute _strengthAttribute = new Attribute ("Strength", "STR", "Strength Description.", 10, 1, 100);
+	private static Attribute _criticalChanceAttribute = new Attribute ("Critical Chance", "Crit %", "Chance of critical attack.", 10, 0, 100);
+
+	private static Attribute _defenseAttribute = new Attribute ("Defense", "DEF", "Determines how much damage is inflicted upon the unit.", 10, 0, 100);
+	private static Attribute _dodgeChanceAttribute = new Attribute ("Dodge Chance", "Dodge %", "Chance of dodging attack.", 10, 0, 100);
+
+	private static Attribute _damageAttribute = new Attribute ("Damage", "DMG", "Damage Description.", 1, 1, 100);
+	private static Attribute _hitAttribute = new Attribute ("Hit %", "HIT", "Hit % Description.", 1, 1, 100);
+	private static Attribute _armorAttribute = new Attribute ("Armor", "ARM", "Armor Description.", 1, 0, 100);
 	
 	/// <summary>
 	/// Gets the loaded attributes.
@@ -33,35 +40,102 @@ public class AttributeLoader {
 		// Speed
 		AddNewAttribute(attributes, AttributeEnums.AttributeType.SPEED, "Speed", "SPD", "Determines how often unit can perform an action", 0, 0, 100);
 
+		// Dexterity
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DEXTERITY, "Dexterity", "DEX", "Dexterity Description", 1, 1, 100);
+
+		// Magic
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.MAGIC, "Magic", "MAG", "Magic Description", 1, 1, 100);
+
+		// Strength
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.STRENGTH, _strengthAttribute, 10);
+
+		// Defense
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DEFENSE, _defenseAttribute, 10);
+
 		return attributes;
 	}
 
 	public static AttributeCollection GetSwordOfGalladoranAttributes() {
-		return GetWeaponAttributes (5, 10);
+		return GetWeaponAttributes (15, 10, 90);
 	}
 
 	public static AttributeCollection GetDaishanDaggerAttributes() {
-		return GetWeaponAttributes (3, 25);
+		return GetWeaponAttributes (5, 25, 100);
 	}
 
 	public static AttributeCollection GetOrelleWeaponAttributes() {
-		return GetWeaponAttributes (7, 20);
+		return GetWeaponAttributes (12, 20, 70);
 	}
 
 	public static AttributeCollection GetJarlWeaponAttributes() {
-		return GetWeaponAttributes (4, 5);
+		return GetWeaponAttributes (4, 5, 100);
 	}
 
 	public static AttributeCollection GetMuckWeaponAttributes() {
-		return GetWeaponAttributes (2, 8);
+		return GetWeaponAttributes (2, 8, 95);
 	}
 
-	private static AttributeCollection GetWeaponAttributes(int strength, int criticalPercent) {
+	public static AttributeCollection GetDundalanChestAttributes() {
+		return GetArmorAttributes (6, 0);
+	}
+
+	public static AttributeCollection GetDundalanArmsAttributes() {
+		return GetArmorAttributes (3, 0);
+	}
+
+	public static AttributeCollection GetDundalanLegsAttributes() {
+		return GetArmorAttributes (3, 0);
+	}
+
+	public static AttributeCollection GetDundalanShieldAttributes() {
+		return GetArmorAttributes (3, 10);
+	}
+
+	public static AttributeCollection GetJusticePrevailsChestAttributes() {
+		return GetArmorAttributes (5, 5);
+	}
+
+	public static AttributeCollection GetJusticePrevailsArmsAttributes() {
+		return GetArmorAttributes (2, 2);
+	}
+
+	public static AttributeCollection GetJusticePrevailsLegsAttributes() {
+		return GetArmorAttributes (2, 1);
+	}
+
+	public static AttributeCollection GetJusticePrevailsShieldAttributes() {
+		return GetArmorAttributes (2, 15);
+	}
+
+	public static AttributeCollection GetLeftRingOfGalladoranAttributes() {
+		return GetArmorAttributes (5, 10);
+	}
+
+	public static AttributeCollection GetRightRingOfGalladoranAttributes() {
+		return GetArmorAttributes (5, 10);
+	}
+
+	public static AttributeCollection GetLongBowAttributes() {
+		return GetWeaponAttributes (8, 35, 70);
+	}
+
+	private static AttributeCollection GetWeaponAttributes(int damage, int criticalPercent, int hitPercent) {
 
 		AttributeCollection attributes = new AttributeCollection ();
 
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.STRENGTH, _strengthAttribute, strength);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DAMAGE, _damageAttribute, damage);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.HIT_PERCENT, _hitAttribute, hitPercent);
 		AddNewAttribute(attributes, AttributeEnums.AttributeType.CRITICAL_CHANCE, _criticalChanceAttribute, criticalPercent);
+
+		return attributes;
+	}
+
+	private static AttributeCollection GetArmorAttributes(int armor, int dodgePercent) {
+
+		AttributeCollection attributes = new AttributeCollection ();
+
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.ARMOR, _armorAttribute, armor);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DODGE_CHANCE, _dodgeChanceAttribute, dodgePercent);
 
 		return attributes;
 	}

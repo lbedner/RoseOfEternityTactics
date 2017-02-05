@@ -30,7 +30,12 @@ public abstract class Unit : MonoBehaviour {
 	[SerializeField] private int _totalAbilityPoints = 1;
 	[SerializeField] private int _level = 1;
 	[SerializeField] private int _movement = 4;
+
+	[SerializeField] private int _strength = 1;
+	[SerializeField] private int _defense = 1;
+	[SerializeField] private int _dexterity = 1;
 	[SerializeField] private int _speed = 3;
+	[SerializeField] private int _magic = 1;
 	public int weaponRange = 1;
 
 	public string weaponName;
@@ -64,7 +69,6 @@ public abstract class Unit : MonoBehaviour {
 		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
 		_attributeCollection = AttributeLoader.GetLoadedAttributes ();
 
-		print (firstName);
 		_inventorySlots = new InventorySlots ();
 		string weaponName = "Sword of Galladoran";
 		if (firstName == "Sinteres") {
@@ -87,9 +91,8 @@ public abstract class Unit : MonoBehaviour {
 			_inventory = ItemLoader.GetMuckItems ();
 			weaponName = "Muck";
 		}
-		print (_inventory);
 
-		_inventorySlots.Add(InventorySlots.Slot.RIGHT_HAND, _inventory, _inventory.GetFirstItemByName(weaponName));
+		_inventorySlots.Add(_inventory.GetFirstItemByName(weaponName));
 		SetAttributes();
 	}
 
@@ -328,17 +331,34 @@ public abstract class Unit : MonoBehaviour {
 		GetAbilityPointsAttribute().MaximumValue = _totalAbilityPoints;
 		GetAbilityPointsAttribute ().CurrentValue = CurrentAbilityPoints;
 
-		// Level
-		GetLevelAttribute().CurrentValue = _level;
-
 		// Movement
 		GetMovementAttribute().CurrentValue = _movement;
 
 		// Speed
 		GetSpeedAttribute().CurrentValue = _speed;
+
+		// Strength
+		_attributeCollection.Get (AttributeEnums.AttributeType.STRENGTH).CurrentValue = _strength;
+
+		// Defense
+		_attributeCollection.Get (AttributeEnums.AttributeType.DEFENSE).CurrentValue = _defense;
+
+		// Dexterity
+		_attributeCollection.Get (AttributeEnums.AttributeType.DEXTERITY).CurrentValue = _dexterity;
+
+		// Magic
+		_attributeCollection.Get (AttributeEnums.AttributeType.MAGIC).CurrentValue = _magic;
 	}
 
-	public Item GetItemInSlot(InventorySlots.Slot slot) {
-		return _inventorySlots.Get (slot);
+	public Item GetItemInSlot(InventorySlots.SlotType slotType) {
+		return _inventorySlots.Get (slotType);
+	}
+
+	public InventorySlots GetInventorySlots() {
+		return _inventorySlots;
+	}
+
+	public override string ToString () {
+		return string.Format("{0} - {1}", firstName, _attributeCollection.ToString ());
 	}
 }

@@ -57,14 +57,15 @@ public class Head2HeadPanelController : MonoBehaviour {
 		// TODO: Mock up rest of attributes, at some point, pull them from Combat class
 		if (head2HeadState == Head2HeadState.ATTACKING) {
 
-			Item weapon = unit.GetItemInSlot (InventorySlots.Slot.RIGHT_HAND);
-			int strength = (int) weapon.GetAttribute (AttributeEnums.AttributeType.STRENGTH).CurrentValue;
+			Item weapon = unit.GetItemInSlot (InventorySlots.SlotType.RIGHT_HAND);
+			print (weapon);
+			int damageAttribute = (int) weapon.GetAttribute (AttributeEnums.AttributeType.DAMAGE).CurrentValue;
 			int criticalChance = (int) weapon.GetAttribute (AttributeEnums.AttributeType.CRITICAL_CHANCE).CurrentValue;
 
-			damage.text = string.Format ("Dmg: {0}",(strength * currentLevel));
+			damage.text = string.Format ("Dmg: {0}",(damageAttribute * currentLevel));
 			attackHitPercent.text = string.Format ("Hit: {0}%", 100);
 			crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
-			usedAbility.text = unit.GetItemInSlot(InventorySlots.Slot.RIGHT_HAND).Name;
+			usedAbility.text = unit.GetItemInSlot(InventorySlots.SlotType.RIGHT_HAND).Name;
 		} else {
 			damage.text = "";
 			attackHitPercent.text = "";

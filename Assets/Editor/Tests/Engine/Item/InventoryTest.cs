@@ -8,13 +8,15 @@ public class InventoryTest {
 	private Item _i1;
 	private Item _i2;
 	private Item _i3;
+	private Item _nullItem;
 	private Inventory _inventory;
 
 	[SetUp]
 	public void Setup() {
-		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection ());
-		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection ());
-		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection ());
+		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5);
+		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
+		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
+		_nullItem = null;
 	}
 
 	[Test]
@@ -22,6 +24,7 @@ public class InventoryTest {
 		_inventory = new Inventory ();
 		_inventory.Add (_i1);
 		_inventory.Add (_i2);
+		_inventory.Add (_nullItem);
 
 		Assert.AreEqual (2, _inventory.Count ());
 	}
@@ -31,8 +34,10 @@ public class InventoryTest {
 		_inventory = new Inventory ();
 		_inventory.Add (_i1);
 		_inventory.Add (_i2);
+		_inventory.Add (_nullItem);
 		_inventory.Remove (_i1);
 		_inventory.Remove (_i2);
+		_inventory.Remove (_nullItem);
 
 		Assert.AreEqual (0, _inventory.Count ());
 	}
@@ -67,5 +72,32 @@ public class InventoryTest {
 		Assert.AreEqual (2, items.Count);
 		Assert.AreEqual (_i2, items [0]);
 		Assert.AreEqual (_i3, items [1]);
+	}
+
+	[Test]
+	public void TestGet() {
+		_inventory = new Inventory ();
+		_inventory.Add (_i1);
+		_inventory.Add (_nullItem);
+
+		Assert.AreEqual (_i1, _inventory.Get (0));
+		Assert.AreEqual (_nullItem, _inventory.Get (1));
+	}
+
+	[Test]
+	public void TestUpsert() {
+		_inventory = new Inventory ();
+
+		// Inventory is currently empty, test that upserting to the first index (which doesn't exist) works
+		_inventory.Upsert (_i1, 0);
+		Assert.AreEqual (_i1, _inventory.Get (0));
+
+		// Test inserting to an index that is clearly bigger than inventory
+		_inventory.Upsert(_i2, 100);
+		Assert.AreEqual (_i2, _inventory.Get (1));
+
+		// Update first item in inventory
+		_inventory.Upsert(_i3, 0);
+		Assert.AreEqual (_i3, _inventory.Get (0));
 	}
 }
