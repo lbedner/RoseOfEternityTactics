@@ -76,7 +76,7 @@ public abstract class AI {
 				}
 			}
 		}
-		Debug.Log (string.Format("Nearest Enemy - {0}: {1}", nearestEnemy, currentDistance));
+		//Debug.Log (string.Format("Nearest Enemy - {0}: {1}", nearestEnemy, currentDistance));
 		return nearestEnemy;
 	}
 

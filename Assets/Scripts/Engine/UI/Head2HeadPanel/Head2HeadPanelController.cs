@@ -58,7 +58,6 @@ public class Head2HeadPanelController : MonoBehaviour {
 		if (head2HeadState == Head2HeadState.ATTACKING) {
 
 			Item weapon = unit.GetItemInSlot (InventorySlots.SlotType.RIGHT_HAND);
-			print (weapon);
 			int damageAttribute = (int) weapon.GetAttribute (AttributeEnums.AttributeType.DAMAGE).CurrentValue;
 			int criticalChance = (int) weapon.GetAttribute (AttributeEnums.AttributeType.CRITICAL_CHANCE).CurrentValue;
 

@@ -27,6 +27,8 @@ public class TileMap : MonoBehaviour {
 	private TileMapData _tileMapData;
 	private Graph _graph;
 
+	private List<Unit> _enemies = new List<Unit> ();
+
 	public void Initialize() {
 		print ("TileMap.Initialize()");
 		InitializeTileMap ();
@@ -35,6 +37,8 @@ public class TileMap : MonoBehaviour {
 		// Generate 4 way pathfinding graph
 		_graph = new Graph (size_x, size_z);
 		_graph.Generate4WayGraph ();
+
+		BuildEnemyList ();
 	}
 
 	/// <summary>
@@ -43,6 +47,27 @@ public class TileMap : MonoBehaviour {
 	/// <returns>The allies.</returns>
 	public List<Unit> GetAllies() {
 		return new List<Unit> () { aramus, sinteres, orelle, jarl };
+	}
+
+	/// <summary>
+	/// Gets the enemies.
+	/// </summary>
+	/// <returns>The enemies.</returns>
+	public List<Unit> GetEnemies() {
+		return _enemies;
+	}
+
+	/// <summary>
+	/// Ares all enemies defeated.
+	/// </summary>
+	/// <returns><c>true</c>, if all enemies defeated was ared, <c>false</c> otherwise.</returns>
+	public bool AreAllEnemiesDefeated() {
+		foreach (Unit unit in _enemies) {
+			print (unit);
+			if (unit != null)
+				return false;
+		}
+		return true;
 	}
 
 	/// <summary>
@@ -202,5 +227,16 @@ public class TileMap : MonoBehaviour {
 			unit.Tile = new Vector3 (x, 0, z);
 			GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
 		}
+	}
+
+	private void BuildEnemyList() {
+		if (pettyMuck1 != null && pettyMuck1.isActiveAndEnabled)
+			_enemies.Add (pettyMuck1);
+		if (pettyMuck2 != null && pettyMuck2.isActiveAndEnabled)
+			_enemies.Add (pettyMuck2);
+		if (pettyMuck3 != null && pettyMuck3.isActiveAndEnabled)
+			_enemies.Add (pettyMuck3);
+		if (pettyMuck4 != null && pettyMuck4.isActiveAndEnabled)
+			_enemies.Add (pettyMuck4);
 	}
 }

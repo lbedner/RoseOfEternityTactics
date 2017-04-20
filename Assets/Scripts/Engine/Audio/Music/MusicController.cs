@@ -19,6 +19,14 @@ public class MusicController : MonoBehaviour {
 			musicFire.volume = 0.0f;
 		}
 	}
+
+	/// <summary>
+	/// Stops all music.
+	/// </summary>
+	public void StopAllMusic() {
+		musicCalm.Stop ();
+		musicFire.Stop ();
+	}
 		
 	/// <summary>
 	/// Transitions the music from calm to fire (or vice versa).

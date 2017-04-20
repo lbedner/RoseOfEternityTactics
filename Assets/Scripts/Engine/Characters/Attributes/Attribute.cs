@@ -8,6 +8,9 @@ namespace RoseOfEternity {
 
 		private float _currentValue;
 
+		public string test = "test";
+		public int testInt = 1;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RoseOfEternity.Attribute"/> class.
 		/// </summary>
@@ -27,11 +30,11 @@ namespace RoseOfEternity {
 		}
 
 		// Properties
-		public string Name { get; private set; }
-		public string ShortName { get; private set; }
-		public string ToolTip { get; private set; }
-		public float MinimumValue { get; private set; }
-		public float MaximumValue { get; set; }
+		[SerializeField] public string Name { get; set; }
+		[SerializeField] public string ShortName { get; set; }
+		[SerializeField] public string ToolTip { get; set; }
+		[SerializeField] public float MinimumValue { get; set; }
+		[SerializeField] public float MaximumValue { get; set; }
 
 		/// <summary>
 		/// Gets or sets the current value. When setting, value will be clamped to the min/max.

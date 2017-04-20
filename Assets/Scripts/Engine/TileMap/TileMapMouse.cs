@@ -2,11 +2,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(TileMap))]
 public class TileMapMouse : MonoBehaviour {
 
 	public enum GameState {
+		START_FADE_IN,
+		END_FADE_IN,
+		DISPLAY_MISSION_OBJECTIVES,
 		INITIALIZE,
 		INITIALIZE_TURN,		
 		PLAYER_TURN,
@@ -23,6 +27,10 @@ public class TileMapMouse : MonoBehaviour {
 		TURN_OVER,
 		UNDO,
 		SHOW_UNIT_MENU,
+		POST_COMBAT_SCREEN,
+		START_FADE_OUT,
+		END_FADE_OUT,
+		END_MISSION,
 	}
 
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
@@ -38,6 +46,11 @@ public class TileMapMouse : MonoBehaviour {
 	public AudioSource confirmationSource;
 
 	public GameObject head2HeadPanel;
+
+	[SerializeField] private RawImage _fadeOutUIImage;
+
+	[SerializeField] private GameObject missionObjectivesPanel;
+	[SerializeField] private GameObject postMissionPanel;
 
 	private GameObject _head2HeadPanelConfirmation;
 	
@@ -72,6 +85,8 @@ public class TileMapMouse : MonoBehaviour {
 	private GameStateOriginator _gameStateOriginator;
 	private GameStateCaretaker _gameStateCaretaker;
 
+	private ScreenFader _screenFader;
+
 	private List<Unit> _intendedActionTargets = new List<Unit> ();
 
 	void Start() {
@@ -80,13 +95,14 @@ public class TileMapMouse : MonoBehaviour {
 		_gameManager = GameManager.Instance;
 		_musicController = _gameManager.GetMusicController ();
 		_musicController.Initialize ();
-		_gameState = GameState.INITIALIZE;
+		_gameState = GameState.START_FADE_IN;
 		_gameStateAction = new GameStateAction ();
 		_gameStateOriginator = new GameStateOriginator ();
 		_gameStateCaretaker = new GameStateCaretaker ();
 		_head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
 		_unitMenuController = _gameManager.GetUnitMenuController ();
 		_unitMenuController.Initialize ();
+		_screenFader = new ScreenFader ();
 	}
 
 	/// <summary>
@@ -96,6 +112,13 @@ public class TileMapMouse : MonoBehaviour {
 	public void TransitionGameState(GameState newState) {
 		_previousGameState = _gameState;
 		_gameState = newState;
+	}
+
+	/// <summary>
+	/// Transitions the game state to initialize.
+	/// </summary>
+	public void TransitionGameStateToInitialize() {
+		TransitionGameState (GameState.INITIALIZE);
 	}
 
 	/// <summary>
@@ -119,12 +142,36 @@ public class TileMapMouse : MonoBehaviour {
 		TransitionGameState (GameState.PLAYER_ATTACK);
 	}
 
+	/// <summary>
+	/// Transitions the game state to end mission.
+	/// </summary>
+	public void TransitionGameStateToEndMission() {
+		TransitionGameState (GameState.END_MISSION);
+	}
+
 	// Update is called once per frame
 	void Update () {
 
 		switch (_gameState) {
 
+		case GameState.START_FADE_IN:
+			ShowCursorAndTileSelector (false);
+			StartCoroutine (_screenFader.FadeScreen (_fadeOutUIImage, ScreenFader.FadeType.FADE_IN, 2.0f));
+			_gameState = GameState.END_FADE_IN;
+			break;
+
+		case GameState.END_FADE_IN:
+			if (!_screenFader.IsFading ())
+				_gameState = GameState.DISPLAY_MISSION_OBJECTIVES;
+			break;
+
+		case GameState.DISPLAY_MISSION_OBJECTIVES:
+			missionObjectivesPanel.SetActive (true);
+			ShowCursor (true);
+			break;
+
 		case GameState.INITIALIZE:
+			missionObjectivesPanel.SetActive (false);
 			Initialize ();
 			TransitionGameState (GameState.INITIALIZE_TURN);
 			break;			
@@ -307,7 +354,7 @@ public class TileMapMouse : MonoBehaviour {
 				Action action = ai.GetAction ();
 				_action = action;
 
-				print (string.Format ("Start CPU Turn: {0}", _selectedCharacter));
+				//print (string.Format ("Start CPU Turn: {0}", _selectedCharacter));
 				StartCoroutine (MoveCPU ());
 				TransitionGameState (GameState.CPU_MOVE_STOP);
 			}
@@ -319,7 +366,7 @@ public class TileMapMouse : MonoBehaviour {
 				_playerMoveFinished = false;
 
 				// Perform attack if close enough
-				print (_action);
+				//print (_action);
 				Unit target = _action.Target;
 				if (target) {
 					HighlightActionTarget (target);
@@ -333,16 +380,46 @@ public class TileMapMouse : MonoBehaviour {
 		// Turn is over for the character
 		case GameState.TURN_OVER:
 			if (!_unitAnimationPlaying) {
-				_selectedCharacter.DeactivateCombatMenu ();
-				_tileHighlighter.RemoveHighlightedTiles ();
-				_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
-				_selectedCharacter = null;
-				if (IsEnemyNearby (_gameManager.GetTurnOrderController ().GetAllUnits ()))
-					_musicController.TransitionMusic (false);
-				else
-					_musicController.TransitionMusic (true);
-				TransitionGameState (GameState.INITIALIZE_TURN);
+
+				// If battle conditions won, move on
+				if (_tileMap.AreAllEnemiesDefeated ())
+					TransitionGameState(GameState.POST_COMBAT_SCREEN);
+				else {
+					_selectedCharacter.DeactivateCombatMenu ();
+					_tileHighlighter.RemoveHighlightedTiles ();
+					_gameManager.GetTurnOrderController ().FinishTurn (_selectedCharacter);
+					_selectedCharacter = null;
+					if (IsEnemyNearby (_gameManager.GetTurnOrderController ().GetAllUnits ()))
+						_musicController.TransitionMusic (false);
+					else
+						_musicController.TransitionMusic (true);
+					TransitionGameState (GameState.INITIALIZE_TURN);
+				}
 			}
+			break;
+
+		case GameState.POST_COMBAT_SCREEN:
+			if (!postMissionPanel.activeSelf) {
+				_musicController.TransitionMusic (true);
+				ShowCursor (true);
+				postMissionPanel.SetActive (true);
+			}
+			break;
+
+		case GameState.START_FADE_OUT:
+			ShowCursorAndTileSelector (false);
+			StartCoroutine (_screenFader.FadeScreen (_fadeOutUIImage, ScreenFader.FadeType.FADE_OUT, 2.0f));
+			TransitionGameState (GameState.END_FADE_OUT);
+			break;
+
+		case GameState.END_FADE_OUT:
+			if (!_screenFader.IsFading ())
+				TransitionGameState (GameState.END_MISSION);
+			break;
+
+		case GameState.END_MISSION:
+			_musicController.StopAllMusic ();
+			SceneManager.LoadScene ("scene_0000");
 			break;
 		}
 	}

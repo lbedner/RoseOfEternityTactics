@@ -43,6 +43,7 @@ public class Combat {
 
 			GameManager.Instance.GetTurnOrderController ().RemoveUnit (_defender);
 			GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (_defender.Tile).Unit = null;
+			GameManager.Instance.GetTileMap ().GetEnemies ().Remove (_defender);
 			GameObject.Destroy (_defender.gameObject, 1.0f);
 		} else
 			_defender.UpdateHealthbar ();
