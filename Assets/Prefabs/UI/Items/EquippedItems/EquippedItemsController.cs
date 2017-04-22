@@ -43,7 +43,6 @@ public class EquippedItemsController : MonoBehaviour {
 		ClearAttributeText ();
 
 		// Iterate over weapons/armor and add
-		var items = new List<Item>();
 		foreach (Item item in _inventorySlots.GetInventorySlots().Values) {
 			SetAllAttributesText (item);
 
