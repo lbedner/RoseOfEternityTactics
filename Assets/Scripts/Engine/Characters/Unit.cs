@@ -67,7 +67,7 @@ public abstract class Unit : MonoBehaviour {
 		CurrentExperiencePoints = 0;
 		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
 		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
-		_attributeCollection = AttributeLoader.GetLoadedAttributes ();
+		_attributeCollection = AttributeLoader.GetUnitAttributes ();
 
 		_inventorySlots = new InventorySlots ();
 		string weaponName = "Sword of Galladoran";
@@ -310,7 +310,6 @@ public abstract class Unit : MonoBehaviour {
 	public Attribute GetMovementAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.MOVEMENT);
 	}
-
 	public Attribute GetSpeedAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.SPEED);
 	}

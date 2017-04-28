@@ -9,10 +9,10 @@ public class ItemTest {
 	[Test]
 	public void TestGetAttributeSuccess() {
 
-		Attribute a1 = new Attribute ("test_get_attribute", "test", "test", 0.0f, 0.0f, 10.0f);
-		AttributeCollection attributes = new AttributeCollection ();
-
 		AttributeEnums.AttributeType type = AttributeEnums.AttributeType.ABILITY_POINTS;
+
+		Attribute a1 = new Attribute (type, "test_get_attribute", "test", "test", 0.0f, 0.0f, 10.0f);
+		AttributeCollection attributes = new AttributeCollection ();
 		attributes.Add (type, a1);
 
 		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", attributes, InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);

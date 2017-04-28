@@ -11,6 +11,31 @@ public class AttributeCollection {
 	private Dictionary<AttributeEnums.AttributeType, Attribute> _attributes = new Dictionary<AttributeEnums.AttributeType, Attribute>();
 
 	/// <summary>
+	/// Initializes a new instance of the <see cref="AttributeCollection"/> class.
+	/// </summary>
+	public AttributeCollection() {}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AttributeCollection"/> class.
+	/// </summary>
+	/// <param name="attributes">Attributes.</param>
+	public AttributeCollection(Dictionary<AttributeEnums.AttributeType, Attribute> attributes) {
+		_attributes = attributes;
+	}
+
+	/// <summary>
+	/// Returns a deep copied instance.
+	/// </summary>
+	/// <returns>The copy.</returns>
+	public AttributeCollection DeepCopy() {
+		var targetAttributes = new Dictionary<AttributeEnums.AttributeType, Attribute>();
+		foreach (var attribute in _attributes) {
+			targetAttributes.Add (attribute.Key, attribute.Value.DeepCopy());
+		}
+		return new AttributeCollection (targetAttributes);
+	}
+
+	/// <summary>
 	/// Add the specified type and attribute.
 	/// </summary>
 	/// <param name="type">Type.</param>

@@ -12,8 +12,8 @@ public class AttributeCollectionTest {
 
 	[SetUp]
 	public void Setup() {
-		_a1 = new Attribute ("EXP", "EXP", "", 0, 0, 100);
-		_a2 = new Attribute ("LVL", "LVL", "", 0, 1, 10);
+		_a1 = new Attribute (AttributeEnums.AttributeType.EXPERIENCE, "EXP", "EXP", "", 0, 0, 100);
+		_a2 = new Attribute (AttributeEnums.AttributeType.LEVEL, "LVL", "LVL", "", 0, 1, 10);
 	}
 
 	[Test]
@@ -22,14 +22,14 @@ public class AttributeCollectionTest {
 		_collection = new AttributeCollection();
 
 		// Test adding separate attributes
-		_collection.Add (AttributeEnums.AttributeType.EXPERIENCE, _a1);
-		_collection.Add (AttributeEnums.AttributeType.LEVEL, _a2);
+		_collection.Add (_a1.Type, _a1);
+		_collection.Add (_a2.Type, _a2);
 
 		Assert.AreEqual (2, _collection.Count());
 
 		// Test that you cannot add the same attributes more than once
-		_collection.Add (AttributeEnums.AttributeType.EXPERIENCE, _a1);
-		_collection.Add (AttributeEnums.AttributeType.LEVEL, _a2);
+		_collection.Add (_a1.Type, _a1);
+		_collection.Add (_a2.Type, _a2);
 
 		Assert.AreEqual (2, _collection.Count());
 	}
@@ -40,8 +40,8 @@ public class AttributeCollectionTest {
 		_collection = new AttributeCollection();
 
 		// Add some test attributes
-		_collection.Add (AttributeEnums.AttributeType.EXPERIENCE, _a1);
-		_collection.Add (AttributeEnums.AttributeType.LEVEL, _a2);
+		_collection.Add (_a1.Type, _a1);
+		_collection.Add (_a2.Type, _a2);
 
 		// Fetch attributes
 		Attribute actual1 = _collection.Get (AttributeEnums.AttributeType.EXPERIENCE);
@@ -64,5 +64,20 @@ public class AttributeCollectionTest {
 		// Test that attributes are null
 		Assert.IsNull (actual1);
 		Assert.IsNull (actual2);
+	}
+
+	[Test]
+	public void TestDeepCopy() {
+
+		_collection = new AttributeCollection();
+		_collection.Add (_a1.Type, _a1);
+		_collection.Add (_a2.Type, _a2);
+
+		AttributeCollection deepCopy = _collection.DeepCopy ();
+		deepCopy.Get (_a1.Type).CurrentValue = 40;
+		deepCopy.Get (_a2.Type).CurrentValue = 4;
+
+		foreach (var attribute in _collection.GetAttributes())
+			Assert.AreNotEqual (attribute.Value.CurrentValue, deepCopy.Get (attribute.Key).CurrentValue);
 	}
 }

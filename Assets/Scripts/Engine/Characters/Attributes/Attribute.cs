@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Collections;
 
 namespace RoseOfEternity {
@@ -8,19 +10,18 @@ namespace RoseOfEternity {
 
 		private float _currentValue;
 
-		public string test = "test";
-		public int testInt = 1;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RoseOfEternity.Attribute"/> class.
 		/// </summary>
+		/// <param name="type">Type.</param>
 		/// <param name="name">Name.</param>
 		/// <param name="shortName">Short name.</param>
 		/// <param name="toolTip">Tool tip.</param>
 		/// <param name="currentValue">Current value.</param>
 		/// <param name="minimumValue">Minimum value.</param>
 		/// <param name="maximumValue">Maximum value.</param>
-		public Attribute(string name, string shortName, string toolTip, float currentValue, float minimumValue, float maximumValue) {
+		public Attribute(AttributeEnums.AttributeType type, string name, string shortName, string toolTip, float currentValue, float minimumValue, float maximumValue) {
+			Type = type;
 			Name = name;
 			ShortName = shortName;
 			ToolTip = toolTip;
@@ -30,17 +31,26 @@ namespace RoseOfEternity {
 		}
 
 		// Properties
-		[SerializeField] public string Name { get; set; }
-		[SerializeField] public string ShortName { get; set; }
-		[SerializeField] public string ToolTip { get; set; }
-		[SerializeField] public float MinimumValue { get; set; }
-		[SerializeField] public float MaximumValue { get; set; }
+		[JsonConverter(typeof(StringEnumConverter))] public AttributeEnums.AttributeType Type { get; private set; }
+		public string Name { get; private set; }
+		public string ShortName { get; private set; }
+		public string ToolTip { get; private set; }
+		public float MinimumValue { get; private set; }
+		public float MaximumValue { get; set; }
+
+		/// <summary>
+		/// Returns a deep copied instance.
+		/// </summary>
+		/// <returns>The copy.</returns>
+		public Attribute DeepCopy() {
+			return new Attribute (Type, Name, ShortName, ToolTip, CurrentValue, MinimumValue, MaximumValue);
+		}
 
 		/// <summary>
 		/// Gets or sets the current value. When setting, value will be clamped to the min/max.
 		/// </summary>
 		/// <value>The current value.</value>
-		public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
+		[JsonIgnore] public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
 
 		/// <summary>
 		/// Increment the current value.
@@ -64,7 +74,7 @@ namespace RoseOfEternity {
 		/// <returns>A <see cref="System.String"/> that represents the current <see cref="RoseOfEternity.Attribute"/>.</returns>
 		public override string ToString ()
 		{
-			return string.Format ("[Attribute: Name={0}, CurrentValue={1}]", Name, CurrentValue);
+			return string.Format ("[Attribute: Name={0}, ShortName={1}, ToolTip={2}, MinimumValue={3}, MaximumValue={4}, CurrentValue={5}]", Name, ShortName, ToolTip, MinimumValue, MaximumValue, CurrentValue);
 		}
 	}
 }

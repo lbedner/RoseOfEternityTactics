@@ -1,58 +1,37 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.IO;
+using UnityEngine;
+using System.Collections.Generic;
 using RoseOfEternity;
+using Newtonsoft.Json;
 
 public class AttributeLoader {
-
-	private static Attribute _strengthAttribute = new Attribute ("Strength", "STR", "Strength Description.", 10, 1, 100);
-	private static Attribute _criticalChanceAttribute = new Attribute ("Critical Chance", "Crit %", "Chance of critical attack.", 10, 0, 100);
-
-	private static Attribute _defenseAttribute = new Attribute ("Defense", "DEF", "Determines how much damage is inflicted upon the unit.", 10, 0, 100);
-	private static Attribute _dodgeChanceAttribute = new Attribute ("Dodge Chance", "Dodge %", "Chance of dodging attack.", 10, 0, 100);
-
-	private static Attribute _damageAttribute = new Attribute ("Damage", "DMG", "Damage Description.", 1, 1, 100);
-	private static Attribute _hitAttribute = new Attribute ("Hit %", "HIT", "Hit % Description.", 1, 1, 100);
-	private static Attribute _armorAttribute = new Attribute ("Armor", "ARM", "Armor Description.", 1, 0, 100);
 	
 	/// <summary>
-	/// Gets the loaded attributes.
+	/// Gets unit attributes.
 	/// </summary>
-	/// <returns>The loaded attributes.</returns>
-	public static AttributeCollection GetLoadedAttributes() {
-		
-		AttributeCollection attributes = new AttributeCollection ();
+	/// <returns>The unit attributes.</returns>
+	public static AttributeCollection GetUnitAttributes() {
+		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
+		AttributeCollection playerAttributes = new AttributeCollection ();
 
-		// Experience
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.EXPERIENCE, "Experience", "XP", "Points until you reach the next level", 0, 0, 100);
+		// Fetch player attributes from global attribute collection and add to new player collection
+		// TODO: Put these hard coded attributes in some sort of unit JSON file
+		AttributeEnums.AttributeType[] types = new AttributeEnums.AttributeType[] {
+			AttributeEnums.AttributeType.EXPERIENCE,
+			AttributeEnums.AttributeType.LEVEL,
+			AttributeEnums.AttributeType.HIT_POINTS,
+			AttributeEnums.AttributeType.ABILITY_POINTS,
+			AttributeEnums.AttributeType.MOVEMENT,
+			AttributeEnums.AttributeType.SPEED,
+			AttributeEnums.AttributeType.DEXTERITY,
+			AttributeEnums.AttributeType.MAGIC,
+			AttributeEnums.AttributeType.STRENGTH,
+			AttributeEnums.AttributeType.DEFENSE,
+		};
+		foreach (var type in types)
+			playerAttributes.Add (type, globalAttributeCollection.Get (type).DeepCopy ());
 
-		// Level
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.LEVEL, "Level", "LVL", "Current level", 1, 1, 100);
-
-		// Hit Points
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.HIT_POINTS, "Hit Points", "HP", "Current hit points", 0, 0, 1000);
-
-		// Ability Points
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.ABILITY_POINTS, "Ability Points", "AB", "Current ability points", 0, 0, 1000);
-
-		// Movement
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.MOVEMENT, "Movement", "MOV", "Number of tiles unit can move to", 0, 0, 1000);
-
-		// Speed
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.SPEED, "Speed", "SPD", "Determines how often unit can perform an action", 0, 0, 100);
-
-		// Dexterity
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.DEXTERITY, "Dexterity", "DEX", "Dexterity Description", 1, 1, 100);
-
-		// Magic
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.MAGIC, "Magic", "MAG", "Magic Description", 1, 1, 100);
-
-		// Strength
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.STRENGTH, _strengthAttribute, 10);
-
-		// Defense
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.DEFENSE, _defenseAttribute, 10);
-
-		return attributes;
+		return playerAttributes;
 	}
 
 	public static AttributeCollection GetSwordOfGalladoranAttributes() {
@@ -121,21 +100,23 @@ public class AttributeLoader {
 
 	private static AttributeCollection GetWeaponAttributes(int damage, int criticalPercent, int hitPercent) {
 
+		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
 		AttributeCollection attributes = new AttributeCollection ();
 
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.DAMAGE, _damageAttribute, damage);
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.HIT_PERCENT, _hitAttribute, hitPercent);
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.CRITICAL_CHANCE, _criticalChanceAttribute, criticalPercent);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DAMAGE, globalAttributeCollection.Get(AttributeEnums.AttributeType.DAMAGE).DeepCopy(), damage);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.HIT_PERCENT, globalAttributeCollection.Get(AttributeEnums.AttributeType.HIT_PERCENT).DeepCopy(), hitPercent);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.CRITICAL_CHANCE, globalAttributeCollection.Get(AttributeEnums.AttributeType.CRITICAL_CHANCE).DeepCopy(), criticalPercent);
 
 		return attributes;
 	}
 
 	private static AttributeCollection GetArmorAttributes(int armor, int dodgePercent) {
 
+		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
 		AttributeCollection attributes = new AttributeCollection ();
 
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.ARMOR, _armorAttribute, armor);
-		AddNewAttribute(attributes, AttributeEnums.AttributeType.DODGE_CHANCE, _dodgeChanceAttribute, dodgePercent);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.ARMOR, globalAttributeCollection.Get(AttributeEnums.AttributeType.ARMOR).DeepCopy(), armor);
+		AddNewAttribute(attributes, AttributeEnums.AttributeType.DODGE_CHANCE, globalAttributeCollection.Get(AttributeEnums.AttributeType.DODGE_CHANCE).DeepCopy(), dodgePercent);
 
 		return attributes;
 	}
@@ -171,7 +152,7 @@ public class AttributeLoader {
 		float minimumValue,
 		float maximumValue)
 	{
-		Attribute attribute = new Attribute (name, shortName, toolTip, currentValue, minimumValue, maximumValue);
+		Attribute attribute = new Attribute (type, name, shortName, toolTip, currentValue, minimumValue, maximumValue);
 		attributes.Add (type, attribute);
 	}
 }
