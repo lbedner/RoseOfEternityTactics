@@ -39,18 +39,18 @@ namespace RoseOfEternity {
 		public float MaximumValue { get; set; }
 
 		/// <summary>
+		/// Gets or sets the current value. When setting, value will be clamped to the min/max.
+		/// </summary>
+		/// <value>The current value.</value>
+		[JsonIgnore] public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
+
+		/// <summary>
 		/// Returns a deep copied instance.
 		/// </summary>
 		/// <returns>The copy.</returns>
 		public Attribute DeepCopy() {
 			return new Attribute (Type, Name, ShortName, ToolTip, CurrentValue, MinimumValue, MaximumValue);
 		}
-
-		/// <summary>
-		/// Gets or sets the current value. When setting, value will be clamped to the min/max.
-		/// </summary>
-		/// <value>The current value.</value>
-		[JsonIgnore] public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
 
 		/// <summary>
 		/// Increment the current value.

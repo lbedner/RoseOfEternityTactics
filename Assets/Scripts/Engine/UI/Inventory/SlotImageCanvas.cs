@@ -170,7 +170,7 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 				rightToolTipPanel = _unequippedToolTipPanel;
 
 				// Determine colors for attributes
-				if (_item.Type == Item.ItemType.WEAPON) {
+				if (_item.Type == Item.ItemType.WEAPON || _item.Type == Item.ItemType.MONSTER_ATTACK) {
 					unequippedAttribute1Color = GetToolTipColorByAttribute(_item, _secondaryItem, AttributeEnums.AttributeType.DAMAGE);
 					unequippedAttribute2Color = GetToolTipColorByAttribute(_item, _secondaryItem, AttributeEnums.AttributeType.CRITICAL_CHANCE);
 				} else if (_item.Type == Item.ItemType.ARMOR) {
@@ -263,7 +263,7 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 		nameAndTierPanel.GetComponent<Image> ().color = item.TierColor;
 		description.text = item.Description;
 
-		if (item.Type == Item.ItemType.WEAPON) {
+		if (item.Type == Item.ItemType.WEAPON || _item.Type == Item.ItemType.MONSTER_ATTACK) {
 			Attribute attribute = item.GetAttribute (AttributeEnums.AttributeType.DAMAGE);
 			attribute1.text = string.Format ("{0}: {1}", attribute.Name, attribute.CurrentValue);
 			attribute1.color = attribute1Color;
@@ -464,6 +464,7 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	private void PlaySFX() {
 		switch (_item.Type) {
 		case Item.ItemType.WEAPON:
+		case Item.ItemType.MONSTER_ATTACK:
 			_inventoryController.PlayMetalSFX ();
 			break;
 		case Item.ItemType.ARMOR:

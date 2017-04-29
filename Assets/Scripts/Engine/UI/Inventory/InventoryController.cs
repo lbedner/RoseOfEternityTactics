@@ -33,7 +33,7 @@ public class InventoryController : MonoBehaviour {
 	/// Start this instance.
 	/// </summary>
 	void Start () {
-		_inventory = ItemLoader.GetMockInventoryItems ();
+		_inventory = ItemManager.Instance.GlobalInventory.DeepCopy();
 		ResizePanels ();
 		AddSlots ();
 	}

@@ -41,10 +41,15 @@ public class AttributeTest {
 
 	[Test]
 	public void TestDeepCopy() {
+		Attribute shallowCopy = _a1;
+		Assert.AreSame (_a1, shallowCopy);
+		Assert.AreEqual (_a1.CurrentValue, shallowCopy.CurrentValue);
+
 		Attribute deepCopy = _a1.DeepCopy ();
 		deepCopy.CurrentValue = 4.0f;
 
 		// Test that all values are different in deep copied version
+		Assert.AreNotSame(_a1, deepCopy);
 		Assert.AreNotEqual (_a1.CurrentValue, deepCopy.CurrentValue);
 	}
 }

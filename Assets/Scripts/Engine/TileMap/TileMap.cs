@@ -63,7 +63,6 @@ public class TileMap : MonoBehaviour {
 	/// <returns><c>true</c>, if all enemies defeated was ared, <c>false</c> otherwise.</returns>
 	public bool AreAllEnemiesDefeated() {
 		foreach (Unit unit in _enemies) {
-			print (unit);
 			if (unit != null)
 				return false;
 		}
@@ -105,7 +104,7 @@ public class TileMap : MonoBehaviour {
 				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, (float)z / size_z );
 			}
 		}
-		Debug.Log ("Done Verts!");
+		//Debug.Log ("Done Verts!");
 		
 		for(z=0; z < size_z; z++) {
 			for(x=0; x < size_x; x++) {
@@ -121,7 +120,7 @@ public class TileMap : MonoBehaviour {
 			}
 		}
 		
-		Debug.Log ("Done Triangles!");
+		//Debug.Log ("Done Triangles!");
 		
 		// Create a new Mesh and populate with the data
 		Mesh mesh = new Mesh();
@@ -136,7 +135,7 @@ public class TileMap : MonoBehaviour {
 		
 		mesh_filter.mesh = mesh;
 		mesh_collider.sharedMesh = mesh;
-		Debug.Log ("Done Mesh!");
+		//Debug.Log ("Done Mesh!");
 	}
 
 	/// <summary>
@@ -169,7 +168,7 @@ public class TileMap : MonoBehaviour {
 		MeshRenderer mesh_renderer = GetComponent<MeshRenderer>();
 		mesh_renderer.sharedMaterials [0].mainTexture = texture;
 
-		Debug.Log ("Done Texture!");
+		//Debug.Log ("Done Texture!");
 	}	
 		
 	/// <summary>

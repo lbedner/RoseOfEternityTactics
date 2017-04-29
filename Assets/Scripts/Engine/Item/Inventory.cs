@@ -4,23 +4,30 @@ using System.Collections.Generic;
 
 public class Inventory {
 	private List<Item> _items = new List<Item> ();
-	private int _capacity;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="Inventory"/> class.
+	/// Returns a deep copied instance.
 	/// </summary>
-	/// <param name="capacity">Capacity.</param>
-	//public Inventory(int capacity) {
-	//	_capacity = capacity;
-	//}
+	/// <returns>The copy.</returns>
+	public Inventory DeepCopy() {
+		Inventory deepCopy = new Inventory ();
+		foreach (var item in _items)
+			deepCopy.Add (item.DeepCopy());
+		return deepCopy;
+	}
+
+	/// <summary>
+	/// Gets the items.
+	/// </summary>
+	/// <value>The items.</value>
+	public List<Item> Items { get { return _items; } }
 
 	/// <summary>
 	/// Add the specified item.
 	/// </summary>
 	/// <param name="item">Item.</param>
 	public void Add(Item item) {
-		//if (Count() <= _capacity)
-			_items.Add (item);
+		_items.Add (item);
 	}
 
 	/// <summary>
@@ -28,10 +35,8 @@ public class Inventory {
 	/// </summary>
 	/// <param name="item">Item.</param>
 	public void Remove(Item item) {
-		if (_items.Contains (item)) {
-			//_items.Remove (item);
+		if (_items.Contains (item))
 			_items [_items.IndexOf (item)] = null;
-		}
 	}
 
 	/// <summary>

@@ -13,9 +13,9 @@ public class InventoryTest {
 
 	[SetUp]
 	public void Setup() {
-		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5);
-		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
-		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5);
+		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5, "armor.png");
+		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg");
+		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg");
 		_nullItem = null;
 	}
 
@@ -99,5 +99,27 @@ public class InventoryTest {
 		// Update first item in inventory
 		_inventory.Upsert(_i3, 0);
 		Assert.AreEqual (_i3, _inventory.Get (0));
+	}
+
+	[Test]
+	public void TestDeepCopy() {
+		_inventory = new Inventory ();
+		_inventory.Add (_i1);
+		_inventory.Add (_i2);
+		_inventory.Add (_i3);
+
+		// Test that shallow copies are the same
+		Inventory shallowCopy = _inventory;
+		Assert.AreSame (_inventory, shallowCopy);
+
+		foreach (var shallowItem in shallowCopy.Items)
+			Assert.AreSame (_inventory.Get (_inventory.Items.IndexOf (shallowItem)), shallowItem);
+
+		// Test that deep copies are different
+		Inventory deepCopy = _inventory.DeepCopy();
+		Assert.AreNotSame (_inventory, deepCopy);
+
+		for (int index = 0; index < _inventory.Count(); index++)
+			Assert.AreNotSame (_inventory.Get (index), deepCopy.Get (index));
 	}
 }

@@ -70,28 +70,20 @@ public abstract class Unit : MonoBehaviour {
 		_attributeCollection = AttributeLoader.GetUnitAttributes ();
 
 		_inventorySlots = new InventorySlots ();
+		_inventory = new Inventory ();
 		string weaponName = "Sword of Galladoran";
-		if (firstName == "Sinteres") {
-			_inventory = ItemLoader.GetSinteresItems ();
+		if (firstName == "Sinteres")
 			weaponName = "Daishan Dagger";
-		}
-		else if (firstName == "Aramus") {
-			_inventory = ItemLoader.GetLoadedItems ();
+		else if (firstName == "Aramus")
 			weaponName = "Sword of Galladoran";
-		}
-		else if (firstName == "Jarl") {
-			_inventory = ItemLoader.GetJarlItems ();
+		else if (firstName == "Jarl")
 			weaponName = "Wand of Power";
-		}
-		else if (firstName == "Orelle") {
-			_inventory = ItemLoader.GetOrelleItems ();
+		else if (firstName == "Orelle")
 			weaponName = "Dundalan Axe";
-		}
-		else if (firstName == "Petty Muck") {
-			_inventory = ItemLoader.GetMuckItems ();
+		else if (firstName == "Petty Muck")
 			weaponName = "Muck";
-		}
 
+		_inventory.Add(ItemManager.Instance.GlobalInventory.GetFirstItemByName(weaponName).DeepCopy());
 		_inventorySlots.Add(_inventory.GetFirstItemByName(weaponName));
 		SetAttributes();
 	}

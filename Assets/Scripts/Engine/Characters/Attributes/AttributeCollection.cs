@@ -29,9 +29,8 @@ public class AttributeCollection {
 	/// <returns>The copy.</returns>
 	public AttributeCollection DeepCopy() {
 		var targetAttributes = new Dictionary<AttributeEnums.AttributeType, Attribute>();
-		foreach (var attribute in _attributes) {
+		foreach (var attribute in _attributes)
 			targetAttributes.Add (attribute.Key, attribute.Value.DeepCopy());
-		}
 		return new AttributeCollection (targetAttributes);
 	}
 
@@ -53,6 +52,15 @@ public class AttributeCollection {
 		if (_attributes.ContainsKey (type))
 			return _attributes [type];
 		return null;
+	}
+
+	/// <summary>
+	/// Determines whether this instance has the specified type.
+	/// </summary>
+	/// <returns><c>true</c> if this instance has the specified type; otherwise, <c>false</c>.</returns>
+	/// <param name="type">Type.</param>
+	public bool HasType(AttributeEnums.AttributeType type) {
+		return _attributes.ContainsKey (type);
 	}
 
 	/// <summary>

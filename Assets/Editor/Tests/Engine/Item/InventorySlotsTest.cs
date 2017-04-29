@@ -11,7 +11,7 @@ public class InventorySlotsTest {
 
 	[SetUp]
 	public void TestSetup() {
-		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5);
+		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5, "path/to/icon");
 		_slots = new InventorySlots ();
 	}
 

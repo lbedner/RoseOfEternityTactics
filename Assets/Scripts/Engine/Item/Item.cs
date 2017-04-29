@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using RoseOfEternity;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 public class Item {
 
@@ -26,22 +28,24 @@ public class Item {
 	}
 
 	// Properties
-	public int Id { get; private set; }
-	public ItemType Type { get; private set; }
-	public string Name { get; set; }
-	public string Description { get; set; }
-	public string ToolTip { get; set; }
-	public Sprite Icon { get; set; }
-	public InventorySlots.SlotType SlotType { get; set; }
-	public ItemTier Tier { get; private set; }
-	public Color TierColor { get; private set; }
-	public string TierName { get; private set; }
+	[JsonProperty] public int Id { get; private set; }
+	[JsonProperty] public string Name { get; private set; }
+	[JsonProperty] public string Description { get; private set; }
+	[JsonProperty] public string ToolTip { get; private set; }
+	[JsonProperty] public string IconPath { get; private set; }
+	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public ItemType Type { get; private set; }
+	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public InventorySlots.SlotType SlotType { get; private set; }
+	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public ItemTier Tier { get; private set; }
 
-	public Color Tier1Color { get { return Color.grey; } }
-	public Color Tier2Color { get { return new Color32 (52, 97, 68, 255); } }
-	public Color Tier3Color { get { return new Color32 (66, 114, 163, 255); } }
-	public Color Tier4Color { get { return new Color32 (81, 49, 99, 255); } }
-	public Color Tier5Color { get { return new Color32 (196, 169, 58, 255); } }
+	[JsonIgnore] public Sprite Icon { get; set; }
+	[JsonIgnore] public Color TierColor { get; private set; }
+	[JsonIgnore] public string TierName { get; private set; }
+
+	[JsonIgnore] public Color Tier1Color { get { return Color.grey; } }
+	[JsonIgnore] public Color Tier2Color { get { return new Color32 (52, 97, 68, 255); } }
+	[JsonIgnore] public Color Tier3Color { get { return new Color32 (66, 114, 163, 255); } }
+	[JsonIgnore] public Color Tier4Color { get { return new Color32 (81, 49, 99, 255); } }
+	[JsonIgnore] public Color Tier5Color { get { return new Color32 (196, 169, 58, 255); } }
 
 	private AttributeCollection _attributeCollection;
 
@@ -54,17 +58,55 @@ public class Item {
 	/// <param name="description">Description.</param>
 	/// <param name="toolTip">Tool tip.</param>
 	/// <param name="attributeCollection">Attribute collection.</param>
-	public Item(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier) {
-		Id = id;
-		Type = itemType;
-		Name = name;
-		Description = description;
-		ToolTip = toolTip;
-		_attributeCollection = attributeCollection;
-		SlotType = slot;
-		Tier = tier;
-		TierColor = GetTierColor ();
-		TierName = GetTierName ();
+	/// <param name="slot">Slot.</param>
+	/// <param name="tier">Tier.</param>
+	/// <param name="iconPath">Icon path.</param>
+	public Item(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath) {
+		Init (id, itemType, name, description, toolTip, attributeCollection, slot, tier, iconPath);
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Item"/> class.
+	/// Only used when deserialializing the object, values from item.json.
+	/// </summary>
+	/// <param name="id">Identifier.</param>
+	/// <param name="itemType">Item type.</param>
+	/// <param name="name">Name.</param>
+	/// <param name="description">Description.</param>
+	/// <param name="toolTip">Tool tip.</param>
+	/// <param name="attributes">Attributes.</param>
+	/// <param name="slot">Slot.</param>
+	/// <param name="tier">Tier.</param>
+	/// <param name="iconPath">Icon path.</param>
+	[JsonConstructor]
+	private Item(int id, ItemType itemType, string name, string description, string toolTip, Dictionary<AttributeEnums.AttributeType, float> attributes, InventorySlots.SlotType slot, ItemTier tier, string iconPath) {
+		Init (id, itemType, name, description, toolTip, null, slot, tier, iconPath);
+
+		// Set attributes in their collection. If attribute already exists, set value,
+		// else, grab from global collection and set new attribute and value
+		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
+		if (_attributeCollection == null)
+			_attributeCollection = new AttributeCollection ();
+		foreach (var item in attributes) {
+			AttributeEnums.AttributeType type = item.Key;
+			Attribute attribute;
+			if (!_attributeCollection.HasType (type)) {
+				attribute = globalAttributeCollection.Get (type).DeepCopy ();
+				_attributeCollection.Add (type, attribute);
+			} 
+			else {
+				attribute = _attributeCollection.Get (type);
+			}
+			attribute.CurrentValue = item.Value;
+		}
+	}
+
+	/// <summary>
+	/// Returns a deep copied instance.
+	/// </summary>
+	/// <returns>The deep copied instance.</returns>
+	public Item DeepCopy() {
+		return new Item (Id, Type, Name, Description, ToolTip, _attributeCollection, SlotType, Tier, IconPath);
 	}
 
 	/// <summary>
@@ -91,6 +133,33 @@ public class Item {
 	public override string ToString ()
 	{
 		return string.Format ("[Item: Id={0}, Type={1}, Name={2}, Description={3}, ToolTip={4}, Icon={5}, Slot={6}, Attributes={7}, Tier={8}, TierColor={9}, TierName={10}]", Id, Type, Name, Description, ToolTip, Icon, SlotType, _attributeCollection, Tier, TierColor, TierName);
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Item"/> class.
+	/// </summary>
+	/// <param name="id">Identifier.</param>
+	/// <param name="itemType">Item type.</param>
+	/// <param name="name">Name.</param>
+	/// <param name="description">Description.</param>
+	/// <param name="toolTip">Tool tip.</param>
+	/// <param name="attributeCollection">Attribute collection.</param>
+	/// <param name="slot">Slot.</param>
+	/// <param name="tier">Tier.</param>
+	/// <param name="iconPath">Icon path.</param>
+	private void Init(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath) {
+		Id = id;
+		Type = itemType;
+		Name = name;
+		Description = description;
+		ToolTip = toolTip;
+		_attributeCollection = attributeCollection;
+		SlotType = slot;
+		Tier = tier;
+		TierColor = GetTierColor ();
+		TierName = GetTierName ();
+		IconPath = iconPath;
+		Icon = Resources.Load<Sprite> (IconPath);
 	}
 
 	/// <summary>

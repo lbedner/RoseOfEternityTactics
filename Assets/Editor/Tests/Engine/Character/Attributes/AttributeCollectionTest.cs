@@ -73,9 +73,19 @@ public class AttributeCollectionTest {
 		_collection.Add (_a1.Type, _a1);
 		_collection.Add (_a2.Type, _a2);
 
+		// Make sure shallow copies are the same
+		AttributeCollection shallowCopy = _collection;
+		Assert.AreSame (_collection, shallowCopy);
+
+		foreach (var attribute in _collection.GetAttributes())
+			Assert.AreEqual (attribute.Value.CurrentValue, shallowCopy.Get (attribute.Key).CurrentValue);
+
+		// Make sure deep copies are different
 		AttributeCollection deepCopy = _collection.DeepCopy ();
 		deepCopy.Get (_a1.Type).CurrentValue = 40;
 		deepCopy.Get (_a2.Type).CurrentValue = 4;
+
+		Assert.AreNotSame (_collection, deepCopy);
 
 		foreach (var attribute in _collection.GetAttributes())
 			Assert.AreNotEqual (attribute.Value.CurrentValue, deepCopy.Get (attribute.Key).CurrentValue);
