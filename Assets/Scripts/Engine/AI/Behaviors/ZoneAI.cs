@@ -28,7 +28,7 @@ public class ZoneAI : AI {
 	protected override Vector3 GetTargetTile (Unit targetUnit) {
 
 		// Make sure enemy is within range before setting target tile
-		Dictionary<Vector3, Object> tiles = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, (int) _self.GetMovementAttribute().CurrentValue + _self.weaponRange);
+		Dictionary<Vector3, Object> tiles = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, (int) _self.GetMovementAttribute().CurrentValue + _self.GetWeaponRange());
 		if (tiles.ContainsKey (targetUnit.Tile)) {
 
 			// Get target tile

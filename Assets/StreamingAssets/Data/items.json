@@ -12,7 +12,9 @@
       "Attributes": {
         "DAMAGE": 15.0,
         "HIT_PERCENT": 90.0,
-        "CRITICAL_CHANCE": 10.0
+        "CRITICAL_CHANCE": 10.0,
+		"RANGE": 1.0,
+		"AOE_RANGE": 1.0
       }
     },
     {
@@ -27,7 +29,9 @@
       "Attributes": {
         "DAMAGE": 5.0,
         "HIT_PERCENT": 100.0,
-        "CRITICAL_CHANCE": 25.0
+        "CRITICAL_CHANCE": 25.0,
+		"RANGE": 1.0,
+		"AOE_RANGE": 1.0
       }
     },
     {
@@ -42,7 +46,9 @@
       "Attributes": {
         "DAMAGE": 12.0,
         "HIT_PERCENT": 70.0,
-        "CRITICAL_CHANCE": 20.0
+        "CRITICAL_CHANCE": 20.0,
+		"RANGE": 2.0,
+		"AOE_RANGE": 1.0
       }
     },
     {
@@ -57,7 +63,9 @@
       "Attributes": {
         "DAMAGE": 4.0,
         "HIT_PERCENT": 100.0,
-        "CRITICAL_CHANCE": 5.0
+        "CRITICAL_CHANCE": 5.0,
+		"RANGE": 3.0,
+		"AOE_RANGE": 1.0
       }
     },
     {
@@ -315,7 +323,9 @@
       "Attributes": {
         "DAMAGE": 2.0,
         "HIT_PERCENT": 95.0,
-        "CRITICAL_CHANCE": 8.0
+        "CRITICAL_CHANCE": 8.0,
+		"RANGE": 1.0,
+		"AOE_RANGE": 1.0
       }
     }
   ]

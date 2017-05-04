@@ -29,10 +29,10 @@ public class CharacterSheetController : MonoBehaviour {
 	public void Activate(Unit unit) {
 		Activate (
 			unit,
-			unit.portrait,
-			unit.firstName,
-			unit.lastName,
-			unit.@class,
+			unit.GetPortrait(),
+			unit.UnitData.FirstName,
+			unit.UnitData.LastName,
+			unit.UnitData.Class,
 			(int) unit.GetLevelAttribute().CurrentValue,
 			(int) unit.GetHitPointsAttribute().CurrentValue,
 			(int) unit.GetHitPointsAttribute().MaximumValue,

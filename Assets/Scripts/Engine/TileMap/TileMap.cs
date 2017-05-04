@@ -14,31 +14,20 @@ public class TileMap : MonoBehaviour {
 
 	public Texture2D terrainTiles;
 
-	public Ally sinteres;
-	public Ally orelle;
-	public Ally aramus;
-	public Ally jarl;
-
-	public Enemy pettyMuck1;
-	public Enemy pettyMuck2;
-	public Enemy pettyMuck3;
-	public Enemy pettyMuck4;
-
 	private TileMapData _tileMapData;
 	private Graph _graph;
 
+	private List<Unit> _allies = new List<Unit>();
 	private List<Unit> _enemies = new List<Unit> ();
 
 	public void Initialize() {
 		print ("TileMap.Initialize()");
 		InitializeTileMap ();
-		InitPlayer ();
+		InitUnits ();
 
 		// Generate 4 way pathfinding graph
 		_graph = new Graph (size_x, size_z);
 		_graph.Generate4WayGraph ();
-
-		BuildEnemyList ();
 	}
 
 	/// <summary>
@@ -46,7 +35,7 @@ public class TileMap : MonoBehaviour {
 	/// </summary>
 	/// <returns>The allies.</returns>
 	public List<Unit> GetAllies() {
-		return new List<Unit> () { aramus, sinteres, orelle, jarl };
+		return _allies;
 	}
 
 	/// <summary>
@@ -206,36 +195,40 @@ public class TileMap : MonoBehaviour {
 		return _graph;
 	}
 
-	private void InitPlayer() {
-		print ("TileMap.InitPlayer()");
+	/// <summary>
+	/// Inits the units.
+	/// </summary>
+	private void InitUnits() {
+		print ("TileMap.InitUnits()");
 
-		InitUnit (sinteres, 9, 7);
-		InitUnit (aramus, 10, 7);
-		InitUnit (orelle, 10, 8);
-		InitUnit (jarl, 9, 8);
-		InitUnit (pettyMuck1, 18, 9);
-		InitUnit (pettyMuck2, 17, 17);
-		InitUnit (pettyMuck3, 22, 21);
-		InitUnit (pettyMuck4, 28, 19);
+		InitUnit ("sinteres", 9, 7);
+		InitUnit ("aramus", 10, 7);
+		InitUnit ("orelle", 10, 8);
+		InitUnit ("jarl", 9, 8);
+		InitUnit ("muck_petty", 18, 9);
+		InitUnit ("muck_petty", 17, 17);
+		InitUnit ("muck_petty", 22, 21);
+		InitUnit ("muck_petty", 28, 19);
 	}
 
-	private void InitUnit(Unit unit, int x, int z) {
+	/// <summary>
+	/// Inits the unit.
+	/// </summary>
+	/// <param name="resRef">Res reference.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	private void InitUnit(string resRef, int x, int z) {
+		Unit unit = Unit.InstantiateUnit (resRef);
 		if (unit && unit.gameObject.activeSelf) {
 			unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
 			_tileMapData.GetTileDataAt (x, z).Unit = unit;
 			unit.Tile = new Vector3 (x, 0, z);
 			GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
-		}
-	}
 
-	private void BuildEnemyList() {
-		if (pettyMuck1 != null && pettyMuck1.isActiveAndEnabled)
-			_enemies.Add (pettyMuck1);
-		if (pettyMuck2 != null && pettyMuck2.isActiveAndEnabled)
-			_enemies.Add (pettyMuck2);
-		if (pettyMuck3 != null && pettyMuck3.isActiveAndEnabled)
-			_enemies.Add (pettyMuck3);
-		if (pettyMuck4 != null && pettyMuck4.isActiveAndEnabled)
-			_enemies.Add (pettyMuck4);
+			if (unit.UnitData.Type == UnitData.UnitType.PLAYER)
+				_allies.Add (unit);
+			else if (unit.UnitData.Type == UnitData.UnitType.ENEMY)
+				_enemies.Add (unit);
+		}
 	}
 }

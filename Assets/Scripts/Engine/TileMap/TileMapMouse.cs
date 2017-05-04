@@ -645,7 +645,7 @@ public class TileMapMouse : MonoBehaviour {
 	private IEnumerator PerformAction(Unit attacker, Unit defender) {
 
 		_tileHighlighter.RemoveHighlightedTiles ();
-		actionController.Activate (attacker.weaponName);
+		actionController.Activate (attacker.UnitData.InventorySlots.Get (InventorySlots.SlotType.RIGHT_HAND).Name);
 		yield return new WaitForSeconds (0.5f);
 		Combat combat = new Combat (_selectedCharacter, defender);
 		combat.Begin ();
@@ -815,7 +815,7 @@ public class TileMapMouse : MonoBehaviour {
 	/// <param name="units">Units.</param>
 	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
-			int range = (int) unit.GetMovementAttribute().CurrentValue + unit.weaponRange;
+			int range = (int) unit.GetMovementAttribute().CurrentValue + unit.GetWeaponRange();
 			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.tileSize);
 			int x = (int) tileMapPosition.x;
 			int z = (int) tileMapPosition.z;

@@ -118,5 +118,21 @@
     "ToolTip": "Hit % Description.",
     "MinimumValue": 1.0,
     "MaximumValue": 100.0
+  },
+  "RANGE": {
+    "Type": "RANGE",
+    "Name": "Range",
+    "ShortName": "RNG",
+    "ToolTip": "Range of action.",
+    "MinimumValue": 1.0,
+    "MaximumValue": 100.0
+  },
+  "AOE_RANGE": {
+    "Type": "AOE_RANGE",
+    "Name": "Area of Effect Range",
+    "ShortName": "AOE_RNG",
+    "ToolTip": "Area of Effect Range of action.",
+    "MinimumValue": 1.0,
+    "MaximumValue": 100.0
   }
 }

@@ -84,7 +84,7 @@ public class TileHighlighter {
 	/// <param name="unit">Unit.</param>
 	public void HighlightAttackTiles(Unit unit) {
 		RemoveHighlightedTiles ();
-		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.weaponRange, unit.attackTileColor, HighlightType.ATTACK);
+		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.GetWeaponRange(), unit.attackTileColor, HighlightType.ATTACK);
 	}
 
 	/// <summary>
@@ -116,7 +116,7 @@ public class TileHighlighter {
 	
 		Color tileColor = unit.attackTileColor;
 		HighlightType highlightType = HighlightType.MOVEMENT_ATTACK;
-		int range = unit.weaponRange;
+		int range = unit.GetWeaponRange();
 
 		// Iterate over all starting tiles where the attack tiles will be highlighted from
 		foreach (Vector3 key in _movementTiles.Keys) {

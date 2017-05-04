@@ -110,7 +110,7 @@ public abstract class AI {
 	/// <returns><c>true</c> if the target is within range of the movement and ability; otherwise, <c>false</c>.</returns>
 	/// <param name="target">Target.</param>
 	private bool IsTargetWithinRange(Unit target) {
-		Dictionary<Vector3, Object> tilesInRange = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, (int) _self.GetMovementAttribute().CurrentValue + _self.weaponRange);
+		var tilesInRange = _tileDiscoverer.DiscoverTilesInRange (_self.Tile, (int) _self.GetMovementAttribute().CurrentValue + _self.GetWeaponRange());
 		return tilesInRange.ContainsKey (target.Tile);
 	}
 }

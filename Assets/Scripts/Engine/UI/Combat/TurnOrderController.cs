@@ -37,7 +37,7 @@ public class TurnOrderController : MonoBehaviour {
 	/// <param name="unit">Unit.</param>
 	public void AddUnit(Unit unit) {
 		Image unitImage = Instantiate (imagePrefab);
-		unitImage.sprite = unit.portrait;
+		unitImage.sprite = unit.GetPortrait();
 		unitImage.transform.SetParent (_panel.transform, false);
 		unitImage.GetComponent<TurnOrderImage> ().Unit = unit;
 

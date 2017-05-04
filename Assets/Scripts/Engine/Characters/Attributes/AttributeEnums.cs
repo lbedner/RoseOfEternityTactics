@@ -18,5 +18,7 @@ public class AttributeEnums {
 		HIT_PERCENT,
 		DEXTERITY,
 		MAGIC,
+		RANGE,
+		AOE_RANGE,
 	}
 }

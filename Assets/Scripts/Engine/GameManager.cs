@@ -12,18 +12,14 @@ public class GameManager : MonoBehaviour {
 	private TileMap _tileMap;
 
 	// Controllers
-	[SerializeField]
-	private CameraController _cameraController;
-	[SerializeField]
-	private TurnOrderController _turnOrderController;
-	[SerializeField]
-	private MusicController _musicController;
-	[SerializeField]
-	private Head2HeadPanelController _sourceHead2HeadPanelController;
-	[SerializeField]
-	private Head2HeadPanelController _targetHead2HeadPanelController;
-	[SerializeField]
-	private UnitMenuController _unitMenuController;
+	[SerializeField] private CameraController _cameraController;
+	[SerializeField] private TurnOrderController _turnOrderController;
+	[SerializeField] private MusicController _musicController;
+	[SerializeField] private Head2HeadPanelController _sourceHead2HeadPanelController;
+	[SerializeField] private Head2HeadPanelController _targetHead2HeadPanelController;
+	[SerializeField] private UnitMenuController _unitMenuController;
+	[SerializeField] private CharacterSheetController _characterSheetController;
+	[SerializeField] private CombatMenuController _combatMenuController;
 
 	/// <summary>
 	/// Gets the instance.
@@ -104,4 +100,16 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The unit menu controller.</returns>
 	public UnitMenuController GetUnitMenuController() {return _unitMenuController;}
+
+	/// <summary>
+	/// Gets the character sheet controller.
+	/// </summary>
+	/// <returns>The character sheet controller.</returns>
+	public CharacterSheetController GetCharacterSheetController() {return _characterSheetController;}
+
+	/// <summary>
+	/// Gets the combat menu controller.
+	/// </summary>
+	/// <returns>The combat menu controller.</returns>
+	public CombatMenuController GetCombatMenuController() {return _combatMenuController;}
 }

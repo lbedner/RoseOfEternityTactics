@@ -35,6 +35,14 @@ public class AttributeCollection {
 	}
 
 	/// <summary>
+	/// Add the specified attribute.
+	/// </summary>
+	/// <param name="attribute">Attribute.</param>
+	public void Add(Attribute attribute) {
+		Add (attribute.Type, attribute);
+	}
+
+	/// <summary>
 	/// Add the specified type and attribute.
 	/// </summary>
 	/// <param name="type">Type.</param>

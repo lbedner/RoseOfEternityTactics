@@ -23,7 +23,7 @@ public class AttributeCollectionTest {
 
 		// Test adding separate attributes
 		_collection.Add (_a1.Type, _a1);
-		_collection.Add (_a2.Type, _a2);
+		_collection.Add (_a2);
 
 		Assert.AreEqual (2, _collection.Count());
 
@@ -40,7 +40,7 @@ public class AttributeCollectionTest {
 		_collection = new AttributeCollection();
 
 		// Add some test attributes
-		_collection.Add (_a1.Type, _a1);
+		_collection.Add (_a1);
 		_collection.Add (_a2.Type, _a2);
 
 		// Fetch attributes
@@ -71,7 +71,7 @@ public class AttributeCollectionTest {
 
 		_collection = new AttributeCollection();
 		_collection.Add (_a1.Type, _a1);
-		_collection.Add (_a2.Type, _a2);
+		_collection.Add (_a2);
 
 		// Make sure shallow copies are the same
 		AttributeCollection shallowCopy = _collection;

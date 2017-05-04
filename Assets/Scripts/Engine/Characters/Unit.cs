@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.IO;
 
 using RoseOfEternity;
 
@@ -18,37 +19,13 @@ public abstract class Unit : MonoBehaviour {
 
 	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
 
-	public Dictionary<int, int> test;
-
-	public string firstName = "Unknown";
-	public string lastName = "";
-
-	public string @class = "";
-
-	// Core attributes
-	[SerializeField] private int _totalHitPoints = 1;
-	[SerializeField] private int _totalAbilityPoints = 1;
-	[SerializeField] private int _level = 1;
-	[SerializeField] private int _movement = 4;
-
-	[SerializeField] private int _strength = 1;
-	[SerializeField] private int _defense = 1;
-	[SerializeField] private int _dexterity = 1;
-	[SerializeField] private int _speed = 3;
-	[SerializeField] private int _magic = 1;
-	public int weaponRange = 1;
-
-	public string weaponName;
-
-	public Sprite portrait;
-
 	public Image healthbar;
 
 	public Color damagedColor = Color.red;
 	public Color attackTileColor = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
 
-	public CharacterSheetController characterSheetController;
-	public CombatMenuController combatMenuController;
+	private CharacterSheetController _characterSheetController;
+	private CombatMenuController _combatMenuController;
 
 	private UnitAnimationController _unitAnimationController;
 
@@ -60,40 +37,64 @@ public abstract class Unit : MonoBehaviour {
 	private Inventory _inventory;
 	private InventorySlots _inventorySlots;
 
+	public UnitData UnitData { get; set; }
+	public string ResRef { get; private set; }
+
+	/// <summary>
+	/// Gets or sets the tile.
+	/// </summary>
+	/// <value>The tile.</value>
+	public Vector3 Tile { get; set; }
+
 	// Use this for initialization
 	void Start () {
-		CurrentHitPoints = _totalHitPoints;
-		CurrentAbilityPoints = _totalAbilityPoints;
-		CurrentExperiencePoints = 0;
-		_unitAnimationController = transform.Find ("Sprite").GetComponent<UnitAnimationController> ();
-		_spriteRenderer = transform.Find ("Sprite").GetComponent<SpriteRenderer> ();
-		_attributeCollection = AttributeLoader.GetUnitAttributes ();
+		Transform unitSpriteTransform = transform.Find ("Sprite(Clone)");
+		_unitAnimationController = unitSpriteTransform.GetComponent<UnitAnimationController> ();
+		_spriteRenderer = unitSpriteTransform.GetComponent<SpriteRenderer> ();
+		_attributeCollection = UnitData.AttributeCollection;
+		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.HIT_POINTS);
+		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.ABILITY_POINTS);
+		_inventorySlots = UnitData.InventorySlots;
 
-		_inventorySlots = new InventorySlots ();
-		_inventory = new Inventory ();
-		string weaponName = "Sword of Galladoran";
-		if (firstName == "Sinteres")
-			weaponName = "Daishan Dagger";
-		else if (firstName == "Aramus")
-			weaponName = "Sword of Galladoran";
-		else if (firstName == "Jarl")
-			weaponName = "Wand of Power";
-		else if (firstName == "Orelle")
-			weaponName = "Dundalan Axe";
-		else if (firstName == "Petty Muck")
-			weaponName = "Muck";
-
-		_inventory.Add(ItemManager.Instance.GlobalInventory.GetFirstItemByName(weaponName).DeepCopy());
-		_inventorySlots.Add(_inventory.GetFirstItemByName(weaponName));
-		SetAttributes();
+		_characterSheetController = GameManager.Instance.GetCharacterSheetController ();
+		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
 	}
 
-	private int CurrentHitPoints { get; set; }
-	private int CurrentAbilityPoints { get; set; }
+	/// <summary>
+	/// Instantiate the specified resRef.
+	/// </summary>
+	/// <param name="resRef">Res reference.</param>
+	public static Unit InstantiateUnit(string resRef) {
 
-	public int CurrentExperiencePoints { get; set; }
+		// Instantiate base unit and set unit data on it
+		UnitData unitData = UnitDataManager.Instance.GlobalUnitDataCollection.GetByResRef (resRef).DeepCopy();
+		string unitPrefabPath = "Prefabs/Characters/GameObjects/";
+		string unitPrefab = "";
+		float z = 0.0f;
+		switch (unitData.Type) {
+		case UnitData.UnitType.PLAYER:
+			unitPrefab = "Player";
+			z = 0.97f;
+			break;
+		case UnitData.UnitType.ENEMY:
+			unitPrefab = "Enemy";
+			z = -0.74f;
+			break;
+		}
 
-	public Vector3 Tile { get; set; }
+		Unit unit = Instantiate(Resources.Load<Unit> (Path.Combine (unitPrefabPath, unitPrefab)));
+		unit.ResRef = resRef;
+		unit.UnitData = unitData;
+
+		// Instantiate graphics for unit
+		GameObject unitSprite = Instantiate (Resources.Load<GameObject> (unit.UnitData.Sprite));
+		unitSprite.transform.SetParent (unit.transform, false);
+		unitSprite.transform.localScale = new Vector3 (7.0f, 7.0f, 7.0f);
+		unitSprite.transform.localPosition = new Vector3 (0.0f, 0.1f, z);
+		unitSprite.transform.localEulerAngles = new Vector3 (90.0f, 0.0f, 0.0f);
+
+		return unit;
+	}
 
 	// Implement these in children classes
 	public abstract Color MovementTileColor { get; }
@@ -104,7 +105,7 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	/// <returns>The full name.</returns>
 	public string GetFullName() {
-		return string.Format ("{0} {1}".Trim (), firstName, lastName);
+		return string.Format ("{0} {1}".Trim (), UnitData.FirstName, UnitData.LastName);
 	}
 
 	/// <summary>
@@ -216,6 +217,14 @@ public abstract class Unit : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Sets the maximum value to current value.
+	/// </summary>
+	/// <param name="type">Type.</param>
+	private void SetMaximumValueToCurrentValue(AttributeEnums.AttributeType type) {
+		_attributeCollection.Get (type).MaximumValue = _attributeCollection.Get (type).CurrentValue;
+	}
+
+	/// <summary>
 	/// Determines whether this instance is facing north.
 	/// </summary>
 	/// <returns><c>true</c> if this instance is facing north; otherwise, <c>false</c>.</returns>
@@ -255,101 +264,137 @@ public abstract class Unit : MonoBehaviour {
 		return target.x < source.x;
 	}
 
+	/// <summary>
+	/// Activates the character sheet.
+	/// </summary>
 	public void ActivateCharacterSheet() {
-		characterSheetController.Activate(this);
+		_characterSheetController.Activate(this);
 	}
 
+	/// <summary>
+	/// Deactivates the character sheet.
+	/// </summary>
 	public void DeactivateCharacterSheet() {
-		characterSheetController.Deactivate();
+		_characterSheetController.Deactivate();
 	}
 
+	/// <summary>
+	/// Activates the combat menu.
+	/// </summary>
 	public void ActivateCombatMenu() {
 		if (!isSelected) {
-			combatMenuController.Activate ("Move", "Attack", "Ability", "Item", "End Turn");
+			_combatMenuController.Activate ("Move", "Attack", "Ability", "Item", "End Turn");
 			isSelected = true;
 		}
 	}
 
+	/// <summary>
+	/// Deactivates the combat menu.
+	/// </summary>
 	public void DeactivateCombatMenu() {
 		if (isSelected) {
-			combatMenuController.Deactivate ();
+			_combatMenuController.Deactivate ();
 			isSelected = false;
 		}
 	}
 
 	// ---------------- ATTRIBUTES WRAPPERS ---------------- //
 
+	/// <summary>
+	/// Gets the attribute.
+	/// </summary>
+	/// <returns>The attribute.</returns>
+	/// <param name="type">Type.</param>
 	public Attribute GetAttribute(AttributeEnums.AttributeType type) {
 		return _attributeCollection.Get (type);
 	}
 
+	/// <summary>
+	/// Gets the experience attribute.
+	/// </summary>
+	/// <returns>The experience attribute.</returns>
 	public Attribute GetExperienceAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.EXPERIENCE);
 	}
 
+	/// <summary>
+	/// Gets the level attribute.
+	/// </summary>
+	/// <returns>The level attribute.</returns>
 	public Attribute GetLevelAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.LEVEL);
 	}
 
+	/// <summary>
+	/// Gets the hit points attribute.
+	/// </summary>
+	/// <returns>The hit points attribute.</returns>
 	public Attribute GetHitPointsAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.HIT_POINTS);
 	}
 
+	/// <summary>
+	/// Gets the ability points attribute.
+	/// </summary>
+	/// <returns>The ability points attribute.</returns>
 	public Attribute GetAbilityPointsAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.ABILITY_POINTS);
 	}
 
+	/// <summary>
+	/// Gets the movement attribute.
+	/// </summary>
+	/// <returns>The movement attribute.</returns>
 	public Attribute GetMovementAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.MOVEMENT);
 	}
+
+	/// <summary>
+	/// Gets the speed attribute.
+	/// </summary>
+	/// <returns>The speed attribute.</returns>
 	public Attribute GetSpeedAttribute() {
 		return GetAttribute (AttributeEnums.AttributeType.SPEED);
 	}
 
 	/// <summary>
-	/// Sets the attributes for the unit.
+	/// Gets the item in slot.
 	/// </summary>
-	private void SetAttributes() {
-
-		// Level
-		GetLevelAttribute().CurrentValue = _level;
-
-		// Hit points
-		GetHitPointsAttribute().MaximumValue = _totalHitPoints;
-		GetHitPointsAttribute().CurrentValue = CurrentHitPoints;
-
-		// Ability Points
-		GetAbilityPointsAttribute().MaximumValue = _totalAbilityPoints;
-		GetAbilityPointsAttribute ().CurrentValue = CurrentAbilityPoints;
-
-		// Movement
-		GetMovementAttribute().CurrentValue = _movement;
-
-		// Speed
-		GetSpeedAttribute().CurrentValue = _speed;
-
-		// Strength
-		_attributeCollection.Get (AttributeEnums.AttributeType.STRENGTH).CurrentValue = _strength;
-
-		// Defense
-		_attributeCollection.Get (AttributeEnums.AttributeType.DEFENSE).CurrentValue = _defense;
-
-		// Dexterity
-		_attributeCollection.Get (AttributeEnums.AttributeType.DEXTERITY).CurrentValue = _dexterity;
-
-		// Magic
-		_attributeCollection.Get (AttributeEnums.AttributeType.MAGIC).CurrentValue = _magic;
-	}
-
+	/// <returns>The item in slot.</returns>
+	/// <param name="slotType">Slot type.</param>
 	public Item GetItemInSlot(InventorySlots.SlotType slotType) {
 		return _inventorySlots.Get (slotType);
 	}
 
+	/// <summary>
+	/// Gets the inventory slots.
+	/// </summary>
+	/// <returns>The inventory slots.</returns>
 	public InventorySlots GetInventorySlots() {
 		return _inventorySlots;
 	}
 
+	/// <summary>
+	/// Gets the weapon range.
+	/// </summary>
+	/// <returns>The weapon range.</returns>
+	public int GetWeaponRange() {
+		return (int) _inventorySlots.Get (InventorySlots.SlotType.RIGHT_HAND).GetAttribute (AttributeEnums.AttributeType.RANGE).CurrentValue;
+	}
+
+	/// <summary>
+	/// Gets the portrait.
+	/// </summary>
+	/// <returns>The portrait.</returns>
+	public Sprite GetPortrait() {
+		return UnitData.Portrait;
+	}
+
+	/// <summary>
+	/// Returns a <see cref="System.String"/> that represents the current <see cref="Unit"/>.
+	/// </summary>
+	/// <returns>A <see cref="System.String"/> that represents the current <see cref="Unit"/>.</returns>
 	public override string ToString () {
-		return string.Format("{0} - {1}", firstName, _attributeCollection.ToString ());
+		return string.Format("{0} - {1}", GetFullName(), _attributeCollection.ToString ());
 	}
 }

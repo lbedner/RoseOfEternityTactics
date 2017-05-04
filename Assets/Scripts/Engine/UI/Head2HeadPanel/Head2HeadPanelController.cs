@@ -31,11 +31,11 @@ public class Head2HeadPanelController : MonoBehaviour {
 	public void Load(Unit unit, Head2HeadState head2HeadState) {
 		int currentLevel = (int) unit.GetLevelAttribute ().CurrentValue;
 
-		portrait.sprite = unit.portrait;
+		portrait.sprite = unit.GetPortrait ();
 
 		name.text = unit.GetFullName ();
 		level.text = string.Format ("Level: {0}", currentLevel);
-		@class.text = unit.@class;
+		@class.text = unit.UnitData.Class;
 
 		// Hit Points
 		int currentHitPoints = (int) unit.GetHitPointsAttribute ().CurrentValue;
@@ -64,7 +64,7 @@ public class Head2HeadPanelController : MonoBehaviour {
 			damage.text = string.Format ("Dmg: {0}",(damageAttribute * currentLevel));
 			attackHitPercent.text = string.Format ("Hit: {0}%", 100);
 			crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
-			usedAbility.text = unit.GetItemInSlot(InventorySlots.SlotType.RIGHT_HAND).Name;
+			usedAbility.text = weapon.Name;
 		} else {
 			damage.text = "";
 			attackHitPercent.text = "";
