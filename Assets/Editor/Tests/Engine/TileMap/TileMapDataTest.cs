@@ -46,12 +46,12 @@ public class TileMapDataTest {
 
 	[Test]
 	public void TestGetWidth() {
-		Assert.AreEqual(MAP_SQUARE_SIZE, _tileMapData.GetWidth());
+		Assert.AreEqual(MAP_SQUARE_SIZE, _tileMapData.Width);
 	}
 
 	[Test]
 	public void TestGetHeight() {
-		Assert.AreEqual(MAP_SQUARE_SIZE, _tileMapData.GetHeight());
+		Assert.AreEqual(MAP_SQUARE_SIZE, _tileMapData.Height);
 	}
 
 	private void RunTileDataAssertions(TileData tileData) {
@@ -65,10 +65,10 @@ public class TileMapDataTest {
 	}		
 
 	private TileData GetGrassTileData() {
-		return new TileData (TileData.TerrainTypeEnum.GRASS, true, "Grass", 0, 0, 0, 0);
+		return new TileData (TileData.TerrainTypeEnum.GRASS, true, "Grass", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f));
 	}
 
 	private TileData GetWaterTileData() {
-		return new TileData (TileData.TerrainTypeEnum.WATER, false, "Water", 0, 0, 0, 0);
+		return new TileData (TileData.TerrainTypeEnum.WATER, false, "Water", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f));
 	}
 }

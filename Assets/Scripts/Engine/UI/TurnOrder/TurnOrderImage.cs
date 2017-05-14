@@ -23,7 +23,7 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler {
 		if (eventData.button == PointerEventData.InputButton.Left) {
 			StartCoroutine (GameManager.Instance.GetCameraController ().MoveToPosition (Unit.transform.position));
 			Unit.ActivateCharacterSheet ();
-			_tileMapMouse.GetTileHighlighter ().HighlightTiles (Unit, TileMapUtil.WorldCenteredToTileMap(Unit.transform.position, _tileMap.tileSize));
+			_tileMapMouse.GetTileHighlighter ().HighlightTiles (Unit, TileMapUtil.WorldCenteredToTileMap(Unit.transform.position, _tileMap.TileSize));
 		}
 	}
 }

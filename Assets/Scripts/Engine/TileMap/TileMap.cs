@@ -6,11 +6,11 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 public class TileMap : MonoBehaviour {
-	
-	public int size_x = 100;
-	public int size_z = 50;
-	public float tileSize = 1.0f;
-	public int tileResolution = 16;
+
+	public int Width { get; private set; }
+	public int Height { get; private set; }
+	public float TileSize { get; private set; }
+	public int TileResolution { get; private set; }
 
 	public Texture2D terrainTiles;
 
@@ -23,10 +23,9 @@ public class TileMap : MonoBehaviour {
 	public void Initialize() {
 		print ("TileMap.Initialize()");
 		InitializeTileMap ();
-		InitUnits ();
 
 		// Generate 4 way pathfinding graph
-		_graph = new Graph (size_x, size_z);
+		_graph = new Graph (Width, Height);
 		_graph.Generate4WayGraph ();
 	}
 
@@ -62,6 +61,13 @@ public class TileMap : MonoBehaviour {
 	/// Initializes the tile map.
 	/// </summary>
 	public void InitializeTileMap() {
+		_tileMapData = TileMapDataManager.Instance.GlobalTileMapData;
+
+		Width = _tileMapData.Width;
+		Height = _tileMapData.Height;
+		TileSize = _tileMapData.TileSize;
+		TileResolution = _tileMapData.TileResolution;
+
 		BuildMesh();
 		BuildTexture ();
 	}
@@ -71,12 +77,12 @@ public class TileMap : MonoBehaviour {
 	/// </summary>
 	private void BuildMesh() {
 		
-		int numTiles = size_x * size_z;
+		int numTiles = Width * Height;
 		int numTris = numTiles * 2;
 		
-		int vsize_x = size_x + 1;
-		int vsize_z = size_z + 1;
-		int numVerts = vsize_x * vsize_z;
+		int vWidth = Width + 1;
+		int vHeight = Height + 1;
+		int numVerts = vWidth * vHeight;
 		
 		// Generate the mesh data
 		Vector3[] vertices = new Vector3[ numVerts ];
@@ -86,26 +92,26 @@ public class TileMap : MonoBehaviour {
 		int[] triangles = new int[ numTris * 3 ];
 
 		int x, z;
-		for(z=0; z < vsize_z; z++) {
-			for(x=0; x < vsize_x; x++) {
-				vertices[ z * vsize_x + x ] = new Vector3( x*tileSize, 0, z*tileSize );
-				normals[ z * vsize_x + x ] = Vector3.up;
-				uv[ z * vsize_x + x ] = new Vector2( (float)x / size_x, (float)z / size_z );
+		for(z=0; z < vHeight; z++) {
+			for(x=0; x < vWidth; x++) {
+				vertices[ z * vWidth + x ] = new Vector3( x*TileSize, 0, z*TileSize );
+				normals[ z * vWidth + x ] = Vector3.up;
+				uv[ z * vWidth + x ] = new Vector2( (float)x / Width, (float)z / Height );
 			}
 		}
 		//Debug.Log ("Done Verts!");
 		
-		for(z=0; z < size_z; z++) {
-			for(x=0; x < size_x; x++) {
-				int squareIndex = z * size_x + x;
+		for(z=0; z < Height; z++) {
+			for(x=0; x < Width; x++) {
+				int squareIndex = z * Width + x;
 				int triOffset = squareIndex * 6;
-				triangles[triOffset + 0] = z * vsize_x + x + 		   0;
-				triangles[triOffset + 1] = z * vsize_x + x + vsize_x + 0;
-				triangles[triOffset + 2] = z * vsize_x + x + vsize_x + 1;
+				triangles[triOffset + 0] = z * vWidth + x + 		   0;
+				triangles[triOffset + 1] = z * vWidth + x + vWidth + 0;
+				triangles[triOffset + 2] = z * vWidth + x + vWidth + 1;
 				
-				triangles[triOffset + 3] = z * vsize_x + x + 		   0;
-				triangles[triOffset + 4] = z * vsize_x + x + vsize_x + 1;
-				triangles[triOffset + 5] = z * vsize_x + x + 		   1;
+				triangles[triOffset + 3] = z * vWidth + x + 		   0;
+				triangles[triOffset + 4] = z * vWidth + x + vWidth + 1;
+				triangles[triOffset + 5] = z * vWidth + x + 		   1;
 			}
 		}
 		
@@ -132,21 +138,36 @@ public class TileMap : MonoBehaviour {
 	/// </summary>
 	private void BuildTexture() {
 
-		int texWidth = size_x * tileResolution;
-		int texHeight = size_z * tileResolution;
+		int texWidth = Width * TileResolution;
+		int texHeight = Height * TileResolution;
 		Texture2D texture = new Texture2D (texWidth, texHeight);
 
 		Color[][] tiles = ChopUpTiles ();
 
-		_tileMapData = new TileMapData(size_x, size_z);
 		TileData[,] tileData = _tileMapData.GetTileData ();
 
-		tileData = TileMapDataLoader.LoadTileMapData (size_x, size_z, tileData);
+		for (int y = 0; y < Height; y++) {
+			for (int x = 0; x < Width; x++) {
+				TileData currentTileData = tileData [x, y];
 
-		for (int y = 0; y < size_z; y++) {
-			for (int x = 0; x < size_x; x++) {
-				Color[] p = tiles[(int) tileData[x, y].TerrainType];
-				texture.SetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution, p);
+				// Set pixels
+				Color[] p = tiles[(int) currentTileData.TerrainType];
+				texture.SetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution, p);
+
+				// If a unit is on the tile, instantiate them and move them to that tile
+				if (currentTileData.UnitResRef != null) {
+					Unit unit = Unit.InstantiateUnit (currentTileData.UnitResRef);
+					currentTileData.Unit = unit;
+					unit.Tile = currentTileData.Position;
+
+					unit.transform.position = TileMapUtil.TileMapToWorldCentered (currentTileData.Position, TileSize);
+					GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
+
+					if (unit.UnitData.Type == UnitData.UnitType.PLAYER)
+						_allies.Add (unit);
+					else if (unit.UnitData.Type == UnitData.UnitType.ENEMY)
+						_enemies.Add (unit);
+				}
 			}
 		}
 
@@ -165,14 +186,14 @@ public class TileMap : MonoBehaviour {
 	/// </summary>
 	/// <returns>The up tiles.</returns>
 	private Color[][] ChopUpTiles() {
-		int numTilesPerRow = terrainTiles.width / tileResolution;
-		int numRows = terrainTiles.height / tileResolution;
+		int numTilesPerRow = terrainTiles.width / TileResolution;
+		int numRows = terrainTiles.height / TileResolution;
 
 		Color[][] tiles = new Color[numTilesPerRow * numRows][];
 
 		for (int y = 0; y < numRows; y++) {
 			for (int x = 0; x < numTilesPerRow; x++) {
-				tiles [y * numTilesPerRow + x] = terrainTiles.GetPixels (x * tileResolution, y * tileResolution, tileResolution, tileResolution);
+				tiles [y * numTilesPerRow + x] = terrainTiles.GetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution);
 			}
 		}
 
@@ -193,42 +214,5 @@ public class TileMap : MonoBehaviour {
 	/// <returns>The graph.</returns>
 	public Graph GetGraph() {
 		return _graph;
-	}
-
-	/// <summary>
-	/// Inits the units.
-	/// </summary>
-	private void InitUnits() {
-		print ("TileMap.InitUnits()");
-
-		InitUnit ("sinteres", 9, 7);
-		InitUnit ("aramus", 10, 7);
-		InitUnit ("orelle", 10, 8);
-		InitUnit ("jarl", 9, 8);
-		InitUnit ("muck_petty", 18, 9);
-		InitUnit ("muck_petty", 17, 17);
-		InitUnit ("muck_petty", 22, 21);
-		InitUnit ("muck_petty", 28, 19);
-	}
-
-	/// <summary>
-	/// Inits the unit.
-	/// </summary>
-	/// <param name="resRef">Res reference.</param>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	private void InitUnit(string resRef, int x, int z) {
-		Unit unit = Unit.InstantiateUnit (resRef);
-		if (unit && unit.gameObject.activeSelf) {
-			unit.transform.position = TileMapUtil.TileMapToWorldCentered (new Vector3 (x, 0.0f, z), tileSize);
-			_tileMapData.GetTileDataAt (x, z).Unit = unit;
-			unit.Tile = new Vector3 (x, 0, z);
-			GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
-
-			if (unit.UnitData.Type == UnitData.UnitType.PLAYER)
-				_allies.Add (unit);
-			else if (unit.UnitData.Type == UnitData.UnitType.ENEMY)
-				_enemies.Add (unit);
-		}
 	}
 }

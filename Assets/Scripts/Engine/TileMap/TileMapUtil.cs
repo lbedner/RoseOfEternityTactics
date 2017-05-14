@@ -76,6 +76,6 @@ public class TileMapUtil {
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="z">The z coordinate.</param>
 	public static bool IsInsideTileMapBoundary(TileMapData tileMapData, int x, int z) {
-		return x >= 0 && z >= 0 && x < tileMapData.GetWidth () && z < tileMapData.GetHeight ();
+		return x >= 0 && z >= 0 && x < tileMapData.Width && z < tileMapData.Height;
 	}
 }

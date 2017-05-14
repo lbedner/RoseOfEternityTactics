@@ -176,7 +176,7 @@ public class TileHighlighter {
 		}
 
 		// Create highlight cube and set the material's color
-		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.tileSize;
+		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.TileSize;
 		GameObject hightlightCubeClone = GameObject.Instantiate (_highlightCube.gameObject, vector, Quaternion.identity) as GameObject;
 		hightlightCubeClone.transform.Find ("Cube").gameObject.GetComponent<Renderer> ().material.color = movementTileColor;
 

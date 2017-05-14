@@ -9,9 +9,10 @@ public class TileDataTest {
 		GameObject testContainer = new GameObject ();
 		testContainer.AddComponent<Ally> ();
 		Ally unit = testContainer.GetComponent<Ally> ();
+		Vector3 position = new Vector3 (0.0f, 0.0f, 0.0f);
 			
-		TileData tileData1 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, unit);
-		TileData tileData2 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, null);
+		TileData tileData1 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, unit);
+		TileData tileData2 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, null);
 
 		Assert.NotNull (tileData1.Unit);
 		Assert.Null (tileData2.Unit);

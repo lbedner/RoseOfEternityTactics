@@ -44,11 +44,12 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	void Start () {
 		print ("GameManager.Start()");
-		// Initialize camera controller
-		_cameraController.Init (_tileMap.size_x * _tileMap.tileSize, _tileMap.size_z * _tileMap.tileSize, _tileMap.tileResolution);
 
 		// Initialize tilemap
 		_tileMap.Initialize ();
+
+		// Initialize camera controller
+		_cameraController.Init (_tileMap.Width * _tileMap.TileSize, _tileMap.Height * _tileMap.TileSize, _tileMap.TileResolution);
 	}
 
 	/// <summary>

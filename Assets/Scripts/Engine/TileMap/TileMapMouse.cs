@@ -237,9 +237,6 @@ public class TileMapMouse : MonoBehaviour {
 			HandleMovementSelection ();
 			if ((Input.GetMouseButtonDown (0))) {
 				_pathfinder.GeneratePath(_selectedCharacter.Tile, _currentTileCoord);
-
-				//foreach (var node in _pathfinder.GetGeneratedPath())
-				//	Debug.Log(node);
 				
 				_gameState = GameState.PLAYER_MOVE_START;
 				confirmationSource.PlayOneShot (confirmationSource.clip);
@@ -281,7 +278,7 @@ public class TileMapMouse : MonoBehaviour {
 			GameStateAction gameStateAction = _gameStateOriginator.RestoreFromMemenrto (memento);
 
 			if (_selectedCharacter.Tile != gameStateAction.UnitTile) {
-				_selectedCharacter.transform.position = TileMapUtil.TileMapToWorldCentered (gameStateAction.UnitTile, _tileMap.tileSize);
+				_selectedCharacter.transform.position = TileMapUtil.TileMapToWorldCentered (gameStateAction.UnitTile, _tileMap.TileSize);
 				_selectedCharacter.Tile = gameStateAction.UnitTile;
 				HighlightCharacter (_selectedCharacter);
 			}
@@ -338,7 +335,7 @@ public class TileMapMouse : MonoBehaviour {
 				_selectedCharacter = cpu;
 
 				// Show terrain related things
-				Vector3 cpuTilemapCoordinates = TileMapUtil.WorldCenteredToTileMap (cpu.transform.position, _tileMap.tileSize);
+				Vector3 cpuTilemapCoordinates = TileMapUtil.WorldCenteredToTileMap (cpu.transform.position, _tileMap.TileSize);
 				ShowTerrainUI ((int) cpuTilemapCoordinates.x, (int) cpuTilemapCoordinates.z);
 				_playerCurrentTileCoordinate = cpuTilemapCoordinates;
 
@@ -446,7 +443,7 @@ public class TileMapMouse : MonoBehaviour {
 	/// </summary>
 	/// <param name="character">Character.</param>
 	private void HighlightCharacter(Unit character) {
-		selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, _tileMap.tileSize);
+		selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, _tileMap.TileSize);
 	}
 
 	private void HandleTerrainMouseOver(Ray ray) {
@@ -455,7 +452,7 @@ public class TileMapMouse : MonoBehaviour {
 		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 			
 			// Get hit point in tile map coordinates
-			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.TileSize);
 
 			// Don't run if still on the same tile
 			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
@@ -464,7 +461,7 @@ public class TileMapMouse : MonoBehaviour {
 
 				cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
 
-				selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
+				selectionCube.transform.position = _currentTileCoord * _tileMap.TileSize;
 				ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
 			}
 		}
@@ -476,7 +473,7 @@ public class TileMapMouse : MonoBehaviour {
 		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 
 			// Get hit point in tile map coordinates
-			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.TileSize);
 
 			// Don't run if still on the same tile
 			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
@@ -488,7 +485,7 @@ public class TileMapMouse : MonoBehaviour {
 
 					cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
 
-					selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
+					selectionCube.transform.position = _currentTileCoord * _tileMap.TileSize;
 					ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
 				}
 			}
@@ -501,7 +498,7 @@ public class TileMapMouse : MonoBehaviour {
 		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 
 			// Get hit point in tile map coordinates
-			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.tileSize);
+			Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hitInfo.point, _tileMap.TileSize);
 
 			// Don't run if still on the same tile
 			if (_currentTileCoord.x != tileMapPoint.x || _currentTileCoord.z != tileMapPoint.z) {
@@ -513,7 +510,7 @@ public class TileMapMouse : MonoBehaviour {
 
 					cursorMoveSource.PlayOneShot (cursorMoveSource.clip);
 
-					selectionCube.transform.position = _currentTileCoord * _tileMap.tileSize;
+					selectionCube.transform.position = _currentTileCoord * _tileMap.TileSize;
 					ShowTerrainUI ((int) tileMapPoint.x, (int) tileMapPoint.z);
 
 					ClearActionTargets ();
@@ -555,7 +552,7 @@ public class TileMapMouse : MonoBehaviour {
 	private bool IsPlayerRaycastHitNew(RaycastHit hintinfo) {
 		
 		// Get hit point in tile map coordinates
-		Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hintinfo.point, _tileMap.tileSize);
+		Vector3 tileMapPoint = TileMapUtil.WorldCenteredToTileMap (hintinfo.point, _tileMap.TileSize);
 
 		if (_playerCurrentTileCoordinate.x != tileMapPoint.x || _playerCurrentTileCoordinate.z != tileMapPoint.z) {
 			_playerCurrentTileCoordinate.x = tileMapPoint.x;
@@ -718,8 +715,8 @@ public class TileMapMouse : MonoBehaviour {
 		int index = 0;
 		while (_pathfinder.GetGeneratedPath() != null && index < _pathfinder.GetGeneratedPath().Count - 1) {
 			newTile = _pathfinder.GetGeneratedPathAt(index + 1);
-			Vector3 startingPosition = TileMapUtil.TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.tileSize);
-			Vector3 endingPosition = TileMapUtil.TileMapToWorldCentered (newTile, _tileMap.tileSize);
+			Vector3 startingPosition = TileMapUtil.TileMapToWorldCentered (_pathfinder.GetGeneratedPathAt(index), _tileMap.TileSize);
+			Vector3 endingPosition = TileMapUtil.TileMapToWorldCentered (newTile, _tileMap.TileSize);
 
 			yield return StartCoroutine(MoveToTile(_selectedCharacter, startingPosition, endingPosition));
 			index++;
@@ -761,13 +758,13 @@ public class TileMapMouse : MonoBehaviour {
 			int index = 0;
 			while (index < generatedPath.Count - 1) {
 				Vector3 start = TileMapUtil.TileMapToWorldCentered (
-					                new Vector3 (generatedPath [index].x, 10, generatedPath [index].z),
-					                _tileMap.tileSize
-				                );
+					new Vector3 (generatedPath [index].x, 10, generatedPath [index].z),
+					_tileMap.TileSize
+				);
 				Vector3 end = TileMapUtil.TileMapToWorldCentered (
-					              new Vector3 (generatedPath [index + 1].x, 10, generatedPath [index + 1].z),
-					              _tileMap.tileSize
-				              );
+					new Vector3 (generatedPath [index + 1].x, 10, generatedPath [index + 1].z),
+					_tileMap.TileSize
+				);
 
 				Debug.DrawLine (start, end, Color.red);
 				Debug.Log (string.Format("Line: [{0}, {1}]", start, end));
@@ -816,7 +813,7 @@ public class TileMapMouse : MonoBehaviour {
 	private bool IsEnemyNearby(List<Unit> units) {
 		foreach (Unit unit in units) {
 			int range = (int) unit.GetMovementAttribute().CurrentValue + unit.GetWeaponRange();
-			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.tileSize);
+			Vector3 tileMapPosition = TileMapUtil.WorldCenteredToTileMap (unit.transform.position, _tileMap.TileSize);
 			int x = (int) tileMapPosition.x;
 			int z = (int) tileMapPosition.z;
 
@@ -882,8 +879,8 @@ public class TileMapMouse : MonoBehaviour {
 
 			// Get tile direction
 			Unit.TileDirection tileDirection = unit.GetFacing (
-				TileMapUtil.WorldCenteredToTileMap (sourceTile, _tileMap.tileSize),
-				TileMapUtil.WorldCenteredToTileMap (targetTile, _tileMap.tileSize)
+				TileMapUtil.WorldCenteredToTileMap (sourceTile, _tileMap.TileSize),
+				TileMapUtil.WorldCenteredToTileMap (targetTile, _tileMap.TileSize)
 			);
 
 			switch (tileDirection) {

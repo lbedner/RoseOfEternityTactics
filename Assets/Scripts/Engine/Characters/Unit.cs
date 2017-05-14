@@ -61,7 +61,7 @@ public abstract class Unit : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Instantiate the specified resRef.
+	/// Instantiate the unit specified by the resRef.
 	/// </summary>
 	/// <param name="resRef">Res reference.</param>
 	public static Unit InstantiateUnit(string resRef) {
