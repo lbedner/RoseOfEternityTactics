@@ -5,7 +5,8 @@ using Newtonsoft.Json;
 
 public class TileMapDataManager : MonoBehaviour {
 
-	private const string DATA_FILE = "Data/TileMaps/0000.json";
+	private const string EE_DATA_FILE    = "Data/TileMaps/0000.json";
+	private const string TILED_DATA_FILE = "Data/TileMaps/Tiled/0000.json";
 
 	private static TileMapDataManager _instance;
 
@@ -27,10 +28,11 @@ public class TileMapDataManager : MonoBehaviour {
 	void Awake() {
 		print ("TileMapDataManager.Awake()");
 		if (_instance == null) {
-			string path = Path.Combine (Application.streamingAssetsPath, DATA_FILE);
+			string path = Path.Combine (Application.streamingAssetsPath, TILED_DATA_FILE);
 			string data = File.ReadAllText (path);
 
-			GlobalTileMapData = JsonConvert.DeserializeObject<TileMapData> (data);
+			//GlobalTileMapData = JsonConvert.DeserializeObject<TileMapData> (data);
+			GlobalTileMapData = Tiled2EE.DeserializeObject(data);
 			_instance = this;
 		}
 		else if (_instance != this)

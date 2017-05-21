@@ -29,6 +29,7 @@ public class TileData {
 	/// <param name="movementModifier">Movement modifier.</param>
 	/// <param name="position">Position of tile.</param>
 	/// <param name="serializabePosition">Serializable position of tile.</param>
+	/// <param name="imagePath">Path of image.</param>
 	/// <param name="unit">Unit on tile (if any).</param>
 	public TileData(
 		TerrainTypeEnum terrainTypeEnum,
@@ -40,7 +41,8 @@ public class TileData {
 		int movementModifier,
 		Vector3 position,
 		SerializableVector3 serializablePosition,
-		Unit unit = null
+		string imagePath,
+		string unitResRef = null
 	) {
 		TerrainType = terrainTypeEnum;
 		IsWalkable = isWalkable;
@@ -51,7 +53,8 @@ public class TileData {
 		MovementModifier = movementModifier;
 		SerializablePosition = serializablePosition;
 		Position = SerializablePosition;
-		Unit = unit;
+		ImagePath = imagePath;
+		UnitResRef = unitResRef;
 	}
 
 	/// <summary>
@@ -164,6 +167,12 @@ public class TileData {
 			UnitResRef = resRef;
 		}
 	}
+
+	/// <summary>
+	/// Gets the image path.
+	/// </summary>
+	/// <value>The image path.</value>
+	public string ImagePath { get; set; }
 
 	/// <summary>
 	/// Gets the unit resource reference.

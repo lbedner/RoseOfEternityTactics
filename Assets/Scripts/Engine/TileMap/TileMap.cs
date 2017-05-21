@@ -1,5 +1,9 @@
 using UnityEngine;
+using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+
+using EternalEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
@@ -7,18 +11,21 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshCollider))]
 public class TileMap : MonoBehaviour {
 
+	private const string TILE_SET_ROOT_DIRECTORY = "Data/TileMaps/TileSets";
+
 	public int Width { get; private set; }
 	public int Height { get; private set; }
 	public float TileSize { get; private set; }
 	public int TileResolution { get; private set; }
-
-	public Texture2D terrainTiles;
+	public string TileSet { get; private set; }
 
 	private TileMapData _tileMapData;
 	private Graph _graph;
 
 	private List<Unit> _allies = new List<Unit>();
 	private List<Unit> _enemies = new List<Unit> ();
+
+	private Dictionary<string, Color[]> _pixelCache = new Dictionary<string, Color[]>();
 
 	public void Initialize() {
 		print ("TileMap.Initialize()");
@@ -61,12 +68,14 @@ public class TileMap : MonoBehaviour {
 	/// Initializes the tile map.
 	/// </summary>
 	public void InitializeTileMap() {
+
 		_tileMapData = TileMapDataManager.Instance.GlobalTileMapData;
 
 		Width = _tileMapData.Width;
 		Height = _tileMapData.Height;
 		TileSize = _tileMapData.TileSize;
 		TileResolution = _tileMapData.TileResolution;
+		TileSet = _tileMapData.TileSet;
 
 		BuildMesh();
 		BuildTexture ();
@@ -142,17 +151,33 @@ public class TileMap : MonoBehaviour {
 		int texHeight = Height * TileResolution;
 		Texture2D texture = new Texture2D (texWidth, texHeight);
 
-		Color[][] tiles = ChopUpTiles ();
-
 		TileData[,] tileData = _tileMapData.GetTileData ();
 
 		for (int y = 0; y < Height; y++) {
 			for (int x = 0; x < Width; x++) {
 				TileData currentTileData = tileData [x, y];
+				string imagePath = currentTileData.ImagePath;
 
+				// Grab texture from cache if available, if not, load from disk then put in cache
+				//Texture2D loadedTexture;
+				Color[] pixels;
+				if (_pixelCache.ContainsKey (imagePath))
+					pixels = _pixelCache [imagePath];
+				else {
+
+					Texture2D loadedTexture = new Texture2D (texWidth, texHeight);
+					string path = Utility.CombinePaths(Application.streamingAssetsPath, TILE_SET_ROOT_DIRECTORY, TileSet, "Tiles", imagePath);
+
+					byte[] bytes = File.ReadAllBytes (path);
+					loadedTexture.LoadImage (bytes);
+
+					pixels = loadedTexture.GetPixels(0, 0, TileResolution, TileResolution);
+					_pixelCache.Add (imagePath, pixels);
+				}
 				// Set pixels
-				Color[] p = tiles[(int) currentTileData.TerrainType];
-				texture.SetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution, p);
+				texture.SetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution, pixels);
+
+				//break;
 
 				// If a unit is on the tile, instantiate them and move them to that tile
 				if (currentTileData.UnitResRef != null) {
@@ -169,6 +194,7 @@ public class TileMap : MonoBehaviour {
 						_enemies.Add (unit);
 				}
 			}
+			//break;
 		}
 
 		texture.filterMode = FilterMode.Point;
@@ -185,15 +211,15 @@ public class TileMap : MonoBehaviour {
 	/// Chops up tiles sprite sheet and apply to 2D array of colors that will be used for the main texture.
 	/// </summary>
 	/// <returns>The up tiles.</returns>
-	private Color[][] ChopUpTiles() {
-		int numTilesPerRow = terrainTiles.width / TileResolution;
-		int numRows = terrainTiles.height / TileResolution;
+	private Color[][] ChopUpTiles(Texture2D texture) {
+		int numTilesPerRow = texture.width / TileResolution;
+		int numRows = texture.height / TileResolution;
 
 		Color[][] tiles = new Color[numTilesPerRow * numRows][];
 
 		for (int y = 0; y < numRows; y++) {
 			for (int x = 0; x < numTilesPerRow; x++) {
-				tiles [y * numTilesPerRow + x] = terrainTiles.GetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution);
+				tiles [y * numTilesPerRow + x] = texture.GetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution);
 			}
 		}
 

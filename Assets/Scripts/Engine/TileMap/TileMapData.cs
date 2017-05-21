@@ -7,6 +7,7 @@ public class TileMapData {
 	public float TileSize { get; private set; }
 	public int TileResolution { get; private set; }
 	public TileData[,] TileData { get; private set; }
+	public string TileSet { get; private set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TileMapData"/>class.
@@ -26,13 +27,15 @@ public class TileMapData {
 	/// <param name="height">Height.</param>
 	/// <param name="tileSize">Tile size.</param>
 	/// <param name="tileResolution">Tile resolution.</param>
+	/// <param name="tileSet">Tile set.</param>
 	/// <param name="tileData">Tile data.</param>
 	[JsonConstructor]
-	private TileMapData(int width, int height, float tileSize, int tileResolution, TileData[,] tileData) {
+	public TileMapData(int width, int height, float tileSize, int tileResolution, string tileSet, TileData[,] tileData) {
 		Width = width;
 		Height = height;
 		TileSize = tileSize;
 		TileResolution = tileResolution;
+		TileSet = tileSet;
 		TileData = tileData;
 	}
 

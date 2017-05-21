@@ -87,10 +87,10 @@ public class PathfinderTest {
 	}
 
 	private TileData GetGrassTileData() {
-		return new TileData (TileData.TerrainTypeEnum.GRASS, true, "Grass", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f));
+		return new TileData (TileData.TerrainTypeEnum.GRASS, true, "Grass", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), "");
 	}
 
 	private TileData GetWaterTileData() {
-		return new TileData (TileData.TerrainTypeEnum.WATER, false, "Water", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f));
+		return new TileData (TileData.TerrainTypeEnum.WATER, false, "Water", 0, 0, 0, 0, new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), "");
 	}
 }

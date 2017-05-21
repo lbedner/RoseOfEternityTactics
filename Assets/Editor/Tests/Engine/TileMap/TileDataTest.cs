@@ -11,8 +11,9 @@ public class TileDataTest {
 		Ally unit = testContainer.GetComponent<Ally> ();
 		Vector3 position = new Vector3 (0.0f, 0.0f, 0.0f);
 			
-		TileData tileData1 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, unit);
-		TileData tileData2 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, null);
+		TileData tileData1 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, "", "unit1");
+		tileData1.Unit = unit;
+		TileData tileData2 = new TileData (TileData.TerrainTypeEnum.DESERT, true, "", 0, 0, 0, 0, position, position, "");
 
 		Assert.NotNull (tileData1.Unit);
 		Assert.Null (tileData2.Unit);

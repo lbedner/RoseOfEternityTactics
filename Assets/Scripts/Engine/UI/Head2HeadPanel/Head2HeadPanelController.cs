@@ -11,7 +11,7 @@ public class Head2HeadPanelController : MonoBehaviour {
 
 	public Image portrait;
 
-	public Text name;
+	public new Text name;
 	public Text level;
 	public Text @class;
 
