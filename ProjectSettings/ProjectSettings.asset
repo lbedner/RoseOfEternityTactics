@@ -10,7 +10,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: B.R.C. Productions
-  productName: 'Rose of Eternity: Hollow Burdens'
+  productName: Rose of Eternity - Hollow Burdens
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_ShowUnitySplashScreen: 1
@@ -170,12 +170,13 @@ PlayerSettings:
     height: 180
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
-  resolutionDialogBanner: {fileID: 0}
+  resolutionDialogBanner: {fileID: 2800000, guid: c70da5c66f2e540e79c79471bcfa972c,
+    type: 3}
   m_BuildTargetIcons:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 0}
+      m_Icon: {fileID: 2800000, guid: 02bd61cfe1151471585156f9b0d35330, type: 3}
       m_Width: 128
       m_Height: 128
   m_BuildTargetBatching: []
@@ -341,7 +342,8 @@ PlayerSettings:
   psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    2: 
   metroPackageName: TileMap Tutorial
   metroPackageVersion: 
   metroCertificatePath: 
