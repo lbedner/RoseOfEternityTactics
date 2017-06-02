@@ -7,8 +7,6 @@ using System.Collections;
 /// </summary>
 public class CombatMenuController : MonoBehaviour {
 
-	public TileMapMouse tileMapMouse;
-
 	public Text uiMove;
 	public Text uiAttack;
 	public Text uiAbility;
@@ -50,14 +48,5 @@ public class CombatMenuController : MonoBehaviour {
 	/// </summary>
 	public void Deactivate() {
 		this.gameObject.SetActive(false);
-	}
-
-	/// <summary>
-	/// Handles when the "Move" button is clicked.
-	/// </summary>
-	public void MoveButtonOnClick() {
-		Deactivate ();
-		Debug.Log ("SendMoveButtonClickedEvent");
-		tileMapMouse.TransitionGameState (TileMapMouse.GameState.PLAYER_MOVE_START);
 	}
 }

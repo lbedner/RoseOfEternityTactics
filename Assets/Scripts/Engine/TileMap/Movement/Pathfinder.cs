@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 
 public class Pathfinder {
 
@@ -170,5 +171,17 @@ public class Pathfinder {
 			cost += 0.001f;
 		}
 		return cost;
+	}
+
+	/// <summary>
+	/// Returns a <see cref="System.String"/> that represents the current <see cref="Pathfinder"/>.
+	/// </summary>
+	/// <returns>A <see cref="System.String"/> that represents the current <see cref="Pathfinder"/>.</returns>
+	public override string ToString ()
+	{
+		StringBuilder sb = new StringBuilder ();
+		foreach (var node in _generatedPath)
+			sb.Append (node.ToString ());
+		return sb.ToString ();
 	}
 }

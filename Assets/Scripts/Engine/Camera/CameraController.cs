@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
+
+	public static event EventHandler<InfoEventArgs<Vector3>> moveEvent;
 
 	public float delta = 10.0f;
 	public float speed = 3.0f;
 
 	private float _tilemapSizeX;
 	private float _tileMapSizeZ;
+
+	private Vector3 _oldPosition = Vector3.zero;
 
 	/// <summary>
 	/// Init the specified tileMapSizeX and tileMapSizeY.
@@ -48,6 +53,14 @@ public class CameraController : MonoBehaviour {
 				direction -= Vector3.forward;
 
 			transform.position += direction * Time.deltaTime * speed;
+
+			// Send events when position changes
+			// TODO: Move to InputController.cs
+			if (transform.position != _oldPosition) {
+				_oldPosition = transform.position;
+				if (moveEvent != null)
+					moveEvent (this, new InfoEventArgs<Vector3> (transform.position));
+			}
 		}
 	}
 

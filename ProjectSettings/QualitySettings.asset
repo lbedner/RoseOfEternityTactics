@@ -155,7 +155,7 @@ QualitySettings:
     softVegetation: 1
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1
-    vSyncCount: 1
+    vSyncCount: 0
     lodBias: 2
     maximumLODLevel: 0
     particleRaycastBudget: 4096
@@ -167,8 +167,12 @@ QualitySettings:
     FlashPlayer: 3
     GLES Emulation: 3
     PS3: 3
+    Samsung TV: 0
     Standalone: 3
+    Tizen: 0
     Web: 3
+    WebGL: 0
     Wii: 3
     XBOX360: 3
     iPhone: 2
+    tvOS: 0

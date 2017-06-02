@@ -16,14 +16,16 @@ public class UnitMenuController : MonoBehaviour {
 	/// Initialize this instance.
 	/// </summary>
 	public void Initialize() {
+		print ("UnitMenuController.Initialize()");
 		_units = GameManager.Instance.GetAllies ();
 	}
 
 	/// <summary>
-	/// Activate the unit menu.
+	/// Determines whether this instance is active.
 	/// </summary>
-	public void Activate() {
-		Activate (_units [_unitIndex]);
+	/// <returns><c>true</c> if this instance is active; otherwise, <c>false</c>.</returns>
+	public bool IsActive() {
+		return gameObject.activeSelf;
 	}
 
 	/// <summary>

@@ -177,8 +177,6 @@ public class TileMap : MonoBehaviour {
 				// Set pixels
 				texture.SetPixels (x * TileResolution, y * TileResolution, TileResolution, TileResolution, pixels);
 
-				//break;
-
 				// If a unit is on the tile, instantiate them and move them to that tile
 				if (currentTileData.UnitResRef != null) {
 					Unit unit = Unit.InstantiateUnit (currentTileData.UnitResRef);
@@ -194,7 +192,6 @@ public class TileMap : MonoBehaviour {
 						_enemies.Add (unit);
 				}
 			}
-			//break;
 		}
 
 		texture.filterMode = FilterMode.Point;

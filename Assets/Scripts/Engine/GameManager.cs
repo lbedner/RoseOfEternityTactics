@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private UnitMenuController _unitMenuController;
 	[SerializeField] private CharacterSheetController _characterSheetController;
 	[SerializeField] private CombatMenuController _combatMenuController;
+	[SerializeField] private TerrainDetailsController _terrainDetailsController;
 
 	/// <summary>
 	/// Gets the instance.
@@ -113,4 +114,10 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The combat menu controller.</returns>
 	public CombatMenuController GetCombatMenuController() {return _combatMenuController;}
+
+	/// <summary>
+	/// Gets the terrain details controller.
+	/// </summary>
+	/// <returns>The terrain details controller.</returns>
+	public TerrainDetailsController GetTerrainDetailsController() {return _terrainDetailsController;}
 }

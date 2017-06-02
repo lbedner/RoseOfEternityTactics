@@ -9,6 +9,13 @@ public class MusicController : MonoBehaviour {
 	private bool isMusicCalm = false;
 
 	/// <summary>
+	/// Start this instance.
+	/// </summary>
+	void Start() {
+		Initialize ();
+	}
+
+	/// <summary>
 	/// Initialize the music for the level.
 	/// </summary>
 	public void Initialize() {

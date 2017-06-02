@@ -40,6 +40,8 @@ public abstract class Unit : MonoBehaviour {
 	public UnitData UnitData { get; set; }
 	public string ResRef { get; private set; }
 
+	public Action Action { get; set; }
+
 	/// <summary>
 	/// Gets or sets the tile.
 	/// </summary>
