@@ -263,7 +263,7 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 		nameAndTierPanel.GetComponent<Image> ().color = item.TierColor;
 		description.text = item.Description;
 
-		if (item.Type == Item.ItemType.WEAPON || _item.Type == Item.ItemType.MONSTER_ATTACK) {
+		if ((item.Type == Item.ItemType.WEAPON || _item.Type == Item.ItemType.MONSTER_ATTACK) && item.SlotType != InventorySlots.SlotType.AMMO) {
 			Attribute attribute = item.GetAttribute (AttributeEnums.AttributeType.DAMAGE);
 			attribute1.text = string.Format ("{0}: {1}", attribute.Name, attribute.CurrentValue);
 			attribute1.color = attribute1Color;
@@ -279,13 +279,17 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 			attribute = item.GetAttribute (AttributeEnums.AttributeType.DODGE_CHANCE);
 			attribute2.text = string.Format ("{0}: {1}%", attribute.Name, attribute.CurrentValue);
 			attribute2.color = attribute2Color;
-		} 
-		else if (item.Type == Item.ItemType.CONSUMABLE) {
+		} else if (item.Type == Item.ItemType.CONSUMABLE) {
 			attribute1.text = string.Format ("Use: {0}", description.text);
 			attribute1.color = Color.black;
 			attribute2.text = "";
 			description.text = "";
-		}		
+		} else if ((item.Type == Item.ItemType.WEAPON || _item.Type == Item.ItemType.MONSTER_ATTACK) && item.SlotType == InventorySlots.SlotType.AMMO) {
+			attribute1.text = string.Format ("Use: {0}", description.text);
+			attribute1.color = Color.black;
+			attribute2.text = "";
+			description.text = "";
+		}
 	}
 
 	// ----------------------------- DRAG AND DROP EVENTS ----------------------------- //

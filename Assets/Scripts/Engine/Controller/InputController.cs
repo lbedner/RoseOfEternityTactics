@@ -9,6 +9,7 @@ public class InputController : MonoBehaviour {
 	public static event EventHandler<InfoEventArgs<int>> mouseButtonLeftEvent;
 
 	public static event EventHandler<InfoEventArgs<KeyCode>> keyDownInventoryEvent;
+	public static event EventHandler<InfoEventArgs<KeyCode>> keyDownEscapeEvent;
 	
 	private Vector3 _oldMousePosition = Vector3.zero;
 
@@ -34,5 +35,9 @@ public class InputController : MonoBehaviour {
 			if (keyDownInventoryEvent != null)
 				keyDownInventoryEvent (this, new InfoEventArgs<KeyCode> (KeyCode.I));
 		}
+		else if (Input.GetKeyDown (KeyCode.Escape)) {
+			if (keyDownEscapeEvent != null)
+				keyDownEscapeEvent (this, new InfoEventArgs<KeyCode> (KeyCode.Escape));
+		}				
 	}
 }

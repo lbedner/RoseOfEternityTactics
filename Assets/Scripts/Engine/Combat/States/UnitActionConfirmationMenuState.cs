@@ -7,7 +7,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// Adds listeners when the state is entered.
 	/// </summary>
 	public override void Enter() {
-		print ("PlayerSelectedState.Enter");
+		print ("UnitActionConfirmationMenuState.Enter");
 		base.Enter ();
 		Init ();
 	}
@@ -17,6 +17,8 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// </summary>
 	protected override void AddListeners() {
 		controller.ActionConfirmButton.onClick.AddListener (OnActionConfirmButtonClicked);
+		controller.ActionCancelButton.onClick.AddListener (OnActionCancelButtonClicked);
+		InputController.keyDownEscapeEvent += OnKeyDownEscape;
 	}
 
 	/// <summary>
@@ -24,6 +26,8 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// </summary>
 	protected override void RemoveListeners () {
 		controller.ActionConfirmButton.onClick.RemoveListener (OnActionConfirmButtonClicked);
+		controller.ActionCancelButton.onClick.RemoveListener (OnActionCancelButtonClicked);
+		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
 	}
 
 	/// <summary>
@@ -31,6 +35,31 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// </summary>
 	private void OnActionConfirmButtonClicked() {
 		controller.ChangeState<PlayerPerformActionState> ();
+	}
+
+	/// <summary>
+	/// Raises the action cancel button clicked event.
+	/// </summary>
+	private void OnActionCancelButtonClicked() {
+		CancelAction ();
+	}
+
+	/// <summary>
+	/// Raises the key down escape event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	private void OnKeyDownEscape(object sender, InfoEventArgs<KeyCode> e) {
+		CancelAction ();
+	}
+
+	/// <summary>
+	/// Cancels the action.
+	/// </summary>
+	/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
+	private void CancelAction() {
+		controller.Head2HeadPanel.SetActive (false);
+		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
 	/// <summary>

@@ -29,6 +29,7 @@ public class PlayerState : CombatState {
 		InputController.mouseMoveEvent += OnMove;
 		InputController.mouseButtonLeftEvent += OnMouseButtonLeft;
 		InputController.keyDownInventoryEvent += OnKeyDownInventory;
+		InputController.keyDownEscapeEvent += OnKeyDownEscape;
 	}
 
 	/// <summary>
@@ -39,6 +40,7 @@ public class PlayerState : CombatState {
 		InputController.mouseMoveEvent -= OnMove;
 		InputController.mouseButtonLeftEvent -= OnMouseButtonLeft;
 		InputController.keyDownInventoryEvent -= OnKeyDownInventory;
+		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
 	}
 
 	/// <summary>
@@ -71,6 +73,13 @@ public class PlayerState : CombatState {
 			unitMenuController.Activate (nextUnitInLine);
 		}
 	}
+
+	/// <summary>
+	/// Raises the key down escape event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	protected virtual void OnKeyDownEscape(object sender, InfoEventArgs<KeyCode> e) {}
 
 	/// <summary>
 	/// Gets the cursor conditional impl.

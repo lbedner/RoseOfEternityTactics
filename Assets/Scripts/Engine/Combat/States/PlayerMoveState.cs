@@ -22,6 +22,7 @@ public class PlayerMoveState : PlayerState {
 		_pathfinder.GeneratePath (controller.HighlightedUnit.Tile, controller.CurrentTileCoordinates);
 		controller.ShowCursorAndTileSelector (false);
 		tileHighlighter.RemoveHighlightedTiles ();
+		controller.OldUnitTileDirection = controller.HighlightedUnit.FacedDirection;
 		StartCoroutine (Move ());
 	}
 
@@ -29,7 +30,10 @@ public class PlayerMoveState : PlayerState {
 	/// Moves the unit and switches to new state when move is finished.
 	/// </summary>
 	private IEnumerator Move() {
+		controller.OldUnitPosition = controller.HighlightedUnit.Tile;
 		yield return StartCoroutine (MoveToTiles ());
+		controller.CurrentUnitPosition = controller.HighlightedUnit.Tile;
+
 		controller.ChangeState<MenuSelectionState> ();
 	}
 
@@ -91,25 +95,13 @@ public class PlayerMoveState : PlayerState {
 		if (unit.GetAnimationController()) {
 
 			// Get tile direction
-			Unit.TileDirection tileDirection = unit.GetFacing (
+			Unit.TileDirection tileDirection = unit.GetDirectionToTarget (
 				TileMapUtil.WorldCenteredToTileMap (sourceTile, tileMap.TileSize),
 				TileMapUtil.WorldCenteredToTileMap (targetTile, tileMap.TileSize)
 			);
 
-			switch (tileDirection) {
-			case Unit.TileDirection.NORTH:
-				unit.GetAnimationController ().WalkNorth ();
-				break;
-			case Unit.TileDirection.EAST:
-				unit.GetAnimationController ().WalkEast ();
-				break;
-			case Unit.TileDirection.WEST:
-				unit.GetAnimationController ().WalkWest ();
-				break;
-			case Unit.TileDirection.SOUTH:
-				unit.GetAnimationController ().WalkSouth ();
-				break;
-			}
+			unit.FacedDirection = tileDirection;
+			unit.GetAnimationController ().PlayWalkingAnimation (unit);
 		}
 	}
 }

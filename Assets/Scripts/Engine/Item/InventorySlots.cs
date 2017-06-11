@@ -20,6 +20,7 @@ public class InventorySlots  {
 		RING_2,
 		AMULET,
 		CONSUMABLE,
+		AMMO,
 		MONSTER,
 	}
 

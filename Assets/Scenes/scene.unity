@@ -688,6 +688,7 @@ MonoBehaviour:
   _attackButton: {fileID: 1756977194}
   _endTurnButton: {fileID: 1756977193}
   _actionConfirmButton: {fileID: 2130707523}
+  _actionCancelButton: {fileID: 2118320808}
   _missionObjectivesPanelContinueButton: {fileID: 746647355}
   _missionEndPanelContinueButton: {fileID: 544094026}
 --- !u!4 &42499021
@@ -870,7 +871,7 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 45395482}
---- !u!43 &72748417
+--- !u!43 &65138942
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -6380,7 +6381,7 @@ Prefab:
     - target: {fileID: 3300000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 72748417}
+      objectReference: {fileID: 65138942}
     - target: {fileID: 11400000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: tileSize
       value: 5
@@ -6396,7 +6397,7 @@ Prefab:
     - target: {fileID: 6400000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 72748417}
+      objectReference: {fileID: 65138942}
     - target: {fileID: 2300000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -15139,7 +15140,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 453046, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 11495332, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: musicCalm
@@ -16260,7 +16261,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 2118320809}
   m_OnClick:
     m_PersistentCalls:

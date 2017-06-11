@@ -45,7 +45,7 @@ public class PerformActionState : CombatState {
 	protected IEnumerator PlayAttackAnimations(Unit attacker, Unit defender) {
 
 		//determine which way to swing, dependent on the direction the enemy is
-		Unit.TileDirection facing = attacker.GetFacing (defender);
+		Unit.TileDirection facing = attacker.GetDirectionToTarget (defender);
 		UnitAnimationController animationController = attacker.GetAnimationController ();
 		switch (facing) {
 		case Unit.TileDirection.NORTH:

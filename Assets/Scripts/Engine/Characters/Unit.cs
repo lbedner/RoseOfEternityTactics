@@ -37,10 +37,14 @@ public abstract class Unit : MonoBehaviour {
 	private Inventory _inventory;
 	private InventorySlots _inventorySlots;
 
+	private Canvas _canvas;
+
 	public UnitData UnitData { get; set; }
 	public string ResRef { get; private set; }
 
 	public Action Action { get; set; }
+
+	public TileDirection FacedDirection { get; set; }
 
 	/// <summary>
 	/// Gets or sets the tile.
@@ -57,6 +61,8 @@ public abstract class Unit : MonoBehaviour {
 		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.HIT_POINTS);
 		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.ABILITY_POINTS);
 		_inventorySlots = UnitData.InventorySlots;
+		_canvas = transform.Find ("Canvas").GetComponent<Canvas> ();
+		FacedDirection = TileDirection.EAST;
 
 		_characterSheetController = GameManager.Instance.GetCharacterSheetController ();
 		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
@@ -148,8 +154,12 @@ public abstract class Unit : MonoBehaviour {
 		attributeBar.rectTransform.localScale = new Vector3 (percent, currentScale.y, currentScale.z);
 	}
 
+	/// <summary>
+	/// Gets the canvas.
+	/// </summary>
+	/// <returns>The canvas.</returns>
 	public Canvas GetCanvas() {
-		return transform.Find ("Canvas").GetComponent<Canvas> ();
+		return _canvas;
 	}
 
 	/// <summary>
@@ -157,8 +167,8 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	/// <returns>The facing.</returns>
 	/// <param name="unit">Unit.</param>
-	public TileDirection GetFacing(Unit unit) {
-		return GetFacing (unit.Tile);
+	public TileDirection GetDirectionToTarget(Unit unit) {
+		return GetDirectionToTarget (unit.Tile);
 	}
 
 	/// <summary>
@@ -166,8 +176,8 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	/// <returns>The facing.</returns>
 	/// <param name="target">Target.</param>
-	public TileDirection GetFacing(Vector3 target) {
-		return GetFacing(Tile, target);
+	public TileDirection GetDirectionToTarget(Vector3 target) {
+		return GetDirectionToTarget(Tile, target);
 	}
 
 	/// <summary>
@@ -175,7 +185,7 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	/// <returns>The facing.</returns>
 	/// <param name="target">Target tile.</param>
-	public TileDirection GetFacing(Vector3 source, Vector3 target) {
+	public TileDirection GetDirectionToTarget(Vector3 source, Vector3 target) {
 		TileDirection facing = TileDirection.NORTH;
 
 		if (IsFacingNorth (source, target)) {

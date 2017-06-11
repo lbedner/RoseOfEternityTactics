@@ -31,8 +31,30 @@ public class PlayerTargetSelectionState : PlayerState {
 	protected override void OnMouseButtonLeft(object sender, InfoEventArgs<int> e) {
 		if (controller.UnitMenuController.IsActive ())
 			return;
+
+		// Make sure target is valid
+		Unit target = controller.TileMap.GetTileMapData ().GetTileDataAt (controller.CurrentTileCoordinates).Unit;
+		if (target == null || target.IsPlayerControlled)
+			return;
+		
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 		controller.ChangeState<UnitActionConfirmationMenuState> ();
+	}
+
+	/// <summary>
+	/// Raises the key down escape event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	protected override void OnKeyDownEscape(object sender, InfoEventArgs<KeyCode> e) {
+		if (controller.UnitMenuController.IsActive ())
+			return;
+
+		controller.ShowTileSelector (false);
+		tileHighlighter.RemoveHighlightedTiles ();
+		terrainDetailsController.Deactivate ();
+		controller.ClearActionTargets ();
+		controller.ChangeState<MenuSelectionState> ();
 	}
 
 	/// <summary>
@@ -51,7 +73,6 @@ public class PlayerTargetSelectionState : PlayerState {
 	private void Init() {
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 		controller.ShowTileSelector (true);
-		controller.HighlightedUnit.DeactivateCombatMenu ();
 		tileHighlighter.HighlightAttackTiles (controller.HighlightedUnit);
 	}
 

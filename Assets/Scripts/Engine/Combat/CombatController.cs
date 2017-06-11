@@ -32,12 +32,21 @@ public class CombatController : StateMachine {
 	public Button AttackButton { get { return _attackButton; } }
 	public Button EndTurnButton { get { return _endTurnButton; } }
 	public Button ActionConfirmButton { get { return _actionConfirmButton; } }
+	public Button ActionCancelButton { get { return _actionCancelButton; } }
 	public Button MissionObjectivesPanelContinueButton { get { return _missionObjectivesPanelContinueButton; } }
 	public Button MissionEndPanelContinueButton { get { return _missionEndPanelContinueButton; } }
 
 	public Unit HighlightedUnit { get; set; }
 	public Vector3 CurrentTileCoordinates { get; set; }
+	public Vector3 CurrentUnitPosition { get; set; }
+	public Vector3 OldUnitPosition { get; set; }
 	public List<Unit> IntendedActionTargets { get; set; }
+	public Unit.TileDirection CurrentUnitTileDirection { get; set; }
+	public Unit.TileDirection OldUnitTileDirection { get; set; }
+
+	public List<RadialButtonContainer> RadialButtonContainers { get; set; }
+	public RadialButtonContainer CurrentRadialButtonContainer { get; set; }
+	public RadialButtonContainer PreviousRadialButtonContainer { get; set; }
 
 	[SerializeField] private ActionController _actionController;
 	[SerializeField] private GameObject _head2HeadPanel;
@@ -51,6 +60,7 @@ public class CombatController : StateMachine {
 	[SerializeField] private Button _attackButton;
 	[SerializeField] private Button _endTurnButton;
 	[SerializeField] private Button _actionConfirmButton;
+	[SerializeField] private Button _actionCancelButton;
 	[SerializeField] private Button _missionObjectivesPanelContinueButton;
 	[SerializeField] private Button _missionEndPanelContinueButton;
 
@@ -76,6 +86,8 @@ public class CombatController : StateMachine {
 		Pathfinder = new Pathfinder (TileMap.GetTileMapData(), TileMap.GetGraph().GetGraph());
 
 		IntendedActionTargets = new List<Unit> ();
+
+		RadialButtonContainers = new List<RadialButtonContainer> ();
 
 		ChangeState<InitCombatState> ();
 	}

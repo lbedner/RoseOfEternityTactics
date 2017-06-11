@@ -258,58 +258,66 @@
     },
     {
       "Id": 18,
-      "Type": "CONSUMABLE",
+      "Type": "WEAPON",
       "Name": "Iron Arrow",
       "Description": "Shoot with bow arrow to pierce target.",
       "ToolTip": "Iron Arrow",
       "IconPath": "Prefabs/Icons/Items/Weapons/Ranged/Arrows/arrows_1",
-      "SlotType": "CONSUMABLE",
+      "SlotType": "AMMO",
       "Tier": "TIER_1",
       "Attributes": {}
     },
     {
       "Id": 19,
-      "Type": "CONSUMABLE",
+      "Type": "WEAPON",
       "Name": "Permafrost Arrow",
       "Description": "Shoot with bow to temporarily freeze a target.",
       "ToolTip": "Permafrost Arrow",
       "IconPath": "Prefabs/Icons/Items/Weapons/Ranged/Arrows/ice_arrows_1",
-      "SlotType": "CONSUMABLE",
+      "SlotType": "AMMO",
       "Tier": "TIER_2",
       "Attributes": {}
     },
     {
       "Id": 20,
-      "Type": "CONSUMABLE",
+      "Type": "WEAPON",
       "Name": "Inferno Arrow",
       "Description": "Shoot with bow to inflict fire damage over time on a target.",
       "ToolTip": "Inferno Arrow",
       "IconPath": "Prefabs/Icons/Items/Weapons/Ranged/Arrows/inferno_arrows_1",
-      "SlotType": "CONSUMABLE",
+      "SlotType": "AMMO",
       "Tier": "TIER_2",
       "Attributes": {}
     },
     {
       "Id": 21,
-      "Type": "CONSUMABLE",
+      "Type": "WEAPON",
       "Name": "Charging Crystal",
       "Description": "Hold while charging a spell to increase the potency of the spell.",
       "ToolTip": "Charging Crystal",
       "IconPath": "Prefabs/Icons/Items/Crystals/crystal_1",
-      "SlotType": "CONSUMABLE",
+      "SlotType": "LEFT_HAND",
       "Tier": "TIER_3",
-      "Attributes": {}
+      "Attributes": {
+        "DAMAGE": 8.0,
+        "HIT_PERCENT": 70.0,
+        "CRITICAL_CHANCE": 35.0
+      }
     },
     {
       "Id": 22,
-      "Type": "CONSUMABLE",
+      "Type": "WEAPON",
       "Name": "Summoning Crystal",
       "Description": "Use to summon a creature from the Hollows.",
       "ToolTip": "Summoning Crystal",
       "IconPath": "Prefabs/Icons/Items/Crystals/crystal_2",
-      "SlotType": "CONSUMABLE",
+      "SlotType": "LEFT_HAND",
       "Tier": "TIER_4",
-      "Attributes": {}
+      "Attributes": {
+        "DAMAGE": 8.0,
+        "HIT_PERCENT": 70.0,
+        "CRITICAL_CHANCE": 35.0
+      }
     },
     {
       "Id": 23,

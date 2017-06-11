@@ -79,6 +79,20 @@ public class Inventory {
 	}
 
 	/// <summary>
+	/// Gets the consumables.
+	/// </summary>
+	/// <returns>The consumables.</returns>
+	public List<Item> GetConsumables() {
+		List<Item> items = new List<Item> ();
+
+		foreach (var item in _items)
+			if (item.SlotType == InventorySlots.SlotType.CONSUMABLE)
+				items.Add (item);
+
+		return items;
+	}
+
+	/// <summary>
 	/// Insert the specified item at the index.
 	/// If index doesn't exist, it just gets added to the end of the collection.
 	/// </summary>

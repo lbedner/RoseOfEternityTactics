@@ -86,6 +86,29 @@ public class UnitAnimationController : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Plays the walking animation.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	public void PlayWalkingAnimation(Unit unit) {
+
+		Unit.TileDirection tileDirection = unit.FacedDirection;
+		switch (tileDirection) {
+		case Unit.TileDirection.NORTH:
+			unit.GetAnimationController ().WalkNorth ();
+			break;
+		case Unit.TileDirection.EAST:
+			unit.GetAnimationController ().WalkEast ();
+			break;
+		case Unit.TileDirection.WEST:
+			unit.GetAnimationController ().WalkWest ();
+			break;
+		case Unit.TileDirection.SOUTH:
+			unit.GetAnimationController ().WalkSouth ();
+			break;
+		}
+	}
+
+	/// <summary>
 	/// Initializes the animator.
 	/// </summary>
 	private void InitializeAnimator() {

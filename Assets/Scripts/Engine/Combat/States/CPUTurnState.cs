@@ -112,25 +112,13 @@ public class CPUTurnState : CombatState {
 		if (unit.GetAnimationController()) {
 
 			// Get tile direction
-			Unit.TileDirection tileDirection = unit.GetFacing (
+			Unit.TileDirection tileDirection = unit.GetDirectionToTarget (
 				TileMapUtil.WorldCenteredToTileMap (sourceTile, _tileMap.TileSize),
 				TileMapUtil.WorldCenteredToTileMap (targetTile, _tileMap.TileSize)
 			);
 
-			switch (tileDirection) {
-			case Unit.TileDirection.NORTH:
-				unit.GetAnimationController ().WalkNorth ();
-				break;
-			case Unit.TileDirection.EAST:
-				unit.GetAnimationController ().WalkEast ();
-				break;
-			case Unit.TileDirection.WEST:
-				unit.GetAnimationController ().WalkWest ();
-				break;
-			case Unit.TileDirection.SOUTH:
-				unit.GetAnimationController ().WalkSouth ();
-				break;
-			}
+			unit.FacedDirection = tileDirection;
+			unit.GetAnimationController ().PlayWalkingAnimation (unit);
 		}
 	}
 }
