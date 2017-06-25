@@ -122,15 +122,14 @@ public class PlayerState : CombatState {
 	/// Init this instance.
 	/// </summary>
 	private void Init() {
-		print ("PlayerState.Init");
 
 		selectionIcon = controller.SelectionIcon;
 		characterSheetController = controller.CharacterSheetController;
 		terrainDetailsController = controller.TerrainDetailsController;
 		tileMap = controller.TileMap;
 
-		tileHighlighter = controller.TileHighlighter;
 		nextUnitInLine = controller.TurnOrderController.GetNextUp ();
+		tileHighlighter = nextUnitInLine.TileHighlighter;
 
 		controller.ShowCursorAndTileSelector (true);
 	}

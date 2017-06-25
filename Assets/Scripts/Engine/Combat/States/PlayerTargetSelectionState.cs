@@ -95,9 +95,12 @@ public class PlayerTargetSelectionState : PlayerState {
 
 			// Clear existing action targets and reset them
 			controller.ClearActionTargets ();
+			controller.TurnOrderController.UntargetUnitImages ();
 			Unit unit = tileData.Unit;
-			if (unit)
+			if (unit) {
 				controller.HighlightActionTarget (unit);
+				controller.TurnOrderController.TargetUnitImage (unit);
+			}
 		}
 	}
 }

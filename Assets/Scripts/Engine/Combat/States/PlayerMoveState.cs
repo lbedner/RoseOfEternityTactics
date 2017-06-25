@@ -23,6 +23,7 @@ public class PlayerMoveState : PlayerState {
 		controller.ShowCursorAndTileSelector (false);
 		tileHighlighter.RemoveHighlightedTiles ();
 		controller.OldUnitTileDirection = controller.HighlightedUnit.FacedDirection;
+		controller.HighlightedUnit.Dehighlight ();
 		StartCoroutine (Move ());
 	}
 

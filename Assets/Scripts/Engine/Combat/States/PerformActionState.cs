@@ -16,7 +16,7 @@ public class PerformActionState : CombatState {
 	/// <param name="defender">Defender.</param>
 	protected IEnumerator PerformAction(Unit attacker, Unit defender) {
 
-		controller.TileHighlighter.RemoveHighlightedTiles ();
+		attacker.TileHighlighter.RemoveHighlightedTiles ();
 		controller.ActionController.Activate (attacker.UnitData.InventorySlots.Get (InventorySlots.SlotType.RIGHT_HAND).Name);
 		yield return new WaitForSeconds (0.5f);
 		Combat combat = new Combat (controller.HighlightedUnit, defender);

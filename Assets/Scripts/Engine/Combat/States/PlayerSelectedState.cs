@@ -9,6 +9,7 @@ public class PlayerSelectedState : PlayerState {
 	public override void Enter() {
 		print ("PlayerSelectedState.Enter");
 		base.Enter ();
+		Init ();
 	}
 
 	/// <summary>
@@ -32,6 +33,30 @@ public class PlayerSelectedState : PlayerState {
 			return;
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 		controller.ChangeState<PlayerMoveState> ();
+	}
+
+	/// <summary>
+	/// Raises the key down escape event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	protected override void OnKeyDownEscape(object sender, InfoEventArgs<KeyCode> e) {
+		if (controller.UnitMenuController.IsActive ())
+			return;
+
+		nextUnitInLine.Unselect ();
+
+		// If the cursor is over the unit, re-highlight the tiles, otherwise, remove highlight from tiles and unit
+		Vector3 tileSelectorPosition = TileMapUtil.WorldCenteredToTileMap (selectionIcon.position, tileMap.TileSize);
+		Vector3 unitPosition = nextUnitInLine.Tile;
+		if (tileSelectorPosition == unitPosition)
+			tileHighlighter.HighlightTiles (nextUnitInLine, nextUnitInLine.Tile);
+		else {
+			tileHighlighter.RemoveHighlightedTiles ();
+			nextUnitInLine.Dehighlight ();
+		}
+
+		controller.ChangeState<PlayerTurnState> ();
 	}
 
 	/// <summary>
@@ -61,5 +86,13 @@ public class PlayerSelectedState : PlayerState {
 			// Show terrain UI
 			terrainDetailsController.Activate(tileData);
 		}
+	}
+
+	/// <summary>
+	/// Init this instance.
+	/// </summary>
+	private void Init() {
+		nextUnitInLine.Select ();
+		tileHighlighter.HighlightTiles (nextUnitInLine, nextUnitInLine.Tile);
 	}
 }

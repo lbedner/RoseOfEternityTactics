@@ -59,6 +59,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
 	private void CancelAction() {
 		controller.Head2HeadPanel.SetActive (false);
+		controller.HighlightedUnit.ActivateCharacterSheet ();
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 

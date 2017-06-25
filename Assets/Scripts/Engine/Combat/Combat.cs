@@ -41,6 +41,9 @@ public class Combat {
 			instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
 			GameObject.Destroy (instance, 2.0f);
 
+			// Remove all highlighted tiles
+			_defender.TileHighlighter.RemovePersistentHighlightedTiles();
+
 			GameManager.Instance.GetTurnOrderController ().RemoveUnit (_defender);
 			GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (_defender.Tile).Unit = null;
 			GameManager.Instance.GetTileMap ().GetEnemies ().Remove (_defender);

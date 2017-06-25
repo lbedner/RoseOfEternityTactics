@@ -41,12 +41,13 @@ public class TurnOverState : CombatState {
 
 		// If all objectives are complete, end combat
 		if (_tileMap.AreAllEnemiesDefeated ()) {
+			controller.TurnOrderController.DeHighlightUnitImage ();
 			controller.ChangeState<DisplayPostCombatStatsState> ();
 		}
 		else {
 			Unit unit = controller.HighlightedUnit;
 			unit.DeactivateCombatMenu ();
-			controller.TileHighlighter.RemoveHighlightedTiles ();
+			unit.TileHighlighter.RemoveHighlightedTiles ();
 			turnOrderController.FinishTurn (unit);
 			controller.HighlightedUnit = null;
 			

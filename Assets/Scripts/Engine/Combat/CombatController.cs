@@ -18,7 +18,6 @@ public class CombatController : StateMachine {
 
 	public Pathfinder Pathfinder { get; private set; }
 
-	public TileHighlighter TileHighlighter { get; private set; }
 	public TileDiscoverer TileDiscoverer { get; private set; }
 
 	public ActionController ActionController { get { return _actionController; } }
@@ -80,8 +79,6 @@ public class CombatController : StateMachine {
 		UnitMenuController.Initialize ();
 		ScreenFader = new ScreenFader ();
 		TerrainDetailsController = gameManager.GetTerrainDetailsController ();
-
-		TileHighlighter = new TileHighlighter (TileMap, _movementHighlightCube);
 		TileDiscoverer = new TileDiscoverer (TileMap.GetTileMapData ());
 		Pathfinder = new Pathfinder (TileMap.GetTileMapData(), TileMap.GetGraph().GetGraph());
 
@@ -156,7 +153,8 @@ public class CombatController : StateMachine {
 	/// </summary>
 	public void ClearActionTargets() {
 		foreach (Unit unit in IntendedActionTargets)
-			unit.ShowDamagedColor(false);
+			if (!unit.TileHighlighter.IsPersistent)
+				unit.ShowDamagedColor(false);
 		IntendedActionTargets.Clear ();
 	}
 }

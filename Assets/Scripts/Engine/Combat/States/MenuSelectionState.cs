@@ -113,6 +113,9 @@ public class MenuSelectionState : CombatState {
 		// Get active unit when cancel was invoked
 		Unit unit = controller.TurnOrderController.GetNextUp ();
 
+		// Set back to selected color
+		unit.Highlight();
+
 		// Swap unit back to old tile
 		TileMapData tileMapData = controller.TileMap.GetTileMapData();
 		TileData oldTileData = tileMapData.GetTileDataAt (controller.OldUnitPosition);
@@ -136,7 +139,7 @@ public class MenuSelectionState : CombatState {
 		controller.HighlightCharacter (unit);
 
 		// Highlight tiles around unit
-		controller.TileHighlighter.HighlightTiles (unit, unit.Tile);
+		unit.TileHighlighter.HighlightTiles (unit, unit.Tile);
 
 		// Clear out radial button container list
 		controller.RadialButtonContainers.Clear();

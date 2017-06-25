@@ -16,7 +16,6 @@ public class InitTurnState : CombatState {
 	}
 
 	private IEnumerator Init() {
-		print ("InitTurnState.Init");
 		_tileMap = controller.TileMap;
 
 		controller.ShowCursorAndTileSelector (false);

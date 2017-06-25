@@ -22,6 +22,8 @@ public class TileHighlighter {
 
 	private TileDiscoverer _tileDiscoverer;
 
+	public bool IsPersistent { get; private set; }
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TileHighlighter"/>class.
 	/// </summary>
@@ -31,21 +33,32 @@ public class TileHighlighter {
 		_tileMap = tileMap;
 		_highlightCube = highlightCube;
 		_tileDiscoverer = new TileDiscoverer (_tileMap.GetTileMapData());
+		IsPersistent = false;
 	}
 
 	/// <summary>
 	/// Removes the highlighted tiles.
 	/// </summary>
 	public void RemoveHighlightedTiles() {
-		foreach (var go in _movementTiles.Values)
-			GameObject.Destroy (go);
-		_movementTiles.Clear ();
-		foreach (var go in _movementAttackTiles.Values)
-			GameObject.Destroy (go);
-		_movementAttackTiles.Clear ();
-		foreach (var go in _attackTiles.Values)
-			GameObject.Destroy (go);
-		_attackTiles.Clear ();
+		if (!IsPersistent) {
+			foreach (var go in _movementTiles.Values)
+				GameObject.Destroy (go);
+			_movementTiles.Clear ();
+			foreach (var go in _movementAttackTiles.Values)
+				GameObject.Destroy (go);
+			_movementAttackTiles.Clear ();
+			foreach (var go in _attackTiles.Values)
+				GameObject.Destroy (go);
+			_attackTiles.Clear ();
+		}
+	}
+
+	/// <summary>
+	/// Removes the persistent highlighted tiles.
+	/// </summary>
+	public void RemovePersistentHighlightedTiles() {
+		IsPersistent = false;
+		RemoveHighlightedTiles ();
 	}
 
 	/// <summary>
@@ -71,6 +84,7 @@ public class TileHighlighter {
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	/// <param name="unitCurrentTileCoordinate">Unit current tile coordinate.</param>
+	/// <param name="showMovementAttackTiles">If set to <c>true</c> show movement attack tiles.</param>
 	public void HighlightTiles(Unit unit, Vector3 unitCurrentTileCoordinate, bool showMovementAttackTiles = true) {
 		RemoveHighlightedTiles();
 		HighlightMovementTiles (unit, unitCurrentTileCoordinate);
@@ -79,12 +93,24 @@ public class TileHighlighter {
 	}
 
 	/// <summary>
+	/// Highlights the movement and attack tiles for the unit.
+	/// These tiles will be persistent and continue to show on the screen until explicitly removed.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="unitCurrentTileCoordinate">Unit current tile coordinate.</param>
+	/// <param name="showMovementAttackTiles">If set to <c>true</c> show movement attack tiles.</param>
+	public void HighlightPersistentTiles(Unit unit, Vector3 unitCurrentTileCoordinate, bool showMovementAttackTiles = true) {
+		HighlightTiles (unit, unitCurrentTileCoordinate, showMovementAttackTiles);
+		IsPersistent = true;
+	}
+
+	/// <summary>
 	/// Highlights the attack tiles.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void HighlightAttackTiles(Unit unit) {
 		RemoveHighlightedTiles ();
-		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.GetWeaponRange(), unit.attackTileColor, HighlightType.ATTACK);
+		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.GetWeaponRange(), unit.AttackTileColor, HighlightType.ATTACK);
 	}
 
 	/// <summary>
@@ -114,7 +140,7 @@ public class TileHighlighter {
 	/// <param name="unit">Unit.</param>
 	private void HighlightMovementAttackTiles(Unit unit) {
 	
-		Color tileColor = unit.attackTileColor;
+		Color tileColor = unit.AttackTileColor;
 		HighlightType highlightType = HighlightType.MOVEMENT_ATTACK;
 		int range = unit.GetWeaponRange();
 

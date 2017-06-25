@@ -17,12 +17,20 @@ public abstract class Unit : MonoBehaviour {
 		WEST,
 	}
 
-	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY = 0.7f;
+	protected const float HIGHTLIGHT_COLOR_TRANSPARENCY         = 0.5f;
+	protected const float SELECTED_HIGHLIGHT_COLOR_TRANSPARENCY = 0.7f;
 
 	public Image healthbar;
 
-	public Color damagedColor = Color.red;
-	public Color attackTileColor = new Color (1.0f, 0.0f, 0.0f, HIGHTLIGHT_COLOR_TRANSPARENCY);
+	public Color AttackTileColor { 
+		get {
+			return new Color (1.0f, 0.0f, 0.0f, current_highlight_color_transparency);
+		}
+	}
+
+	protected float current_highlight_color_transparency = HIGHTLIGHT_COLOR_TRANSPARENCY;
+
+	private Color _damagedColor = Color.red;
 
 	private CharacterSheetController _characterSheetController;
 	private CombatMenuController _combatMenuController;
@@ -39,12 +47,16 @@ public abstract class Unit : MonoBehaviour {
 
 	private Canvas _canvas;
 
+	[SerializeField] private Transform _movementHighlightCube;
+
 	public UnitData UnitData { get; set; }
 	public string ResRef { get; private set; }
 
 	public Action Action { get; set; }
 
 	public TileDirection FacedDirection { get; set; }
+
+	public TileHighlighter TileHighlighter { get; private set; }
 
 	/// <summary>
 	/// Gets or sets the tile.
@@ -66,6 +78,8 @@ public abstract class Unit : MonoBehaviour {
 
 		_characterSheetController = GameManager.Instance.GetCharacterSheetController ();
 		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
+
+		TileHighlighter = new TileHighlighter (GameManager.Instance.GetTileMap (), _movementHighlightCube);
 	}
 
 	/// <summary>
@@ -104,9 +118,12 @@ public abstract class Unit : MonoBehaviour {
 		return unit;
 	}
 
+	public Color DefaultColor { get { return Color.white; } }
+
 	// Implement these in children classes
 	public abstract Color MovementTileColor { get; }
 	public abstract bool IsPlayerControlled { get; }
+	public abstract Color SelectedColor { get; }
 
 	/// <summary>
 	/// Gets the full name.
@@ -114,6 +131,36 @@ public abstract class Unit : MonoBehaviour {
 	/// <returns>The full name.</returns>
 	public string GetFullName() {
 		return string.Format ("{0} {1}".Trim (), UnitData.FirstName, UnitData.LastName);
+	}
+
+	/// <summary>
+	/// Sets the unit as selected.
+	/// </summary>
+	public void Highlight() {
+		_spriteRenderer.color = SelectedColor;
+	}
+
+	/// <summary>
+	/// Sets the unit as unselected.
+	/// </summary>
+	public void Dehighlight() {
+		if (!TileHighlighter.IsPersistent)
+			_spriteRenderer.color = DefaultColor;
+	}
+
+	/// <summary>
+	/// Select this instance.
+	/// </summary>
+	public void Select() {
+		current_highlight_color_transparency = SELECTED_HIGHLIGHT_COLOR_TRANSPARENCY;
+	}
+
+	/// <summary>
+	/// Unselect this instance.
+	/// </summary>
+	public void Unselect() {
+		if (!TileHighlighter.IsPersistent)
+			current_highlight_color_transparency = HIGHTLIGHT_COLOR_TRANSPARENCY;
 	}
 
 	/// <summary>
@@ -222,7 +269,7 @@ public abstract class Unit : MonoBehaviour {
 	public void ShowDamagedColor(bool showDamageColor) {
 		if (_spriteRenderer) {
 			if (showDamageColor)
-				_spriteRenderer.color = damagedColor;
+				_spriteRenderer.color = _damagedColor;
 			else
 				_spriteRenderer.color = Color.white;
 		}

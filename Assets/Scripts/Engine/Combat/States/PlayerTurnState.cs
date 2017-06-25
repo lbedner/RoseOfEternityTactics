@@ -31,10 +31,27 @@ public class PlayerTurnState : PlayerState {
 		if (controller.UnitMenuController.IsActive ())
 			return;
 
+		Unit highlightedUnit = controller.HighlightedUnit;
+
 		// Check for a hilighted unit
-		if (controller.HighlightedUnit == nextUnitInLine) {
+		if (highlightedUnit == nextUnitInLine) {
 			controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 			controller.ChangeState<PlayerSelectedState> ();
+		}
+		// Do a persistent highlight of tiles in unit range if a unit was selected
+		else if (highlightedUnit != null && !highlightedUnit.IsPlayerControlled) {
+
+			// Unit has persistent tiles highlighted around them
+			if (highlightedUnit.TileHighlighter.IsPersistent) {
+				highlightedUnit.TileHighlighter.RemovePersistentHighlightedTiles ();
+				highlightedUnit.Unselect ();
+				highlightedUnit.TileHighlighter.HighlightTiles (highlightedUnit, highlightedUnit.Tile);
+			}
+			else {
+				highlightedUnit.Select ();
+				highlightedUnit.Highlight ();
+				highlightedUnit.TileHighlighter.HighlightPersistentTiles (highlightedUnit, highlightedUnit.Tile);
+			}
 		}
 	}
 
@@ -55,17 +72,35 @@ public class PlayerTurnState : PlayerState {
 			// Show terrain UI
 			terrainDetailsController.Activate(tileData);
 
-			// Handle highlighting units
-			Unit unit = tileData.Unit;
-			if (unit != null) {
-				unit.ActivateCharacterSheet ();
-				tileHighlighter.HighlightTiles (unit, unit.Tile);
-				controller.HighlightedUnit = unit;
-			} 
-			else {
-				characterSheetController.Deactivate ();
-				tileHighlighter.RemoveHighlightedTiles ();
-				controller.HighlightedUnit = null;
+			// Handle highlighting units and unit turn order images
+			if (!controller.TurnOrderController.IsImageHighlighted) {
+				Unit unit = tileData.Unit;
+				if (unit != null) {
+					
+					// If it's a new highlighted unit, remove highlighted tiles from previous one
+					if (controller.HighlightedUnit != null && unit != controller.HighlightedUnit) {
+						controller.TurnOrderController.DeHighlightUnitImage ();
+						controller.HighlightedUnit.TileHighlighter.RemoveHighlightedTiles ();
+					}
+					
+					unit.ActivateCharacterSheet ();
+					unit.TileHighlighter.HighlightTiles (unit, unit.Tile);
+					controller.HighlightedUnit = unit;
+					controller.TurnOrderController.HighlightUnitImage (unit);
+				}
+				else {
+					if (controller.HighlightedUnit != null) {
+
+						// We only want to de-highlight unit if they don't have persistent tiles highlighted
+						if (!controller.HighlightedUnit.TileHighlighter.IsPersistent) {
+							controller.TurnOrderController.DeHighlightUnitImage ();
+							controller.HighlightedUnit.TileHighlighter.RemoveHighlightedTiles ();
+						}
+						
+						characterSheetController.Deactivate ();
+						controller.HighlightedUnit = null;
+					}
+				}
 			}
 		}
 	}

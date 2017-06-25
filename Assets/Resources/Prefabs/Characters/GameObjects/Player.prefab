@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthbar: {fileID: 11410410}
-  damagedColor: {r: 0.9843137, g: 0.12941177, b: 0.12941177, a: 1}
-  attackTileColor: {r: 1, g: 0, b: 0, a: 0.7}
+  _movementHighlightCube: {fileID: 472148, guid: 071a3bf296ddddc4789f17ed872dd473,
+    type: 2}
 --- !u!114 &11471034
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -3,9 +3,13 @@ using System.Collections;
 
 public class CPUTurnState : CombatState {
 
+	private Unit _cpu;
+
 	private TileMap _tileMap;
 
 	private Pathfinder _pathfinder;
+
+	private bool _hasPersistentHighlightedTiles = false;
 
 	public override void Enter() {
 		print ("CPUTurnState.Enter");
@@ -14,29 +18,35 @@ public class CPUTurnState : CombatState {
 	}
 
 	private void Init() {
-
 	    _tileMap = controller.TileMap;
 		_pathfinder = controller.Pathfinder;
 
-		Unit cpu = controller.TurnOrderController.GetNextUp ();
-		controller.HighlightedUnit = cpu;
+		_cpu = controller.TurnOrderController.GetNextUp ();
+		controller.HighlightedUnit = _cpu;
+
+		// If cpu has persistent highlighted tiles, temporarily remove, then re-apply after move
+		_hasPersistentHighlightedTiles = _cpu.TileHighlighter.IsPersistent;
+		if (_hasPersistentHighlightedTiles)
+			_cpu.TileHighlighter.RemovePersistentHighlightedTiles ();
+
+		_cpu.Highlight ();
+		_cpu.Select ();
 
 		// Show terrain related things
-		Vector3 cpuTilemapCoordinates = TileMapUtil.WorldCenteredToTileMap (cpu.transform.position, _tileMap.TileSize);
+		Vector3 cpuTilemapCoordinates = TileMapUtil.WorldCenteredToTileMap (_cpu.transform.position, _tileMap.TileSize);
 		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt (cpuTilemapCoordinates);
 		controller.TerrainDetailsController.Activate(tileData);
 
 		// Show character sheet
-		cpu.ActivateCharacterSheet ();
+		_cpu.ActivateCharacterSheet ();
 
 		// Show movement tiles
-		controller.TileHighlighter.HighlightTiles(cpu, cpuTilemapCoordinates, false);
+		_cpu.TileHighlighter.HighlightTiles(_cpu, cpuTilemapCoordinates, false);
 
 		// Get AI Action
 		// TODO: Refactor the shit out of all of this. I'm so not proud of this.
-		AI ai = new KamiKazeAI(cpu, _tileMap.GetTileMapData(), controller.TileDiscoverer, _pathfinder);
-		cpu.Action = ai.GetAction ();
-		print (cpu.Action);
+		AI ai = new KamiKazeAI(_cpu, _tileMap.GetTileMapData(), controller.TileDiscoverer, _pathfinder);
+		_cpu.Action = ai.GetAction ();
 
 		//print (string.Format ("Start CPU Turn: {0}", _selectedCharacter));
 		StartCoroutine(Move());		
@@ -46,8 +56,22 @@ public class CPUTurnState : CombatState {
 	/// Moves the unit and switches to new state when move is finished.
 	/// </summary>
 	private IEnumerator Move() {
+
 		yield return StartCoroutine (MoveToTiles ());
-		Unit target = controller.HighlightedUnit.Action.Target;
+
+		// If unit was persistently selected, re-apply those settings
+		if (_hasPersistentHighlightedTiles) {
+			_cpu.Select ();
+			_cpu.Highlight ();
+			controller.TurnOrderController.HighlightUnitImage (_cpu);
+			_cpu.TileHighlighter.HighlightPersistentTiles (_cpu, _cpu.Tile);
+		}
+		else {
+			_cpu.Dehighlight ();
+			_cpu.Unselect ();
+		}
+
+		Unit target = _cpu.Action.Target;
 		if (target != null)
 			controller.ChangeState<CPUPerformActionState> ();
 		else
