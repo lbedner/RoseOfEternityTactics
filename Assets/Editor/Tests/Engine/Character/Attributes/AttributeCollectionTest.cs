@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
-using NUnit.Framework;
-using RoseOfEternity;
 using System.Collections;
+using System.Collections.Generic;
+
+using NUnit.Framework;
+
+using EternalEngine;
 
 [TestFixture]
 public class AttributeCollectionTest {
@@ -9,11 +12,15 @@ public class AttributeCollectionTest {
 	private Attribute _a1;
 	private Attribute _a2;
 	private AttributeCollection _collection;
+	private AttributeEnums.AttributeType _experienceType;
+	private AttributeEnums.AttributeType _levelType;
 
 	[SetUp]
 	public void Setup() {
-		_a1 = new Attribute (AttributeEnums.AttributeType.EXPERIENCE, "EXP", "EXP", "", 0, 0, 100);
-		_a2 = new Attribute (AttributeEnums.AttributeType.LEVEL, "LVL", "LVL", "", 0, 1, 10);
+		_experienceType = AttributeEnums.AttributeType.EXPERIENCE;
+		_levelType = AttributeEnums.AttributeType.LEVEL;
+		_a1 = new Attribute (_experienceType, "EXP", "EXP", "", 0, 0, 100);
+		_a2 = new Attribute (_levelType, "LVL", "LVL", "", 0, 1, 10);
 	}
 
 	[Test]
@@ -44,8 +51,8 @@ public class AttributeCollectionTest {
 		_collection.Add (_a2.Type, _a2);
 
 		// Fetch attributes
-		Attribute actual1 = _collection.Get (AttributeEnums.AttributeType.EXPERIENCE);
-		Attribute actual2 = _collection.Get (AttributeEnums.AttributeType.LEVEL);
+		Attribute actual1 = _collection.Get (_experienceType);
+		Attribute actual2 = _collection.Get (_levelType);
 
 		// Make sure attributes are the same
 		Assert.AreEqual (_a1, actual1);
@@ -58,8 +65,8 @@ public class AttributeCollectionTest {
 		_collection = new AttributeCollection();
 
 		// Fetch attributes (that don't exist yet)
-		Attribute actual1 = _collection.Get (AttributeEnums.AttributeType.EXPERIENCE);
-		Attribute actual2 = _collection.Get (AttributeEnums.AttributeType.LEVEL);
+		Attribute actual1 = _collection.Get (_experienceType);
+		Attribute actual2 = _collection.Get (_levelType);
 
 		// Test that attributes are null
 		Assert.IsNull (actual1);
@@ -89,5 +96,40 @@ public class AttributeCollectionTest {
 
 		foreach (var attribute in _collection.GetAttributes())
 			Assert.AreNotEqual (attribute.Value.CurrentValue, deepCopy.Get (attribute.Key).CurrentValue);
+	}
+
+	[Test]
+	public void TestGetFromGlobalCollection() {
+
+		float experienceValue = 10.0f;
+		float levelValue = 3.0f;
+
+		// Create test incoming attribute dictionary
+		var incomingAttributeDictionary = new Dictionary<AttributeEnums.AttributeType, float> () {
+			{_experienceType, experienceValue},
+			{_levelType, levelValue}
+		};
+
+		// Create "Global" dictionary
+		_collection = new AttributeCollection();
+		_collection.Add (_a1);
+		_collection.Add (_a2);
+
+		// Create new local collection
+		AttributeCollection localCollection = new AttributeCollection();
+
+		// Populate local collection with values from global one
+		localCollection = AttributeCollection.GetFromGlobalCollection(incomingAttributeDictionary, _collection, localCollection);
+
+		Attribute localExperienceAttribute = localCollection.Get (_experienceType);
+		Attribute localLevelAttribute = localCollection.Get (_levelType);
+
+		// Verify that the deep copy worked
+		Assert.AreNotSame(localExperienceAttribute, _collection.Get(_experienceType));
+		Assert.AreNotSame(localLevelAttribute, _collection.Get(_levelType));
+
+		// Verify the current values
+		Assert.AreEqual(experienceValue, localExperienceAttribute.CurrentValue);
+		Assert.AreEqual(levelValue, localLevelAttribute.CurrentValue);
 	}
 }

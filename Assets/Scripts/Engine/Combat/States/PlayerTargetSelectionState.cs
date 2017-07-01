@@ -1,7 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+using EternalEngine;
+
 public class PlayerTargetSelectionState : PlayerState {
+
+	private int _range = 0;
+	private int _aoeRange = 0;
+	List<TileData> _tilesInRange = new List<TileData> ();
 
 	/// <summary>
 	/// Adds listeners when the state is entered.
@@ -32,9 +38,15 @@ public class PlayerTargetSelectionState : PlayerState {
 		if (controller.UnitMenuController.IsActive ())
 			return;
 
-		// Make sure target is valid
-		Unit target = controller.TileMap.GetTileMapData ().GetTileDataAt (controller.CurrentTileCoordinates).Unit;
-		if (target == null || target.IsPlayerControlled)
+		// Make sure there is at least one target
+		foreach (var tileInRange in _tilesInRange) {
+			Unit target = tileInRange.Unit;
+			if (target != null && !target.IsPlayerControlled)
+				controller.HighlightedUnit.Action.Targets.Add (target);
+		}
+
+		// If no target, bail out
+		if (controller.HighlightedUnit.Action.Targets.Count == 0)
 			return;
 		
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
@@ -51,9 +63,13 @@ public class PlayerTargetSelectionState : PlayerState {
 			return;
 
 		controller.ShowTileSelector (false);
+		controller.SelectionIndicator.ClearIndicators ();
 		tileHighlighter.RemoveHighlightedTiles ();
 		terrainDetailsController.Deactivate ();
 		controller.ClearActionTargets ();
+		_aoeRange = 0;
+		_range = 0;
+		_tilesInRange.Clear ();
 		controller.ChangeState<MenuSelectionState> ();
 	}
 
@@ -71,9 +87,29 @@ public class PlayerTargetSelectionState : PlayerState {
 	/// Init this instance.
 	/// </summary>
 	private void Init() {
+		_range = 0;
+		_aoeRange = 0;
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
+
+		// Determine the selection indicator based on action
+		Ability ability = controller.HighlightedUnit.Action.Ability;
+		if (ability != null && ability.Id != AbilityConstants.ATTACK) {
+
+			// Get AOE Range
+			_aoeRange = ability.GetAOERange();
+
+			// Get Range
+			_range = ability.GetRange();			
+		}
+		else
+			_range = controller.HighlightedUnit.GetWeaponRange ();
+
+		// Widen selection indicator
+		if (_aoeRange > 0)
+			controller.SelectionIndicator.SetAreaOfEffectIndicators (_aoeRange);
+		
 		controller.ShowTileSelector (true);
-		tileHighlighter.HighlightAttackTiles (controller.HighlightedUnit);
+		tileHighlighter.HighlightAttackTiles (controller.HighlightedUnit, _range);
 	}
 
 	/// <summary>
@@ -96,10 +132,25 @@ public class PlayerTargetSelectionState : PlayerState {
 			// Clear existing action targets and reset them
 			controller.ClearActionTargets ();
 			controller.TurnOrderController.UntargetUnitImages ();
-			Unit unit = tileData.Unit;
-			if (unit) {
-				controller.HighlightActionTarget (unit);
-				controller.TurnOrderController.TargetUnitImage (unit);
+			_tilesInRange.Clear ();
+
+			// Add current tile data to a list of potential tiles to check
+			_tilesInRange.Add (tileData);
+
+			// If selection indicator is more than one (i.e. Area of Effect), get surrounding tiles
+			if (_aoeRange > 0) {
+				var tilesInRange = controller.TileDiscoverer.DiscoverTilesInRange (tileData.Position, _aoeRange);
+				foreach (var tileInRange in tilesInRange)
+					_tilesInRange.Add(controller.TileMap.GetTileMapData().GetTileDataAt(tileInRange.Key));
+			}
+
+			// Iterate over list of tile data and if there are units standing on them, process them accordingly
+			foreach (var data in _tilesInRange) {
+				Unit unit = data.Unit;
+				if (unit && !(controller.HighlightedUnit.IsFriendlyUnit(unit))) {
+					controller.HighlightActionTarget (unit);
+					controller.TurnOrderController.TargetUnitImage (unit);
+				}
 			}
 		}
 	}

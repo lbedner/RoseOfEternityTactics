@@ -16,6 +16,19 @@ public class InventorySlotsTest {
 	}
 
 	[Test]
+	public void TestDeepCopy() {
+		_slots.Add (_i1);
+
+		// Make sure shallow copy is the same
+		InventorySlots shallowCopy = _slots;
+		Assert.AreSame (_slots, shallowCopy);
+
+		// Make sure deep copy is different
+		InventorySlots deepCopy = _slots.DeepCopy();
+		Assert.AreNotSame (_slots, deepCopy);
+	}
+
+	[Test]
 	public void TestAddAndGet() {
 
 		_slots.Add (_i1);

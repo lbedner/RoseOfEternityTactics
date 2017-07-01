@@ -61,10 +61,19 @@ public class Head2HeadPanelController : MonoBehaviour {
 			int damageAttribute = (int) weapon.GetAttribute (AttributeEnums.AttributeType.DAMAGE).CurrentValue;
 			int criticalChance = (int) weapon.GetAttribute (AttributeEnums.AttributeType.CRITICAL_CHANCE).CurrentValue;
 
-			damage.text = string.Format ("Dmg: {0}",(damageAttribute * currentLevel));
+			int finalDamage = 0;
+			Ability ability = unit.Action.Ability;
+			if (ability != null) {
+				finalDamage = new Calculator (unit).Action.DamageToTargets [0];				
+				usedAbility.text = ability.Name;
+			}
+			else {
+				finalDamage = damageAttribute * currentLevel;
+				usedAbility.text = weapon.Name;
+			}
+			damage.text = string.Format ("Dmg: {0}",(finalDamage));
 			attackHitPercent.text = string.Format ("Hit: {0}%", 100);
 			crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
-			usedAbility.text = weapon.Name;
 		} else {
 			damage.text = "";
 			attackHitPercent.text = "";

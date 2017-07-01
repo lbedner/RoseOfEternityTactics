@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Combat {
 
 	private Unit _attacker;
-	private Unit _defender;
+	private List<Unit> _defenders = new List<Unit>();
 
 	private int _awardedExperience;
 
@@ -12,48 +13,53 @@ public class Combat {
 	/// Initializes a new instance of the <see cref="Combat"/> class.
 	/// </summary>
 	/// <param name="attacker">Attacker.</param>
-	/// <param name="defender">Defender.</param>
-	public Combat(Unit attacker, Unit defender) {
+	public Combat(Unit attacker) {
 		_attacker = attacker;
-		_defender = defender;
+		_defenders = attacker.Action.Targets;
 	}
 
 	/// <summary>
 	/// Begin the combat action(s).
 	/// </summary>
 	public void Begin() {
-		int damage = GetDamage ();
 
-		// Damage defender
-		_defender.GetHitPointsAttribute().Decrement(damage);
+		ExperienceManager manager = new ExperienceManager ();
+		_awardedExperience = 0;
 
-		// Show pop up text for damage
-		PopupTextController.Initialize(_defender.GetCanvas());
-		PopupTextController.CreatePopupText (damage.ToString (), _defender.transform.position, Color.red);
+		// iterate over all defenders
+		foreach (var defender in _defenders) {
+			int damage = GetDamage ();
 
-		// If dead, then destroy
-		if (_defender.GetHitPointsAttribute().CurrentValue <= 0) {
+			// Damage defender
+			defender.GetHitPointsAttribute ().Decrement (damage);
 
-			// Show death animation
-			GameObject deathAnimation = Resources.Load<GameObject> ("Prefabs/Characters/Animations/Death/DeathParent");
-			GameObject instance = GameObject.Instantiate (deathAnimation);
-			Vector3 defenderPosition = _defender.transform.position;
-			instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
-			GameObject.Destroy (instance, 2.0f);
+			// Show pop up text for damage
+			PopupTextController.Initialize (defender.GetCanvas ());
+			PopupTextController.CreatePopupText (damage.ToString (), defender.transform.position, Color.red);
 
-			// Remove all highlighted tiles
-			_defender.TileHighlighter.RemovePersistentHighlightedTiles();
+			// If dead, then destroy
+			if (defender.GetHitPointsAttribute ().CurrentValue <= 0) {
 
-			GameManager.Instance.GetTurnOrderController ().RemoveUnit (_defender);
-			GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (_defender.Tile).Unit = null;
-			GameManager.Instance.GetTileMap ().GetEnemies ().Remove (_defender);
-			GameObject.Destroy (_defender.gameObject, 1.0f);
-		} else
-			_defender.UpdateHealthbar ();
+				// Show death animation
+				GameObject deathAnimation = Resources.Load<GameObject> ("Prefabs/Characters/Animations/Death/DeathParent");
+				GameObject instance = GameObject.Instantiate (deathAnimation);
+				Vector3 defenderPosition = defender.transform.position;
+				instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
+				GameObject.Destroy (instance, 2.0f);
 
-		// Give out XP
-		ExperienceManager manager = new ExperienceManager();
-		_awardedExperience = manager.AwardCombatExperience (_attacker, _defender);
+				// Remove all highlighted tiles
+				defender.TileHighlighter.RemovePersistentHighlightedTiles ();
+
+				GameManager.Instance.GetTurnOrderController ().RemoveUnit (defender);
+				GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (defender.Tile).Unit = null;
+				GameManager.Instance.GetTileMap ().GetEnemies ().Remove (defender);
+				GameObject.Destroy (defender.gameObject, 1.0f);
+			} else
+				defender.UpdateHealthbar ();
+
+			// Give out XP
+			_awardedExperience += manager.AwardCombatExperience (_attacker, defender);
+		}			
 	}
 
 	/// <summary>
@@ -69,10 +75,7 @@ public class Combat {
 	/// </summary>
 	/// <returns>The damage.</returns>
 	private int GetDamage() {
-		Item weapon = _attacker.GetItemInSlot (InventorySlots.SlotType.RIGHT_HAND);
-		int damageAttribute = (int) weapon.GetAttribute (AttributeEnums.AttributeType.DAMAGE).CurrentValue;
-
-		int damage = (int) _attacker.GetLevelAttribute().CurrentValue * damageAttribute;
-		return damage;
+		Calculator calculator = new Calculator (_attacker);
+		return calculator.Action.DamageToTargets [0];
 	}
 }

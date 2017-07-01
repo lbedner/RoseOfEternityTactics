@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
+
 using NUnit.Framework;
-using RoseOfEternity;
+
+using EternalEngine;
 
 [TestFixture]
 public class UnitDataTest {
 
 	private AttributeCollection _ac = new AttributeCollection();
 	private InventorySlots _slots = new InventorySlots();
+	private AbilityCollection _abilityCollection = new AbilityCollection();
 
 	private UnitData _u1 = new UnitData();
 
@@ -25,25 +28,29 @@ public class UnitDataTest {
 		_slots.Add (i1);
 		_slots.Add (i2);
 
+		// Setup abiltiies
+		Ability ability1 = new Ability(0, Ability.AbilityType.ATTACK, "attack", "attack_description", "attackTooltop", "attackIconPath", "attackVfxPath", 0, 0, null);
+		Ability ability2 = new Ability(1, Ability.AbilityType.LAST_RESORT, "lr", "lrDescription", "lrTooltop", "lrIconPath", "lrVfxPath", 0, 0, null);
+		_abilityCollection.Add (ability1);
+		_abilityCollection.Add (ability2);
+
 		// Setup units
 		_u1.FirstName = "Leonard";
 		_u1.LastName = "Bedner";
 		_u1.AttributeCollection = _ac;
 		_u1.Class = "Developer";
 		_u1.InventorySlots = _slots;
+		_u1.AbilityCollection = _abilityCollection;
 	}
 
 	[Test]
-	public void TestAttributes() {
-		var attributes = _u1.Attributes;
-		Assert.AreEqual (50, attributes [AttributeEnums.AttributeType.EXPERIENCE]);
-		Assert.AreEqual (5, attributes [AttributeEnums.AttributeType.LEVEL]);
-	}
+	public void TestDeepCopy() {
 
-	[Test]
-	public void TestInventory() {
-		var inventory = _u1.Inventory;
-		Assert.AreEqual (0, inventory [InventorySlots.SlotType.RIGHT_HAND]);
-		Assert.AreEqual (1, inventory [InventorySlots.SlotType.BODY]);
+		// Make sure shallow copies are the same
+		UnitData shallowCopy = _u1;
+		Assert.AreSame (_u1, shallowCopy);
+
+		UnitData deepCopy = _u1.DeepCopy ();
+		Assert.AreNotSame (_u1, deepCopy);
 	}
 }

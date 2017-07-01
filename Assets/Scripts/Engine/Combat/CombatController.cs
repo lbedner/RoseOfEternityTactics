@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class CombatController : StateMachine { 
 
+	public GameObject flame;
+
 	public CameraController CameraController { get; private set; }
 	public CharacterSheetController CharacterSheetController { get; private set; }
 	public TileMap TileMap { get; private set; }
@@ -22,7 +24,8 @@ public class CombatController : StateMachine {
 
 	public ActionController ActionController { get { return _actionController; } }
 	public GameObject Head2HeadPanel { get { return _head2HeadPanel; } }
-	public Transform SelectionIcon { get { return _selectionCube; } }
+	public SelectionIndicator SelectionIndicator { get { return _selectionIndicator; } }
+	public Transform SelectionIcon { get { return _selectionIcon; } }
 	public RawImage FadeOutUIImage { get { return _fadeOutUIImage; } }
 	public GameObject MissionObjectivesPanel { get { return _missionObjectivesPanel; } }
 	public GameObject PostCombatStatsPanel { get { return _postCombatStatsPanel; } }
@@ -49,7 +52,7 @@ public class CombatController : StateMachine {
 
 	[SerializeField] private ActionController _actionController;
 	[SerializeField] private GameObject _head2HeadPanel;
-	[SerializeField] private Transform _selectionCube;
+	[SerializeField] private SelectionIndicator _selectionIndicator;
 	[SerializeField] private Transform _movementHighlightCube;
 	[SerializeField] private RawImage _fadeOutUIImage;
 	[SerializeField] private GameObject _missionObjectivesPanel;
@@ -62,6 +65,8 @@ public class CombatController : StateMachine {
 	[SerializeField] private Button _actionCancelButton;
 	[SerializeField] private Button _missionObjectivesPanelContinueButton;
 	[SerializeField] private Button _missionEndPanelContinueButton;
+
+	private Transform _selectionIcon;
 
 	// Use this for initialization
 	void Start () {
@@ -81,6 +86,8 @@ public class CombatController : StateMachine {
 		TerrainDetailsController = gameManager.GetTerrainDetailsController ();
 		TileDiscoverer = new TileDiscoverer (TileMap.GetTileMapData ());
 		Pathfinder = new Pathfinder (TileMap.GetTileMapData(), TileMap.GetGraph().GetGraph());
+
+		_selectionIcon = _selectionIndicator.transform;
 
 		IntendedActionTargets = new List<Unit> ();
 
@@ -109,7 +116,7 @@ public class CombatController : StateMachine {
 	/// </summary>
 	/// <param name="showTileSelector">If set to <c>true</c> show tile selector.</param>
 	public void ShowTileSelector(bool showTileSelector) {
-		_selectionCube.gameObject.SetActive (showTileSelector);
+		_selectionIcon.gameObject.SetActive (showTileSelector);
 	}
 
 	/// <summary>
@@ -126,7 +133,7 @@ public class CombatController : StateMachine {
 	/// </summary>
 	/// <param name="character">Character.</param>
 	public void HighlightCharacter(Unit character) {
-		_selectionCube.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, TileMap.TileSize);
+		_selectionIcon.position = TileMapUtil.WorldCenteredToUncentered(character.transform.position, TileMap.TileSize);
 	}
 
 	/// <summary>

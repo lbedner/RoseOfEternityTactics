@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using NUnit.Framework;
-using RoseOfEternity;
 using System.Collections;
+
+using NUnit.Framework;
+
+using EternalEngine;
 
 [TestFixture]
 public class ItemTest {

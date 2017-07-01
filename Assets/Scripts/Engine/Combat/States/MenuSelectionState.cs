@@ -20,6 +20,7 @@ public class MenuSelectionState : CombatState {
 		controller.AttackButton.onClick.AddListener (OnAttackButtonClicked);
 		controller.EndTurnButton.onClick.AddListener (OnEndTurnButtonClicked);
 		RadialButtonController.buttonClickEvent += OnButtonClicked;
+		RadialButtonController.abilityButtonClickEvent += OnAbilityButtonClicked;
 		InputController.keyDownEscapeEvent += OnKeyDownEscape;
 	}
 
@@ -30,6 +31,7 @@ public class MenuSelectionState : CombatState {
 		controller.AttackButton.onClick.RemoveListener (OnAttackButtonClicked);
 		controller.EndTurnButton.onClick.RemoveListener (OnEndTurnButtonClicked);
 		RadialButtonController.buttonClickEvent -= OnButtonClicked;
+		RadialButtonController.abilityButtonClickEvent -= OnAbilityButtonClicked;
 		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
 	}
 
@@ -50,16 +52,20 @@ public class MenuSelectionState : CombatState {
 			OnAttackButtonClicked();
 			break;
 
-		case RadialButtonController.RadialButtonType.ITEM:
-			OnItemButtonClicked ();
-			break;
-
 		case RadialButtonController.RadialButtonType.DEFEND:
 			OnEndTurnButtonClicked();
 			break;
 
 		case RadialButtonController.RadialButtonType.CANCEL:
 			HandleCancelEvent ();
+			break;
+
+		case RadialButtonController.RadialButtonType.ITEM:
+			OnItemButtonClicked ();
+			break;
+
+		case RadialButtonController.RadialButtonType.ABILITY:
+			OnAbilityButtonClicked ();
 			break;
 		}
 	}
@@ -69,6 +75,7 @@ public class MenuSelectionState : CombatState {
 	/// </summary>
 	private void OnAttackButtonClicked() {
 		_radialMenuController.gameObject.SetActive (false);
+		controller.HighlightedUnit.Action = new Action ();
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
@@ -77,6 +84,13 @@ public class MenuSelectionState : CombatState {
 	/// </summary>
 	private void OnItemButtonClicked() {
 		_radialMenuController.InstantiateItemButtons ();
+	}
+
+	/// <summary>
+	/// Raises the ability button clicked event.
+	/// </summary>
+	private void OnAbilityButtonClicked() {
+		_radialMenuController.InstantiateAbilityButtons ();
 	}
 
 	/// <summary>
@@ -103,6 +117,18 @@ public class MenuSelectionState : CombatState {
 	/// <param name="e">E.</param>
 	private void OnKeyDownEscape(object sender, InfoEventArgs<KeyCode> e) {
 		HandleCancelEvent ();
+	}
+
+	/// <summary>
+	/// Raises the ability button clicked event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	private void OnAbilityButtonClicked(object sender, InfoEventArgs<Ability> e) {
+		_radialMenuController.gameObject.SetActive (false);
+		controller.HighlightedUnit.Action = new Action ();
+		controller.HighlightedUnit.Action.Ability = e.info;
+		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
 	/// <summary>

@@ -676,9 +676,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b579848e3adde42e9b656f1bffd1f1a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flame: {fileID: 144522, guid: 31be5f60a967e4d83a8700cc788ddadb, type: 2}
   _actionController: {fileID: 999141542}
   _head2HeadPanel: {fileID: 1442057132}
-  _selectionCube: {fileID: 584089018}
+  _selectionIndicator: {fileID: 584089019}
   _movementHighlightCube: {fileID: 1443082627}
   _fadeOutUIImage: {fileID: 1947564922}
   _missionObjectivesPanel: {fileID: 231023902}
@@ -871,7 +872,7 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 45395482}
---- !u!43 &65138942
+--- !u!43 &69520341
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4361,6 +4362,10 @@ Prefab:
       propertyPath: Loop
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8293870, guid: 2804ac7b369a8434fa453e4042c92c02, type: 2}
+      propertyPath: spreadCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2804ac7b369a8434fa453e4042c92c02, type: 2}
   m_IsPrefabParent: 0
@@ -4536,7 +4541,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 472148, guid: 071a3bf296ddddc4789f17ed872dd473, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 193162, guid: 071a3bf296ddddc4789f17ed872dd473, type: 2}
       propertyPath: m_IsActive
@@ -5693,6 +5698,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 584089018}
+  - 114: {fileID: 584089019}
   m_Layer: 0
   m_Name: TileSelectionIndicator
   m_TagString: Untagged
@@ -5714,6 +5720,18 @@ Transform:
   - {fileID: 656345837}
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!114 &584089019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 584089017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 335729e1fa0e746a2b8443d1ef1e5cc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _masterSelectionIndicatorIcon: {fileID: 656345836}
 --- !u!1 &587817563
 GameObject:
   m_ObjectHideFlags: 0
@@ -6714,7 +6732,7 @@ Prefab:
     - target: {fileID: 3300000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 65138942}
+      objectReference: {fileID: 69520341}
     - target: {fileID: 11400000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: tileSize
       value: 5
@@ -6730,7 +6748,7 @@ Prefab:
     - target: {fileID: 6400000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 65138942}
+      objectReference: {fileID: 69520341}
     - target: {fileID: 2300000, guid: e3f94eb751451274699a27dc05bc2ec9, type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -7346,6 +7364,7 @@ GameObject:
   - 114: {fileID: 761158077}
   - 114: {fileID: 761158078}
   - 114: {fileID: 761158079}
+  - 114: {fileID: 761158080}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -7408,6 +7427,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dab607d68eb1d4d7eb5ed1850ae5a917, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &761158080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 761158074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e811dff0ba04d1da9784092530e826, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &762861761
@@ -15692,7 +15722,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 453046, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: m_RootOrder
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 11495332, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: musicCalm

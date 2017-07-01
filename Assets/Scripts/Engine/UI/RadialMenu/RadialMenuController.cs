@@ -3,13 +3,17 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 public class RadialMenuController : MonoBehaviour {
 
 	private const string RESOURCE_PATH = "Prefabs/UI/RadialMenu/RadialMenu";
 
-	private static Dictionary<int, string> _combatOptions = new Dictionary<int, string>() {
+	private const string TALENT_ICON = "talent";
+	private const string MAGIC_ICON = "magic";
+
+	private readonly Dictionary<int, string> _combatOptions = new Dictionary<int, string>() {
 		{
 			0, "Prefabs/Icons/RadialMenu/attack"
 		},
@@ -17,10 +21,13 @@ public class RadialMenuController : MonoBehaviour {
 			1, "Prefabs/Icons/RadialMenu/defend"
 		},
 		{
-			2, "Prefabs/Icons/RadialMenu/magic"
+			2, "Prefabs/Icons/RadialMenu/"
 		},
 		{
 			3, "Prefabs/Icons/RadialMenu/item"
+		},
+		{
+			4, "Prefabs/Icons/RadialMenu/cancel"
 		}
 	};
 
@@ -33,12 +40,14 @@ public class RadialMenuController : MonoBehaviour {
 	private Text _popupText;
 
 	private CombatController _combatController;
+	private Unit _unit;
 
 	/// <summary>
 	/// Awake this instance.
 	/// </summary>
 	void Awake() {
 		_combatController = GameObject.Find ("CombatController").GetComponent<CombatController> ();
+		_unit = _combatController.HighlightedUnit;
 		_popupText = GetComponentInChildren<Text> ();
 		InstantiateRootButtons();
 	}
@@ -80,8 +89,34 @@ public class RadialMenuController : MonoBehaviour {
 			radialButtonContainer = InstantiateRadialButtonContainer ();
 
 			foreach (var combatOption in _combatOptions) {
+				
 				RadialButtonController.RadialButtonType radialButtonType = (RadialButtonController.RadialButtonType)combatOption.Key;
-				RadialButtonController button = InstantiateButton (radialButtonContainer, _combatOptions.Count, combatOption.Key, combatOption.Value, radialButtonType, radialButtonType.ToString ());
+				string buttonName = radialButtonType.ToString ();
+				int abilityIndex = combatOption.Key;
+				string iconPath = combatOption.Value;
+
+				//TODO: Remove this silly hack for abilities
+				if (combatOption.Key == 2) {
+					string abilityIcon = "";
+					string abilityIconPreffix = combatOption.Value;
+
+					if (_unit.UnitData.AbilityCollection.HasTalent) {
+						abilityIcon = TALENT_ICON;
+						buttonName = "Talent";
+					}
+					else if (_unit.UnitData.AbilityCollection.HasMagic) {
+						abilityIcon = MAGIC_ICON;
+						buttonName = "Magic";
+					}
+
+					abilityIcon = Path.Combine (abilityIconPreffix, abilityIcon);
+					iconPath = abilityIcon;
+				}
+				RadialButtonController button = InstantiateButton (radialButtonContainer, _combatOptions.Count, abilityIndex, iconPath, radialButtonType, buttonName);
+
+				//TODO: Another stupid hack to classify attacks as abilities
+				if (combatOption.Key == 0)
+					button.Ability = _unit.UnitData.AbilityCollection.GetAttackAbility ();
 
 				radialButtonContainer.Add (button);
 			}
@@ -110,7 +145,42 @@ public class RadialMenuController : MonoBehaviour {
 			RadialButtonController button = InstantiateButton (radialButtonContainer, numberOfButtons, index, item.IconPath, RadialButtonController.RadialButtonType.ITEM_USE, item.Name);
 			radialButtonContainer.Add (button);
 		}
-		RadialButtonController cancelButton = InstantiateCancelButton (radialButtonContainer, numberOfButtons, items.Count, _combatOptions [2]);
+		RadialButtonController cancelButton = InstantiateCancelButton (radialButtonContainer, numberOfButtons, items.Count, _combatOptions [4]);
+		radialButtonContainer.Add (cancelButton);
+
+		SetRadialButtonContainer (radialButtonContainer);
+
+		IsRootMenuOpen = false;
+	}
+
+	/// <summary>
+	/// Instantiates the ability buttons.
+	/// </summary>
+	public void InstantiateAbilityButtons() {
+
+		if (_combatController.CurrentRadialButtonContainer != null) {
+			_popupText.text = "";
+			StartCoroutine(_combatController.CurrentRadialButtonContainer.ScaleButtonsIn ());
+		}
+
+		RadialButtonContainer radialButtonContainer = InstantiateRadialButtonContainer ();
+
+		// Get abilities based off of type
+		var abilities = new List<Ability> ();
+		UnitData unitData = _unit.UnitData;
+		if (unitData.AbilityCollection.HasTalent)
+			abilities = unitData.AbilityCollection.GetTalentAbilities ();
+		else if (unitData.AbilityCollection.HasMagic) 
+			abilities = unitData.AbilityCollection.GetMagicAbilities ();
+		
+		int numberOfButtons = abilities.Count + 1;
+		for (int index = 0; index < abilities.Count; index++) {
+			Ability ability = abilities [index];
+			RadialButtonController button = InstantiateButton (radialButtonContainer, numberOfButtons, index, ability.IconPath, RadialButtonController.RadialButtonType.ABILITY_USE, ability.Name);
+			button.Ability = ability;
+			radialButtonContainer.Add (button);
+		}
+		RadialButtonController cancelButton = InstantiateCancelButton (radialButtonContainer, numberOfButtons, abilities.Count, _combatOptions [4]);
 		radialButtonContainer.Add (cancelButton);
 
 		SetRadialButtonContainer (radialButtonContainer);
@@ -158,7 +228,7 @@ public class RadialMenuController : MonoBehaviour {
 		float x = Mathf.Sin (theta);
 		float y = Mathf.Cos (theta);
 
-		Vector3 position = new Vector3 (x, y, 0.0f) * 75.0f;
+		Vector3 position = new Vector3 (x, y, 0.0f) * 90.0f;
 		position.z = -1.0f;
 		return position;
 	}

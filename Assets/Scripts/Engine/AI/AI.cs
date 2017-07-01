@@ -45,8 +45,10 @@ public abstract class AI {
 		Unit target = GetTarget();
 		action.TargetTile = GetTargetTile (target);
 		action.Pathfinder = GetPathfinder();
-		if (IsTargetWithinRange (target))
-			action.Target = target;
+		if (IsTargetWithinRange (target)) {
+			action.Targets.Add (target);
+			action.Ability = target.UnitData.AbilityCollection.GetAttackAbility ();
+		}
 		return action;
 	}
 

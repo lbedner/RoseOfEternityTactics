@@ -15,7 +15,7 @@ public class CPUPerformActionState : PerformActionState {
 	private IEnumerator Init() {
 
 		Unit attacker = controller.HighlightedUnit;
-		Unit defender = attacker.Action.Target;
+		Unit defender = attacker.Action.Targets[0];
 		GameObject head2HeadPanel = controller.Head2HeadPanel;
 		GameObject head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
 
@@ -32,6 +32,6 @@ public class CPUPerformActionState : PerformActionState {
 
 		// Continue performing action
 		controller.ClearActionTargets ();
-		yield return StartCoroutine (PerformAction (attacker, defender));	
+		yield return StartCoroutine (PerformAbilityAction (attacker));	
 	}
 }

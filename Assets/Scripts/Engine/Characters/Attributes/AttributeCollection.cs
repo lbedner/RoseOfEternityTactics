@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
-using RoseOfEternity;
+
+using EternalEngine;
 
 public class AttributeCollection {
 
@@ -14,6 +15,32 @@ public class AttributeCollection {
 	/// Initializes a new instance of the <see cref="AttributeCollection"/> class.
 	/// </summary>
 	public AttributeCollection() {}
+
+	/// <summary>
+	/// Takes in a key/value pair of attribute/values, uses this to pull full Attributes from global collection, and creates new local collection.
+	/// </summary>
+	/// <returns>The from global collection.</returns>
+	/// <param name="attributeDictionary">Attribute dictionary.</param>
+	/// <param name="globalCollection">Global collection.</param>
+	/// <param name="newCollection">New collection.</param>
+	public static AttributeCollection GetFromGlobalCollection(Dictionary<AttributeEnums.AttributeType, float> attributeDictionary, AttributeCollection globalCollection, AttributeCollection newCollection) {
+
+		// Set attributes in their collection. If attribute already exists, set value,
+		// else, grab from global collection and set new attribute and value
+		foreach (var item in attributeDictionary) {
+			AttributeEnums.AttributeType attributeType = item.Key;
+			Attribute attribute;
+			if (!newCollection.HasType (attributeType)) {
+				attribute = globalCollection.Get (attributeType).DeepCopy ();
+				newCollection.Add (attributeType, attribute);
+			} 
+			else
+				attribute = newCollection.Get (attributeType);
+			
+			attribute.CurrentValue = item.Value;
+		}
+		return newCollection;
+	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AttributeCollection"/> class.
@@ -63,15 +90,6 @@ public class AttributeCollection {
 	}
 
 	/// <summary>
-	/// Determines whether this instance has the specified type.
-	/// </summary>
-	/// <returns><c>true</c> if this instance has the specified type; otherwise, <c>false</c>.</returns>
-	/// <param name="type">Type.</param>
-	public bool HasType(AttributeEnums.AttributeType type) {
-		return _attributes.ContainsKey (type);
-	}
-
-	/// <summary>
 	/// Gets the attributes.
 	/// </summary>
 	/// <returns>The attributes.</returns>
@@ -96,5 +114,14 @@ public class AttributeCollection {
 		foreach (Attribute attribute in _attributes.Values)
 			sb.Append (attribute.ToString ());
 		return sb.ToString ();
+	}
+
+	/// <summary>
+	/// Determines whether this instance has the specified type.
+	/// </summary>
+	/// <returns><c>true</c> if this instance has the specified type; otherwise, <c>false</c>.</returns>
+	/// <param name="type">Type.</param>
+	private bool HasType(AttributeEnums.AttributeType type) {
+		return _attributes.ContainsKey (type);
 	}
 }

@@ -19,6 +19,7 @@ public class InitTurnState : CombatState {
 		_tileMap = controller.TileMap;
 
 		controller.ShowCursorAndTileSelector (false);
+		controller.SelectionIndicator.ClearIndicators ();
 		controller.MissionObjectivesPanel.SetActive (false);
 
 		Unit unit = controller.TurnOrderController.GetNextUp ();

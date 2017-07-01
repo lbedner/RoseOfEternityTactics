@@ -108,9 +108,10 @@ public class TileHighlighter {
 	/// Highlights the attack tiles.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	public void HighlightAttackTiles(Unit unit) {
+	/// <param name="range">Range.</param>
+	public void HighlightAttackTiles(Unit unit, int range) {
 		RemoveHighlightedTiles ();
-		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, unit.GetWeaponRange(), unit.AttackTileColor, HighlightType.ATTACK);
+		HighlightTilesInRange (unit, unit.Tile.x, unit.Tile.z, range, unit.AttackTileColor, HighlightType.ATTACK);
 	}
 
 	/// <summary>

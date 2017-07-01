@@ -60,6 +60,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 	private void CancelAction() {
 		controller.Head2HeadPanel.SetActive (false);
 		controller.HighlightedUnit.ActivateCharacterSheet ();
+		controller.HighlightedUnit.Action.ClearTargets ();
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
@@ -69,7 +70,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 	private void Init() {
 		if (!controller.Head2HeadPanel.activeInHierarchy) {
 			controller.SourceHead2HeadPanelController.Load (controller.HighlightedUnit, Head2HeadPanelController.Head2HeadState.ATTACKING);
-			controller.TargetHead2HeadPanelController.Load (controller.TileMap.GetTileMapData ().GetTileDataAt (controller.CurrentTileCoordinates).Unit, Head2HeadPanelController.Head2HeadState.DEFENDING);
+			controller.TargetHead2HeadPanelController.Load (controller.HighlightedUnit.Action.Targets[0], Head2HeadPanelController.Head2HeadState.DEFENDING);
 			controller.Head2HeadPanel.SetActive (true);
 			controller.HighlightedUnit.DeactivateCharacterSheet ();
 		}		

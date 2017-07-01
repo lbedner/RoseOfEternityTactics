@@ -7,30 +7,33 @@ using System.Collections;
 public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
 	public static event EventHandler<InfoEventArgs<RadialButtonType>> buttonClickEvent;
+	public static event EventHandler<InfoEventArgs<Ability>> abilityButtonClickEvent;
 
 	public enum RadialButtonType {
 		ATTACK,
 		DEFEND,
-		CANCEL,
+		ABILITY,
 		ITEM,
+		CANCEL,
 		ITEM_USE,
+		ABILITY_USE,
 	}
 
-	//private const string RESOURCE_PATH = "Prefabs/UI/RadialMenu/RadialButton";
 	private const string RESOURCE_PATH = "Prefabs/UI/RadialMenu/RadialButtonPanel";
 
 	[SerializeField] private GameObject _icon;
 
 	public RadialButtonType Type { get; private set; }
 	public string Name { get; private set; }
+	public Ability Ability { get; set; }
+
+	private static RadialButtonContainer _radioButtonContainer;
 
 	private Outline _highlightOutline;
 	private bool _isScalingOut = true;
 	private bool _isScalingIn = false;
 	private bool _isScalingUp = false;
 	private bool _isScalingDown = false;
-
-	private static RadialButtonContainer _radioButtonContainer;
 
 	/// <summary>
 	/// Instantiates the instance.
@@ -57,6 +60,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 		SetIcon (iconPath);
 		Type = type;
 		Name = name;
+		Ability = null;
 		_highlightOutline =  GetComponentInChildren<Outline> ();
 		StartCoroutine (ScaleButtonOut (position));
 	}
@@ -71,7 +75,12 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 			_highlightOutline.enabled = false;
 			transform.localScale = new Vector3 (1, 1, 1);
 			_radioButtonContainer.RadialMenuController.PopupText = "";
-			buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
+
+			// Send different events based upon the type of button that is clicked
+			if (Ability == null)
+				buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
+			else
+				abilityButtonClickEvent (this, new InfoEventArgs<Ability> (Ability));
 		}
 	}
 

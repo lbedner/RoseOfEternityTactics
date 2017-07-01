@@ -19,6 +19,7 @@ public class MusicController : MonoBehaviour {
 	/// Initialize the music for the level.
 	/// </summary>
 	public void Initialize() {
+		
 		musicCalm.Play();
 		isMusicCalm = true;
 		if (musicFire != null) {
@@ -61,6 +62,60 @@ public class MusicController : MonoBehaviour {
 		}
 		StartCoroutine (FadeOutMusic (audioSourceStop));
 		StartCoroutine (FadeInMusic (audioSourceStart));
+	}
+
+	/// <summary>
+	/// Lowers the combat music.
+	/// </summary>
+	public IEnumerator LowerCombatMusic() {
+		AudioSource audioSource;
+		if (isMusicCalm)
+			audioSource = musicCalm;
+		else
+			audioSource = musicFire;
+		yield return StartCoroutine (LowerMusic (audioSource));
+	}
+
+	/// <summary>
+	/// Raises the combat music.
+	/// </summary>
+	public IEnumerator RaiseCombatMusic() {
+		AudioSource audioSource;
+		if (isMusicCalm)
+			audioSource = musicCalm;
+		else
+			audioSource = musicFire;
+		yield return StartCoroutine (RaiseMusic (audioSource));
+	}
+
+	/// <summary>
+	/// Lowers the music.
+	/// </summary>
+	/// <returns>The music.</returns>
+	/// <param name="audioSource">Audio source.</param>
+	/// <param name="targetVolume">Target volume.</param>
+	private IEnumerator LowerMusic(AudioSource audioSource, float targetVolume = 0.5f) {
+		float currentVolume = 1.0f;
+		while (currentVolume > targetVolume) {
+			currentVolume -= Time.deltaTime;
+			audioSource.volume = currentVolume;
+			yield return null;
+		}				
+	}
+
+	/// <summary>
+	/// Raises the music.
+	/// </summary>
+	/// <returns>The music.</returns>
+	/// <param name="audioSource">Audio source.</param>
+	/// <param name="targetVolume">Target volume.</param>
+	private IEnumerator RaiseMusic(AudioSource audioSource, float targetVolume = 1.0f) {
+		float currentVolume = 0.5f;
+		while (currentVolume < targetVolume) {
+			currentVolume += Time.deltaTime;
+			audioSource.volume = currentVolume;
+			yield return null;
+		}				
 	}
 
 	/// <summary>

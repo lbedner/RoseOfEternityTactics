@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections;
 
-namespace RoseOfEternity {
+namespace EternalEngine {
 	
 	public class Attribute {
 
@@ -41,7 +41,16 @@ namespace RoseOfEternity {
 		/// Gets or sets the current value. When setting, value will be clamped to the min/max.
 		/// </summary>
 		/// <value>The current value.</value>
-		[JsonIgnore] public float CurrentValue { get { return _currentValue; } set { _currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue); }}
+		[JsonIgnore] public float CurrentValue { 
+			get { 
+				return _currentValue;
+			}
+			set {
+				if (value < MinimumValue)
+					Debug.LogWarning (string.Format ("{0}'s Value ({1}) Is Below Minimum ({2})... Clamping.", Name, value, MinimumValue));
+				_currentValue = Mathf.Clamp (value, MinimumValue, MaximumValue);
+			}
+		}
 
 		/// <summary>
 		/// Returns a deep copied instance.

@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using RoseOfEternity;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+
+using EternalEngine;
 
 public class Item {
 
@@ -82,23 +84,10 @@ public class Item {
 	private Item(int id, ItemType itemType, string name, string description, string toolTip, Dictionary<AttributeEnums.AttributeType, float> attributes, InventorySlots.SlotType slot, ItemTier tier, string iconPath) {
 		Init (id, itemType, name, description, toolTip, null, slot, tier, iconPath);
 
-		// Set attributes in their collection. If attribute already exists, set value,
-		// else, grab from global collection and set new attribute and value
 		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
 		if (_attributeCollection == null)
 			_attributeCollection = new AttributeCollection ();
-		foreach (var item in attributes) {
-			AttributeEnums.AttributeType type = item.Key;
-			Attribute attribute;
-			if (!_attributeCollection.HasType (type)) {
-				attribute = globalAttributeCollection.Get (type).DeepCopy ();
-				_attributeCollection.Add (type, attribute);
-			} 
-			else {
-				attribute = _attributeCollection.Get (type);
-			}
-			attribute.CurrentValue = item.Value;
-		}
+		_attributeCollection = AttributeCollection.GetFromGlobalCollection (attributes, globalAttributeCollection, _attributeCollection);
 	}
 
 	/// <summary>

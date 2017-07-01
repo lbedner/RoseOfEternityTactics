@@ -42,8 +42,8 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	/// <param name="eventData">Event data.</param>
 	public void OnPointerEnter (PointerEventData eventData) {
 
-		// Don't allow events if mission panels are up
-		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf) {
+		// Don't allow events if other UI is up
+		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf && !_combatController.UnitMenuController.IsActive()) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = true;
 				Highlight (true);
@@ -59,8 +59,8 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	/// <param name="eventData">Event data.</param>
 	public void OnPointerExit (PointerEventData eventData) {
 
-		// Don't allow events if mission panels are up
-		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf) {
+		// Don't allow events if other UI is up
+		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf && !_combatController.UnitMenuController.IsActive()) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = false;
 				DeHighlight ();

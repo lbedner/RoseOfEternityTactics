@@ -89,6 +89,17 @@ public class InventorySlots  {
 	}
 
 	/// <summary>
+	/// Returns a deep copied instance.
+	/// </summary>
+	/// <returns>The copy.</returns>
+	public InventorySlots DeepCopy() {
+		InventorySlots deepCopiedInventorySlots = new InventorySlots();
+		foreach (var item in _items)
+			deepCopiedInventorySlots.Add (item.Key, item.Value.DeepCopy());
+		return deepCopiedInventorySlots;
+	}
+
+	/// <summary>
 	/// Returns a <see cref="System.String"/> that represents the current <see cref="InventorySlots"/>.
 	/// </summary>
 	/// <returns>A <see cref="System.String"/> that represents the current <see cref="InventorySlots"/>.</returns>

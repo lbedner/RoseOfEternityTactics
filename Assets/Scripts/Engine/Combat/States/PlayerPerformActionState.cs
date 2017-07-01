@@ -17,7 +17,7 @@ public class PlayerPerformActionState : PerformActionState {
 		controller.ClearActionTargets ();
 		controller.Head2HeadPanel.SetActive (false);
 		controller.ShowCursorAndTileSelector (false);
-		Unit defender = controller.TileMap.GetTileMapData ().GetTileDataAt (controller.CurrentTileCoordinates).Unit;
-		StartCoroutine (PerformAction (controller.HighlightedUnit, defender));		
+		controller.SelectionIndicator.ClearIndicators ();
+		StartCoroutine (PerformAbilityAction (controller.HighlightedUnit));
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.IO;
 
-using RoseOfEternity;
+using EternalEngine;
 
 public abstract class Unit : MonoBehaviour {
 
@@ -144,7 +144,7 @@ public abstract class Unit : MonoBehaviour {
 	/// Sets the unit as unselected.
 	/// </summary>
 	public void Dehighlight() {
-		if (!TileHighlighter.IsPersistent)
+		if (!TileHighlighter.IsPersistent && _spriteRenderer != null)
 			_spriteRenderer.color = DefaultColor;
 	}
 

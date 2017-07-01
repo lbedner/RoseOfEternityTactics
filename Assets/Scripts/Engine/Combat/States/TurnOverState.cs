@@ -10,7 +10,7 @@ public class TurnOverState : CombatState {
 	/// Adds listeners when the state is entered.
 	/// </summary>
 	public override void Enter() {
-		print ("PlayerSelectedState.Enter");
+		print ("TurnOverState.Enter");
 		base.Enter ();
 		StartCoroutine(Init ());
 	}
@@ -30,6 +30,10 @@ public class TurnOverState : CombatState {
 
 		// Clear out radial button container list
 		controller.RadialButtonContainers.Clear();
+
+		// Clear existing action targets and reset them
+		controller.ClearActionTargets ();
+		controller.TurnOrderController.UntargetUnitImages ();
 
 		// Destroy Radial Menu on unit that just finished turn if they have it
 		Unit finishedUnit = turnOrderController.GetNextUp();

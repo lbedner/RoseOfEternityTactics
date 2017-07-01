@@ -71,8 +71,7 @@ public class CPUTurnState : CombatState {
 			_cpu.Unselect ();
 		}
 
-		Unit target = _cpu.Action.Target;
-		if (target != null)
+		if (_cpu.Action.Targets != null && _cpu.Action.Targets.Count > 0)
 			controller.ChangeState<CPUPerformActionState> ();
 		else
 			controller.ChangeState<TurnOverState> ();
