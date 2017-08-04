@@ -6,6 +6,7 @@
       "LastName": "Galladoran",
       "Class": "Kilveran Swordsman",
       "PortraitLocation": "Prefabs/Portraits/p-aramus",
+	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
 	  "Sprite": "Prefabs/Characters/Animations/Allies/aramus/Sprite",
 	  "UnitType": "PLAYER",
       "Attributes": {
@@ -40,6 +41,7 @@
       "LastName": "",
       "Class": "Daishan Assassin",
       "PortraitLocation": "Prefabs/Portraits/p-sinteres",
+	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
 	  "Sprite": "Prefabs/Characters/Animations/Allies/sinteres/Sprite",
 	  "UnitType": "PLAYER",
       "Attributes": {
@@ -71,6 +73,7 @@
       "LastName": "",
       "Class": "Knight of Dundalas",
       "PortraitLocation": "Prefabs/Portraits/p-orelle",
+	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
 	  "Sprite": "Prefabs/Characters/Animations/Allies/orelle/Sprite",
 	  "UnitType": "PLAYER",
       "Attributes": {
@@ -100,6 +103,7 @@
       "LastName": "Thuvik",
       "Class": "Stramadonian Seeker",
       "PortraitLocation": "Prefabs/Portraits/p-jarl",
+	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
 	  "Sprite": "Prefabs/Characters/Animations/Allies/jarl/Sprite",
 	  "UnitType": "PLAYER",
       "Attributes": {
@@ -130,6 +134,7 @@
       "LastName": "",
       "Class": "Monster",
       "PortraitLocation": "Prefabs/Portraits/p-muck_petty",
+	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/SlimeMovement",
 	  "Sprite": "Prefabs/Characters/Animations/Enemies/muck_petty/Sprite",
 	  "UnitType": "ENEMY",
       "Attributes": {

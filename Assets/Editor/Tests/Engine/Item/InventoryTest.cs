@@ -13,9 +13,9 @@ public class InventoryTest {
 
 	[SetUp]
 	public void Setup() {
-		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5, "armor.png");
-		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg");
-		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg");
+		_i1 = new Item (0, Item.ItemType.ARMOR, "armor", "it's armor", "armor", new AttributeCollection (), InventorySlots.SlotType.BODY, Item.ItemTier.TIER_5, "armor.png", "swordSFX");
+		_i2 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg", "swordSFX");
+		_i3 = new Item (0, Item.ItemType.WEAPON, "weapon", "it's a weapon", "weapon", new AttributeCollection (), InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg", "swordSFX");
 		_nullItem = null;
 	}
 

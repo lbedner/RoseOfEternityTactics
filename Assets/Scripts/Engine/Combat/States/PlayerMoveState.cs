@@ -74,6 +74,7 @@ public class PlayerMoveState : PlayerState {
 	/// <param name="startingPosition">Starting position.</param>
 	/// <param name="endingPosition">Ending position.</param>
 	private IEnumerator MoveToTile(Unit character, Vector3 startingPosition, Vector3 endingPosition) {
+		character.PlayMovementSound();
 		PlayWalkingAnimation (character, startingPosition, endingPosition);
 		float elapsedTime = 0.0f;
 		float timeToMove = 0.25f;

@@ -33,10 +33,14 @@ public class PerformActionState : CombatState {
 		Combat combat = new Combat (controller.HighlightedUnit);
 		combat.Begin ();
 
+		// Play weapon sound effect
+		if (attacker.Action.Ability.Type == Ability.AbilityType.ATTACK)
+			attacker.PlayWeaponSound();
+
 		// Show target(s) being damaged
 		ShowDamagedColorOnTargets (true, targets);
 
-		// Play Animations
+		// Play animations
 		yield return StartCoroutine (PlayAttackAnimations (attacker, targets[0].Tile));
 		yield return new WaitForSeconds (1.0f);
 

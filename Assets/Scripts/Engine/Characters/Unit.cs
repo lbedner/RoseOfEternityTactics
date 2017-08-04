@@ -47,6 +47,9 @@ public abstract class Unit : MonoBehaviour {
 
 	private Canvas _canvas;
 
+	private AudioSource _movementAudioSource;
+	private AudioSource _weaponAudioSource;
+
 	[SerializeField] private Transform _movementHighlightCube;
 
 	public UnitData UnitData { get; set; }
@@ -80,6 +83,9 @@ public abstract class Unit : MonoBehaviour {
 		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
 
 		TileHighlighter = new TileHighlighter (GameManager.Instance.GetTileMap (), _movementHighlightCube);
+
+		_movementAudioSource = gameObject.AddComponent<AudioSource> ();
+		_weaponAudioSource = gameObject.AddComponent<AudioSource> ();
 	}
 
 	/// <summary>
@@ -426,6 +432,14 @@ public abstract class Unit : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the weapon in the right hand.
+	/// </summary>
+	/// <returns>The weapon.</returns>
+	public Item GetWeaponInRightHand() {
+		return GetItemInSlot (InventorySlots.SlotType.RIGHT_HAND);
+	}
+
+	/// <summary>
 	/// Gets the inventory slots.
 	/// </summary>
 	/// <returns>The inventory slots.</returns>
@@ -447,6 +461,29 @@ public abstract class Unit : MonoBehaviour {
 	/// <returns>The portrait.</returns>
 	public Sprite GetPortrait() {
 		return UnitData.Portrait;
+	}
+
+	/// <summary>
+	/// Plays the movement sound.
+	/// </summary>
+	public void PlayMovementSound() {
+		if (_movementAudioSource.clip == null)
+			_movementAudioSource.clip = UnitData.MovementSound;
+		_movementAudioSource.PlayOneShot (_movementAudioSource.clip);
+	}
+
+	/// <summary>
+	/// Plays the weapon sound.
+	/// </summary>
+	public void PlayWeaponSound() {
+		if (_weaponAudioSource.clip == null) {
+			Item weapon = GetWeaponInRightHand ();
+			if (weapon.Sound != null)
+				_weaponAudioSource.clip = weapon.Sound;
+			else
+				return;
+		}
+		_weaponAudioSource.PlayOneShot (_weaponAudioSource.clip);
 	}
 
 	/// <summary>

@@ -23,8 +23,8 @@ public class UnitDataTest {
 		_ac.Add (a2);
 
 		// Setup inventory slots
-		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", _ac, InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg");
-		Item i2 = new Item (1, Item.ItemType.ARMOR, "armor", "aermor description", "armor", _ac, InventorySlots.SlotType.BODY, Item.ItemTier.TIER_3, "armor.jpg");
+		Item i1 = new Item (0, Item.ItemType.WEAPON, "weapon", "weapon description", "weapon", _ac, InventorySlots.SlotType.RIGHT_HAND, Item.ItemTier.TIER_5, "weapon.jpg", "swordSFX");
+		Item i2 = new Item (1, Item.ItemType.ARMOR, "armor", "aermor description", "armor", _ac, InventorySlots.SlotType.BODY, Item.ItemTier.TIER_3, "armor.jpg", "swordSFX");
 		_slots.Add (i1);
 		_slots.Add (i2);
 

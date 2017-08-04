@@ -9,6 +9,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Swords/sword_1",
       "SlotType": "RIGHT_HAND",
       "Tier": "TIER_5",
+	  "SoundPath": "Prefabs/Audio/Units/Items/Weapons/Swords/sword_1",
       "Attributes": {
         "DAMAGE": 15.0,
         "HIT_PERCENT": 90.0,
@@ -26,6 +27,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Daggers/dagger_1",
       "SlotType": "RIGHT_HAND",
       "Tier": "TIER_2",
+	  "SoundPath": "Prefabs/Audio/Units/Items/Weapons/Swords/sword_1",
       "Attributes": {
         "DAMAGE": 5.0,
         "HIT_PERCENT": 100.0,
@@ -43,6 +45,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Axes/axe_1",
       "SlotType": "RIGHT_HAND",
       "Tier": "TIER_2",
+	  "SoundPath": "Prefabs/Audio/Units/Items/Weapons/Swords/sword_1",
       "Attributes": {
         "DAMAGE": 12.0,
         "HIT_PERCENT": 70.0,
@@ -60,6 +63,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Books/book_1",
       "SlotType": "RIGHT_HAND",
       "Tier": "TIER_2",
+	  "SoundPath": "Prefabs/Audio/Units/Items/Weapons/Wands/wand_1",
       "Attributes": {
         "DAMAGE": 4.0,
         "HIT_PERCENT": 100.0,
@@ -328,6 +332,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Monster/muck_1",
       "SlotType": "RIGHT_HAND",
       "Tier": "TIER_1",
+	  "SoundPath": "Prefabs/Audio/Units/Items/Weapons/Monster/muck_1",
       "Attributes": {
         "DAMAGE": 2.0,
         "HIT_PERCENT": 95.0,

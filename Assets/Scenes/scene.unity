@@ -4541,7 +4541,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 472148, guid: 071a3bf296ddddc4789f17ed872dd473, type: 2}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 193162, guid: 071a3bf296ddddc4789f17ed872dd473, type: 2}
       propertyPath: m_IsActive
@@ -15165,6 +15165,10 @@ Prefab:
       propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8209236, guid: 6e216cb84f566824b99d316db56ca806, type: 2}
+      propertyPath: spreadCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e216cb84f566824b99d316db56ca806, type: 2}
   m_IsPrefabParent: 0
@@ -15722,7 +15726,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 453046, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 11495332, guid: 3041cf7b9030fd040ac49a8fd24c5eb4, type: 2}
       propertyPath: musicCalm

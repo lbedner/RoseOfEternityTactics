@@ -21,12 +21,14 @@ public class UnitData {
 	[JsonProperty] public string PortraintLocation { get; set; }
 	[JsonProperty] public string Sprite { get; set; }
 	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public UnitType Type { get; set; }
+	[JsonProperty] public string MovementSoundLocation { get; set; }
 
 	[JsonIgnore] public AttributeCollection AttributeCollection { get; set; }
 	[JsonIgnore] public InventorySlots InventorySlots { get; set; }
 	[JsonIgnore] public AbilityCollection AbilityCollection { get; set; }
 
 	[JsonIgnore] public Sprite Portrait { get; private set; }
+	[JsonIgnore] public AudioClip MovementSound { get; private set; }
 
 	[JsonProperty] private Dictionary<AttributeEnums.AttributeType, float> Attributes {
 		get {
@@ -65,7 +67,7 @@ public class UnitData {
 	/// </summary>
 	/// <returns>The copy.</returns>
 	public UnitData DeepCopy() {
-		return new UnitData(ResRef, FirstName, LastName, Class, Portrait, Sprite, Type, AttributeCollection.DeepCopy(), InventorySlots.DeepCopy(), AbilityCollection.DeepCopy());
+		return new UnitData(ResRef, FirstName, LastName, Class, Portrait, MovementSound, Sprite, Type, AttributeCollection.DeepCopy(), InventorySlots.DeepCopy(), AbilityCollection.DeepCopy());
 	}
 
 	/// <summary>
@@ -76,17 +78,19 @@ public class UnitData {
 	/// <param name="lastName">Last name.</param>
 	/// <param name="class">Class.</param>
 	/// <param name="portrait">Portrait.</param>
+	/// <param name="movementSound">Movement sound.</param>
 	/// <param name="sprite">Sprite.</param>
 	/// <param name="unitType">Unit type.</param>
 	/// <param name="attributeCollection">Attribute collection.</param>
 	/// <param name="inventorySlots">Inventory slots.</param>
 	/// <param name="abilityCollection">Ability collection.</param>
-	private UnitData(string resRef, string firstName, string lastName, string @class, Sprite portrait, string sprite, UnitType unitType, AttributeCollection attributeCollection, InventorySlots inventorySlots, AbilityCollection abilityCollection) {
+	private UnitData(string resRef, string firstName, string lastName, string @class, Sprite portrait, AudioClip movementSound, string sprite, UnitType unitType, AttributeCollection attributeCollection, InventorySlots inventorySlots, AbilityCollection abilityCollection) {
 		ResRef = resRef;
 		FirstName = firstName;
 		LastName = lastName;
 		Class = @class;
 		Portrait = portrait;
+		MovementSound = movementSound;
 		Sprite = sprite;
 		Type = unitType;
 		AttributeCollection = attributeCollection;
@@ -102,18 +106,32 @@ public class UnitData {
 	/// <param name="lastName">Last name.</param>
 	/// <param name="class">Class.</param>
 	/// <param name="portraitLocation">Portrait location.</param>
+	/// <param name="movementSoundLocation">Movement sound location.</param>
 	/// <param name="sprite">Sprite.</param>
 	/// <param name="unitType">Unit type.</param>
 	/// <param name="attributes">Attributes.</param>
 	/// <param name="inventory">Inventory.</param>
 	/// <param name="abilityIds">Ability identifiers.</param>
 	[JsonConstructor]
-	private UnitData(string resRef, string firstName, string lastName, string @class, string portraitLocation, string sprite, UnitType unitType, Dictionary<AttributeEnums.AttributeType, float> attributes, Dictionary<InventorySlots.SlotType, int> inventory, List<int> abilities) {
+	private UnitData(
+		string resRef,
+		string firstName,
+		string lastName,
+		string @class,
+		string portraitLocation,
+		string movementSoundLocation,
+		string sprite,
+		UnitType unitType,
+		Dictionary<AttributeEnums.AttributeType, float> attributes,
+		Dictionary<InventorySlots.SlotType, int> inventory,
+		List<int> abilities
+	) {
 		ResRef = resRef;
 		FirstName = firstName;
 		LastName = lastName;
 		Class = @class;
 		PortraintLocation = portraitLocation;
+		MovementSoundLocation = movementSoundLocation;
 		Sprite = sprite;
 		Type = unitType;
 
@@ -144,6 +162,9 @@ public class UnitData {
 
 		// Load the portrait
 		Portrait = Resources.Load<Sprite>(PortraintLocation);
+
+		// Load the sounds
+		MovementSound = Resources.Load<AudioClip>(MovementSoundLocation);
 	}
 
 	/// <summary>
