@@ -24,7 +24,7 @@ public class PlayerTargetSelectionState : PlayerState {
 	/// <param name="sender">Sender.</param>
 	/// <param name="e">E.</param>
 	protected override void OnMove(object sender, InfoEventArgs<Vector3> e) {
-		if (controller.UnitMenuController.IsActive ())
+		if (controller.UnitMenuController.IsActive () || controller.HighlightedUnit.Action.Ability.TargetType == Ability.TargetTypeEnum.SELF)
 			return;
 		HandleCursorOver ();
 	}
@@ -89,6 +89,7 @@ public class PlayerTargetSelectionState : PlayerState {
 	private void Init() {
 		_range = 0;
 		_aoeRange = 0;
+		_tilesInRange.Clear ();
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 
 		// Determine the selection indicator based on action
@@ -110,6 +111,12 @@ public class PlayerTargetSelectionState : PlayerState {
 		
 		controller.ShowTileSelector (true);
 		tileHighlighter.HighlightAttackTiles (controller.HighlightedUnit, _range);
+
+		if (controller.HighlightedUnit.Action.Ability.TargetType == Ability.TargetTypeEnum.SELF) {
+
+			TileData tileData = controller.TileMap.GetTileMapData ().GetTileDataAt (controller.HighlightedUnit.Tile);
+			ProcessTilesInRange (tileData);
+		}
 	}
 
 	/// <summary>
@@ -134,24 +141,34 @@ public class PlayerTargetSelectionState : PlayerState {
 			controller.TurnOrderController.UntargetUnitImages ();
 			_tilesInRange.Clear ();
 
-			// Add current tile data to a list of potential tiles to check
-			_tilesInRange.Add (tileData);
+			ProcessTilesInRange (tileData);
+		}
+	}
 
-			// If selection indicator is more than one (i.e. Area of Effect), get surrounding tiles
-			if (_aoeRange > 0) {
-				var tilesInRange = controller.TileDiscoverer.DiscoverTilesInRange (tileData.Position, _aoeRange);
-				foreach (var tileInRange in tilesInRange)
-					_tilesInRange.Add(controller.TileMap.GetTileMapData().GetTileDataAt(tileInRange.Key));
-			}
+	/// <summary>
+	/// Processes the tiles in range.
+	/// </summary>
+	/// <param name="tiledata">Tiledata.</param>
+	private void ProcessTilesInRange(TileData tiledata) {
 
-			// Iterate over list of tile data and if there are units standing on them, process them accordingly
-			foreach (var data in _tilesInRange) {
-				Unit unit = data.Unit;
-				if (unit && !(controller.HighlightedUnit.IsFriendlyUnit(unit))) {
-					controller.HighlightActionTarget (unit);
-					controller.TurnOrderController.TargetUnitImage (unit);
-				}
+		// Add current tile data to a list of potential tiles to check
+		_tilesInRange.Add (tiledata);
+
+		// If selection indicator is more than one (i.e. Area of Effect), get surrounding tiles
+		if (_aoeRange > 0) {
+			var tilesInRange = controller.TileDiscoverer.DiscoverTilesInRange (tiledata.Position, _aoeRange);
+			foreach (var tileInRange in tilesInRange)
+				_tilesInRange.Add(controller.TileMap.GetTileMapData().GetTileDataAt(tileInRange.Key));
+		}
+
+		// Iterate over list of tile data and if there are units standing on them, process them accordingly
+		foreach (var data in _tilesInRange) {
+			Unit unit = data.Unit;
+			if (unit && !(controller.HighlightedUnit.IsFriendlyUnit(unit))) {
+				controller.HighlightActionTarget (unit);
+				controller.TurnOrderController.TargetUnitImage (unit);
 			}
 		}
+		
 	}
 }

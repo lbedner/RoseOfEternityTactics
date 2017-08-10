@@ -34,7 +34,8 @@ public class PerformActionState : CombatState {
 		combat.Begin ();
 
 		// Play weapon sound effect
-		if (attacker.Action.Ability.Type == Ability.AbilityType.ATTACK)
+		Ability.AbilityType abilityType = attacker.Action.Ability.Type;
+		if (abilityType == Ability.AbilityType.ATTACK || abilityType == Ability.AbilityType.TALENT)
 			attacker.PlayWeaponSound();
 
 		// Show target(s) being damaged
@@ -54,6 +55,9 @@ public class PerformActionState : CombatState {
 		// Destroy VFX's
 		DestroyVFX(vfxGameObjects);
 
+		// Remove name of used ability
+		controller.ActionController.Deactivate ();
+
 		// Bring music back up to normal volume
 		yield return StartCoroutine(controller.MusicController.RaiseCombatMusic ());
 
@@ -68,25 +72,36 @@ public class PerformActionState : CombatState {
 	/// <param name="direction">Direction.</param>
 	protected IEnumerator PlayAttackAnimations(Unit attacker, Vector3 direction) {
 
-		//determine which way to swing, dependent on the direction the enemy is
-		Unit.TileDirection facing = attacker.GetDirectionToTarget (direction);
-		UnitAnimationController animationController = attacker.GetAnimationController ();
-		switch (facing) {
-		case Unit.TileDirection.NORTH:
-			animationController.AttackNorth ();
-			break;
-		case Unit.TileDirection.EAST:
-			animationController.AttackEast ();
-			break;
-		case Unit.TileDirection.SOUTH:
-			animationController.AttackSouth ();
-			break;
-		case Unit.TileDirection.WEST:
-			animationController.AttackWest ();
-			break;
+		Ability.AbilityType abilityType = attacker.Action.Ability.Type;
+		if (abilityType == Ability.AbilityType.ATTACK) {
+
+			//determine which way to swing, dependent on the direction the enemy is
+			Unit.TileDirection facing = attacker.GetDirectionToTarget (direction);
+			UnitAnimationController animationController = attacker.GetAnimationController ();
+			switch (facing) {
+			case Unit.TileDirection.NORTH:
+				animationController.AttackNorth ();
+				break;
+			case Unit.TileDirection.EAST:
+				animationController.AttackEast ();
+				break;
+			case Unit.TileDirection.SOUTH:
+				animationController.AttackSouth ();
+				break;
+			case Unit.TileDirection.WEST:
+				animationController.AttackWest ();
+				break;
+			}
+		}
+		else if (attacker.Action.Ability.Id == AbilityConstants.WHIRLWIND_SLASH) {
+			UnitAnimationController animationController = attacker.GetAnimationController ();
+			animationController.WhirlwindSlash ();
+		}
+		else if (attacker.Action.Ability.Id == AbilityConstants.LEAPING_SLICE) {
+			UnitAnimationController animationController = attacker.GetAnimationController ();
+			animationController.LeapingSlice ();
 		}
 
-		controller.ActionController.Deactivate ();
 		yield return null;
 	}
 

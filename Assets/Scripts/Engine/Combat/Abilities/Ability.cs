@@ -18,6 +18,11 @@ public class Ability {
 		BONDS_OF_BATTLE,
 	}
 
+	public enum TargetTypeEnum {
+		DEFAULT,
+		SELF,
+	}
+
 	[JsonProperty] public int Id { get; private set; }
 	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public AbilityType Type { get; private set; }
 	[JsonProperty] public string Name { get; private set; }
@@ -27,6 +32,7 @@ public class Ability {
 	[JsonProperty] public string VFXPath { get; private set; }
 	[JsonProperty] public int Cost { get; private set; }
 	[JsonProperty] public int Turns { get; private set; }
+	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public TargetTypeEnum TargetType { get; private set; }
 
 	private AttributeCollection _attributeCollection;
 
@@ -42,8 +48,9 @@ public class Ability {
 	/// <param name="vfxpPath">VFX path.</param>
 	/// <param name="cost">Cost.</param>
 	/// <param name="turns">Turns.</param>
+	/// <param name="targetType">Target type.</param>
 	/// <param name="attributeCollection">Attribute collection.</param>
-	public Ability(int id, AbilityType type, string name, string description, string toolTip, string iconPath, string vfxPath, int cost, int turns, AttributeCollection attributeCollection) {
+	public Ability(int id, AbilityType type, string name, string description, string toolTip, string iconPath, string vfxPath, int cost, int turns, TargetTypeEnum targetType, AttributeCollection attributeCollection) {
 		Id = id;
 		Type = type;
 		Name = name;
@@ -53,6 +60,7 @@ public class Ability {
 		VFXPath = vfxPath;
 		Cost = cost;
 		Turns = turns;
+		TargetType = targetType;
 		_attributeCollection = attributeCollection;
 	}
 		
@@ -68,9 +76,10 @@ public class Ability {
 	/// <param name="vfxpPath">VFX path.</param>
 	/// <param name="cost">Cost.</param>
 	/// <param name="turns">Turns.</param>
+	/// <param name="targetType">Target type.</param>
 	/// <param name="attributes">Attributes.</param>
 	[JsonConstructor]
-	private Ability(int id, AbilityType type, string name, string description, string toolTip, string iconPath, string vfxPath, int cost, int turns, Dictionary<AttributeEnums.AttributeType, float> attributes) {
+	private Ability(int id, AbilityType type, string name, string description, string toolTip, string iconPath, string vfxPath, int cost, int turns, TargetTypeEnum targetType, Dictionary<AttributeEnums.AttributeType, float> attributes) {
 		Id = id;
 		Type = type;
 		Name = name;
@@ -80,6 +89,7 @@ public class Ability {
 		VFXPath = vfxPath;
 		Cost = cost;
 		Turns = turns;
+		TargetType = targetType;
 
 		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
 		if (_attributeCollection == null)
@@ -92,7 +102,7 @@ public class Ability {
 	/// </summary>
 	/// <returns>The deep copied instance.</returns>
 	public Ability DeepCopy() {
-		return new Ability (Id, Type, Name, Description, ToolTip, IconPath, VFXPath, Cost, Turns, _attributeCollection);
+		return new Ability (Id, Type, Name, Description, ToolTip, IconPath, VFXPath, Cost, Turns, TargetType, _attributeCollection);
 	}
 
 	/// <summary>

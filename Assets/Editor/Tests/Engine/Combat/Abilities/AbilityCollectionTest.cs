@@ -25,11 +25,11 @@ public class AbilityCollectionTest {
 		_attributeCollection.Add (range);
 		_attributeCollection.Add (aoeRange);
 
-		_ability1 = new Ability (0, Ability.AbilityType.MAGIC, "test_magic", "test_magic", "test_magic", "iconPath", "vfxPath", 1, 0, _attributeCollection);
-		_ability2 = new Ability (1, Ability.AbilityType.TALENT, "testTalent", "testTalent", "testTalent", "iconPath", "vfxPath", 1, 0, _attributeCollection);
-		_ability3 = new Ability (2, Ability.AbilityType.ATTACK, "testAttack", "testAttack", "testAttack", "iconPath", "vfxPath", 1, 0, _attributeCollection);
-		_ability4 = new Ability (3, Ability.AbilityType.MAGIC, "testMagic2", "testMagic2", "testMagic2", "iconPath", "vfxPath", 1, 0, _attributeCollection);
-		_ability5 = new Ability (4, Ability.AbilityType.TALENT, "testTalent2", "testTalent2", "testTalent2", "iconPath", "vfxPath", 1, 0, _attributeCollection);
+		_ability1 = new Ability (0, Ability.AbilityType.MAGIC, "test_magic", "test_magic", "test_magic", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
+		_ability2 = new Ability (1, Ability.AbilityType.TALENT, "testTalent", "testTalent", "testTalent", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
+		_ability3 = new Ability (2, Ability.AbilityType.ATTACK, "testAttack", "testAttack", "testAttack", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
+		_ability4 = new Ability (3, Ability.AbilityType.MAGIC, "testMagic2", "testMagic2", "testMagic2", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
+		_ability5 = new Ability (4, Ability.AbilityType.TALENT, "testTalent2", "testTalent2", "testTalent2", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
 	}
 
 	[Test]

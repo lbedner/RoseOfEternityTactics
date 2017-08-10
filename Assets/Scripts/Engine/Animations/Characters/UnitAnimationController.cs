@@ -10,6 +10,8 @@ public class UnitAnimationController : MonoBehaviour {
 	private const string ATTACK_HORIZONTAL = "Attack_Horizontal";
 	private const string ATTACK_NORTH = "Attack_North";
 	private const string ATTACK_SOUTH = "Attack_South";
+	private const string WHIRLWIND_SLASH = "Whirlwind_Slash";
+	private const string LEAPING_SLICE = "Leaping_Slice";
 
 	private const float TRANSITION_DURATION = 0.0f;
 
@@ -83,6 +85,20 @@ public class UnitAnimationController : MonoBehaviour {
 	public void AttackWest() {
 		DetermineProperFacing (Unit.TileDirection.WEST);
 		_animator.SetTrigger (ATTACK_HORIZONTAL);
+	}
+
+	/// <summary>
+	/// Performs whirlwind slash animation.
+	/// </summary>
+	public void WhirlwindSlash() {
+		_animator.SetTrigger (WHIRLWIND_SLASH);
+	}
+
+	/// <summary>
+	/// Performs leaping slice animation.
+	/// </summary>
+	public void LeapingSlice() {
+		_animator.SetTrigger (LEAPING_SLICE);
 	}
 
 	/// <summary>

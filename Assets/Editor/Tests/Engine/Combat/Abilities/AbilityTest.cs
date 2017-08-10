@@ -21,7 +21,7 @@ public class AbilityTest {
 		_attributeCollection.Add (range);
 		_attributeCollection.Add (aoeRange);
 
-		_ability1 = new Ability (0, Ability.AbilityType.MAGIC, "test_magic", "test_magic", "test_magic", "iconPath", "vfxPath", 1, 0, _attributeCollection);
+		_ability1 = new Ability (0, Ability.AbilityType.MAGIC, "test_magic", "test_magic", "test_magic", "iconPath", "vfxPath", 1, 0, Ability.TargetTypeEnum.DEFAULT, _attributeCollection);
 	}
 
 	[Test]

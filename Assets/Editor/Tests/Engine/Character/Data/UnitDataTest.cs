@@ -29,8 +29,8 @@ public class UnitDataTest {
 		_slots.Add (i2);
 
 		// Setup abiltiies
-		Ability ability1 = new Ability(0, Ability.AbilityType.ATTACK, "attack", "attack_description", "attackTooltop", "attackIconPath", "attackVfxPath", 0, 0, null);
-		Ability ability2 = new Ability(1, Ability.AbilityType.LAST_RESORT, "lr", "lrDescription", "lrTooltop", "lrIconPath", "lrVfxPath", 0, 0, null);
+		Ability ability1 = new Ability(0, Ability.AbilityType.ATTACK, "attack", "attack_description", "attackTooltop", "attackIconPath", "attackVfxPath", 0, 0, Ability.TargetTypeEnum.DEFAULT, null);
+		Ability ability2 = new Ability(1, Ability.AbilityType.LAST_RESORT, "lr", "lrDescription", "lrTooltop", "lrIconPath", "lrVfxPath", 0, 0, Ability.TargetTypeEnum.DEFAULT, null);
 		_abilityCollection.Add (ability1);
 		_abilityCollection.Add (ability2);
 

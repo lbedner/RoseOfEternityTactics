@@ -9,6 +9,7 @@
       "IconPath": "Prefabs/Icons/Items/Weapons/Swords/sword_1",
 	  "Cost": 0,
 	  "Turns": 0,
+	  "TargetType": "DEFAULT",
       "Attributes": {}
     },
     {
@@ -20,6 +21,7 @@
       "IconPath": "Prefabs/Icons/Abilities/Talents/measured_strike",
 	  "Cost": 5,
 	  "Turns": 2,
+	  "TargetType": "DEFAULT",
       "Attributes": {
         "DAMAGE": 15.0,
         "HIT_PERCENT": 90.0,
@@ -37,6 +39,7 @@
       "IconPath": "Prefabs/Icons/Abilities/Talents/elicit",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "DEFAULT",
       "Attributes": {
         "HIT_PERCENT": 90.0,
 		"RANGE": 1.0,
@@ -52,9 +55,10 @@
       "IconPath": "Prefabs/Icons/Abilities/Talents/whirlwind_slash",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "SELF",
       "Attributes": {
         "HIT_PERCENT": 90.0,
-		"RANGE": 0.0,
+		"RANGE": 1.0,
 		"AOE_RANGE": 1.0
 	  }
     },
@@ -67,6 +71,7 @@
       "IconPath": "Prefabs/Icons/Abilities/Talents/leaping_slice",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "DEFAULT",
       "Attributes": {
         "HIT_PERCENT": 90.0,
 		"RANGE": 3.0,
@@ -83,6 +88,7 @@
 	  "VFXPath": "Prefabs/VFX/Spells/flame",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 3.0,
 		"AOE_RANGE": 0.0
@@ -98,6 +104,7 @@
 	  "VFXPath": "Prefabs/VFX/Spells/freeze",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 5.0,
 		"AOE_RANGE": 0.0
@@ -113,6 +120,7 @@
 	  "VFXPath": "Prefabs/VFX/Spells/lightning",
 	  "Cost": 3,
 	  "Turns": 1,
+	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 4.0,
 		"AOE_RANGE": 1.0

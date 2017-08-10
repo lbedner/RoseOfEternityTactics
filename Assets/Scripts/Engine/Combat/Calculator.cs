@@ -35,6 +35,22 @@ public class Calculator {
 			CalculateAttackDamage ();
 			break;
 
+		//** TALENTS **/
+
+		case AbilityConstants.MEASURED_STRIKE:
+			CalculateAttackDamage (2.0f);
+			break;
+
+		case AbilityConstants.WHIRLWIND_SLASH:
+			CalculateAttackDamage ();
+			break;
+
+		case AbilityConstants.LEAPING_SLICE:
+			CalculateAttackDamage ();
+			break;
+
+		//** MAGIC **//
+
 		case AbilityConstants.FLAME:
 			CalculateFlameDamage ();
 			break;
@@ -52,10 +68,10 @@ public class Calculator {
 	/// <summary>
 	/// Calculates the attack damage.
 	/// </summary>
-	private void CalculateAttackDamage() {
+	private void CalculateAttackDamage(float modifier = 1.0f) {
 		Item weapon = _source.GetItemInSlot (InventorySlots.SlotType.RIGHT_HAND);
 		int damageAttribute = (int)weapon.GetAttribute (AttributeEnums.AttributeType.DAMAGE).CurrentValue;
-		int damage = (int)_source.GetLevelAttribute ().CurrentValue * damageAttribute;
+		int damage = (int) (_source.GetLevelAttribute ().CurrentValue * damageAttribute * modifier);
 		_damageToTargets.Add (damage);
 		Action.DamageToTargets = _damageToTargets;
 	}
