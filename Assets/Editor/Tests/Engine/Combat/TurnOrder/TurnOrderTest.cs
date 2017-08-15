@@ -24,14 +24,29 @@ public class TurnOrderTest {
 
 	[Test]
 	public void TestAddUnit() {
-		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddUnit (_unit1);
 		Assert.AreEqual (1, _turnOrder.GetTurnOrderLength ());
 	}
 
 	[Test]
+	public void TestInsertUnit() {
+
+		// Add a unit normally, and make sure the index is as it should be
+		_turnOrder.AddUnit(_unit1);
+		List<Unit> units = _turnOrder.GetAllUnits();
+		Assert.AreEqual(0, units.IndexOf(_unit1));
+
+		// Insert a new unit at the beginning and confirm the indexes get shifted
+		_turnOrder.InsertUnit(_unit2, 0);
+		units = _turnOrder.GetAllUnits();
+		Assert.AreEqual(0, units.IndexOf(_unit2));
+		Assert.AreEqual(1, units.IndexOf(_unit1));
+	}
+
+	[Test]
 	public void TestRemoveUnit() {
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.RemoveCombatant (_unit1);
+		_turnOrder.AddUnit (_unit1);
+		_turnOrder.RemoveUnit (_unit1);
 		Assert.AreEqual (0, _turnOrder.GetTurnOrderLength ());
 	}
 
@@ -39,44 +54,24 @@ public class TurnOrderTest {
 	public void TestGetNextUp() {
 		Assert.IsNull (_turnOrder.GetNextUp ());
 
-		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddUnit (_unit1);
 		Assert.AreEqual (_unit1, _turnOrder.GetNextUp ());
 	}
 
 	[Test]
-	public void TestGetTurnOrderSlotNumber() {
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit2);
-
-		Assert.AreEqual (1, _turnOrder.GetTurnOrderSlotNumber (_unit1));
-		Assert.AreEqual (2, _turnOrder.GetTurnOrderSlotNumber (_unit2));
-	}		
-
-	[Test]
-	public void TestFinishTurn() {
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit2);
-
-		_turnOrder.FinishTurn (_unit1);
-
-		Assert.AreEqual (1, _turnOrder.GetTurnOrderSlotNumber (_unit2));
-		Assert.AreEqual (2, _turnOrder.GetTurnOrderSlotNumber (_unit1));
-	}
-
-	[Test]
 	public void TestGetTurnOrderLength() {
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit1);
+		_turnOrder.AddUnit (_unit1);
+		_turnOrder.AddUnit (_unit1);
+		_turnOrder.AddUnit (_unit1);
+		_turnOrder.AddUnit (_unit1);
 
 		Assert.AreEqual (4, _turnOrder.GetTurnOrderLength ());
 	}
 
 	[Test]
 	public void TestGetAllUnits() {
-		_turnOrder.AddCombatant (_unit1);
-		_turnOrder.AddCombatant (_unit2);
+		_turnOrder.AddUnit (_unit1);
+		_turnOrder.AddUnit (_unit2);
 
 		List<Unit> units = _turnOrder.GetAllUnits ();
 

@@ -180,6 +180,7 @@ public class TileMap : MonoBehaviour {
 				// If a unit is on the tile, instantiate them and move them to that tile
 				if (currentTileData.UnitResRef != null) {
 					Unit unit = Unit.InstantiateUnit (currentTileData.UnitResRef);
+					unit.gameObject.name = unit.GetFullName ();
 					currentTileData.Unit = unit;
 					unit.Tile = currentTileData.Position;
 

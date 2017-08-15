@@ -6,6 +6,7 @@ public class TurnOrderController : MonoBehaviour {
 
 	public Image imagePrefab;
 
+	[SerializeField] private Sprite _statusImage;
 	[SerializeField] private TurnOrderUnitStatus _turnOrderUnitStatus;
 
 	private GameObject _panel;
@@ -28,16 +29,15 @@ public class TurnOrderController : MonoBehaviour {
 		print ("TurnOrderController.Awake()");
 		_turnOrder = new TurnOrder ();
 		_panel = this.gameObject;
-	}		
+	}
 
 	/// <summary>
 	/// Adds the units to the GUI and underlying data structure.
 	/// </summary>
 	/// <param name="units">Units.</param>
 	public void AddUnits(List<Unit> units) {
-		foreach (Ally unit in units) {
+		foreach (Ally unit in units)
 			AddUnit (unit);
-		}
 	}
 
 	/// <summary>
@@ -45,17 +45,32 @@ public class TurnOrderController : MonoBehaviour {
 	/// If the unit had been previously persistently highlighted, apply it when added back.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	public void AddUnit(Unit unit) {
+	/// <param name="orderIndex">Ordering Index.</param>
+	public void AddUnit(Unit unit, int orderIndex = -1) {
+
+		// Instantiate a new Image game object
 		Image unitImage = Instantiate (imagePrefab);
 		unitImage.sprite = unit.GetPortrait();
 		unitImage.transform.SetParent (_panel.transform, false);
+		unitImage.name = unit.GetFullName ();
 
+		// Associate unit with image
 		TurnOrderImage turnOrderImage = unitImage.GetComponent<TurnOrderImage> ();
 		turnOrderImage.Unit = unit;
 
+		// Add image to list
 		_images.Add (unit, turnOrderImage);
-		_turnOrder.AddCombatant (unit);
 
+		// Add unit to turn order list
+		if (orderIndex <= -1)
+			_turnOrder.AddUnit (unit);
+		else {
+			_turnOrder.InsertUnit (unit, orderIndex);
+			if (unit.HasDeferredAbility)
+				_images [unit].ActivateStatusImage (_statusImage);
+		}
+
+		// Handle highlighting
 		if (_highlightOnSpawn)
 			turnOrderImage.Highlight (false);
 		_highlightOnSpawn = false;
@@ -72,7 +87,20 @@ public class TurnOrderController : MonoBehaviour {
 		_targetedImages.Remove (_images[unit]);
 		Destroy (_images [unit]);
 		_images.Remove (unit);
-		_turnOrder.RemoveCombatant (unit);
+		_turnOrder.RemoveUnit (unit);
+	}
+
+	/// <summary>
+	/// Reinserts the unit at the specified index.
+	/// If index == -1, unit will be added at the end.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="orderIndex">Order index.</param>
+	public void ReinsertUnit(Unit unit, int orderIndex = -1) {
+		RemoveUnit (unit);
+		AddUnit(unit, orderIndex);
+		if (orderIndex > -1)
+			ReorderIndexes ();
 	}
 
 	/// <summary>
@@ -86,12 +114,13 @@ public class TurnOrderController : MonoBehaviour {
 	/// <summary>
 	/// Finishs the turn and moves the unit on the GUI and the underlying data structure.
 	/// If the unit had been previously persistently highlighted, add flag so it's reapplied.
+	/// If index == -1, unit will be added at the end.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	public void FinishTurn(Unit unit) {
+	/// <param name="orderIndex">Order index.</param>
+	public void FinishTurn(Unit unit, int orderIndex = -1) {
 		_highlightOnSpawn = unit.TileHighlighter.IsPersistent;
-		RemoveUnit (unit);
-		AddUnit (unit);
+		ReinsertUnit (unit, orderIndex);
 	}
 
 	/// <summary>
@@ -103,7 +132,7 @@ public class TurnOrderController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Highlights the unit image.
+	/// Highlights the unit image with a "selected" color.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void HighlightUnitImage(Unit unit) {
@@ -113,7 +142,7 @@ public class TurnOrderController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Highlights the unit image.
+	/// Highlights the unit image with a "targeted" color.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void TargetUnitImage(Unit unit) {
@@ -123,7 +152,7 @@ public class TurnOrderController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Des the highlight unit image.
+	/// De-highlight unit image.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void DeHighlightUnitImage() {
@@ -154,5 +183,14 @@ public class TurnOrderController : MonoBehaviour {
 	/// </summary>
 	public void DeactivateTurnOrderUnitStatus() {
 		_turnOrderUnitStatus.Deactivate ();
+	}
+
+	/// <summary>
+	/// Reorders the indexes for display purposes.
+	/// </summary>
+	private void ReorderIndexes() {
+		List<Unit> units = _turnOrder.GetAllUnits ();
+		for (int index = 0; index < units.Count; index++)
+			_images [units [index]].transform.SetSiblingIndex (index);
 	}
 }

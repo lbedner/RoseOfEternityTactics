@@ -96,6 +96,14 @@ public class AbilityCollection {
 	}
 
 	/// <summary>
+	/// Gets the defend ability.
+	/// </summary>
+	/// <returns>The defend ability.</returns>
+	public Ability GetDefendAbility() {
+		return GetAbilitiesByType (Ability.AbilityType.DEFEND) [0];
+	}
+
+	/// <summary>
 	/// Gets the magic abilities.
 	/// </summary>
 	/// <returns>The magic abilities.</returns>

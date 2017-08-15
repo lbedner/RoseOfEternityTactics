@@ -27,6 +27,7 @@ public class Head2HeadPanelController : MonoBehaviour {
 	public Text crititalHitPercent;
 
 	public Text usedAbility;
+	public Text turns;
 
 	public void Load(Unit unit, Head2HeadState head2HeadState) {
 		int currentLevel = (int) unit.GetLevelAttribute ().CurrentValue;
@@ -66,6 +67,14 @@ public class Head2HeadPanelController : MonoBehaviour {
 			if (ability != null) {
 				finalDamage = new Calculator (unit).Action.DamageToTargets [0];				
 				usedAbility.text = ability.Name;
+
+				// Determine text to display for ability "turns"
+				string turnsText = "";
+				if (ability.Turns <= 0)
+					turnsText = "Instant";
+				else
+					turnsText = string.Format ("{0} Turns", ability.Turns);
+				turns.text = string.Format ("Execution Time: {0}", turnsText);
 			}
 			else {
 				finalDamage = damageAttribute * currentLevel;
@@ -79,6 +88,7 @@ public class Head2HeadPanelController : MonoBehaviour {
 			attackHitPercent.text = "";
 			crititalHitPercent.text = "";
 			usedAbility.text = "";
+			turns.text = "";
 		}
 	}
 }

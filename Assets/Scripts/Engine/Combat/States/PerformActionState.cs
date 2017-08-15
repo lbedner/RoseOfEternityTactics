@@ -16,52 +16,67 @@ public class PerformActionState : CombatState {
 	/// <param name="attacker">Attacker.</param>
 	 protected IEnumerator PerformAbilityAction(Unit attacker) {
 
-		// Lower music so you can hear ability SFX
-		yield return StartCoroutine(controller.MusicController.LowerCombatMusic ());
+		// If the ability takes more than x turns, defer the ability action
+		if (!attacker.HasDeferredAbility && attacker.Action.Ability.Turns > 1) {
+			attacker.HasDeferredAbility = true;
+			yield return null;
+			controller.ChangeState<TurnOverState> ();
+		}
+		else {
 
-		// Show name of ability being used
-		attacker.TileHighlighter.RemoveHighlightedTiles ();
-		Ability ability = attacker.Action.Ability;
-		controller.ActionController.Activate (ability.Name);
-		yield return new WaitForSeconds (0.5f);
+			// Reset bool flags depending on if a deferred attack is being executed
+			if (attacker.HasDeferredAbility) {
+				attacker.HasDeferredAbility = false;
+				attacker.HasExecutedDeferredAbility = true;
+			}
 
-		// Spawn VFX on all targets
-		List<Unit> targets = attacker.Action.Targets;
-		List<GameObject> vfxGameObjects = ApplyVFXToTargets(ability.VFXPath, targets);
+			// Lower music so you can hear ability SFX
+			yield return StartCoroutine (controller.MusicController.LowerCombatMusic ());
 
-		// Start Combat
-		Combat combat = new Combat (controller.HighlightedUnit);
-		combat.Begin ();
+			// Show name of ability being used
+			attacker.TileHighlighter.RemoveHighlightedTiles ();
+			Ability ability = attacker.Action.Ability;
+			controller.ActionController.Activate (ability.Name);
+			yield return new WaitForSeconds (0.5f);
 
-		// Play weapon sound effect
-		Ability.AbilityType abilityType = attacker.Action.Ability.Type;
-		if (abilityType == Ability.AbilityType.ATTACK || abilityType == Ability.AbilityType.TALENT)
-			attacker.PlayWeaponSound();
+			// Spawn VFX on all targets
+			List<Unit> targets = attacker.Action.Targets;
+			List<GameObject> vfxGameObjects = ApplyVFXToTargets (ability.VFXPath, targets);
 
-		// Show target(s) being damaged
-		ShowDamagedColorOnTargets (true, targets);
+			// Start Combat
+			Combat combat = new Combat (controller.HighlightedUnit);
+			combat.Begin ();
 
-		// Play animations
-		yield return StartCoroutine (PlayAttackAnimations (attacker, targets[0].Tile));
-		yield return new WaitForSeconds (1.0f);
+			// Play weapon sound effect
+			Ability.AbilityType abilityType = attacker.Action.Ability.Type;
+			if (abilityType == Ability.AbilityType.ATTACK || abilityType == Ability.AbilityType.TALENT)
+				attacker.PlayWeaponSound ();
 
-		// Stop showing target(s) being damaged
-		ShowDamagedColorOnTargets (false, targets);
+			// Show target(s) being damaged
+			ShowDamagedColorOnTargets (true, targets);
 
-		// Show XP floaty text
-		ShowXPFloatyText(combat.GetAwardedExperience(), attacker);
-		yield return new WaitForSeconds (1.0f);
+			// Play animations
+			yield return StartCoroutine (PlayAttackAnimations (attacker, targets [0].Tile));
+			yield return new WaitForSeconds (1.0f);
 
-		// Destroy VFX's
-		DestroyVFX(vfxGameObjects);
+			// Stop showing target(s) being damaged
+			ShowDamagedColorOnTargets (false, targets);
 
-		// Remove name of used ability
-		controller.ActionController.Deactivate ();
+			// Show XP floaty text
+			ShowXPFloatyText (combat.GetAwardedExperience (), attacker);
+			yield return new WaitForSeconds (1.0f);
 
-		// Bring music back up to normal volume
-		yield return StartCoroutine(controller.MusicController.RaiseCombatMusic ());
+			// Destroy VFX's
+			DestroyVFX (vfxGameObjects);
 
-		controller.ChangeState<TurnOverState> ();
+			// Remove name of used ability
+			controller.ActionController.Deactivate ();
+
+			// Bring music back up to normal volume
+			yield return StartCoroutine (controller.MusicController.RaiseCombatMusic ());
+
+			controller.ChangeState<TurnOverState> ();
+		}
 	}
 
 	/// <summary>
@@ -73,7 +88,7 @@ public class PerformActionState : CombatState {
 	protected IEnumerator PlayAttackAnimations(Unit attacker, Vector3 direction) {
 
 		Ability.AbilityType abilityType = attacker.Action.Ability.Type;
-		if (abilityType == Ability.AbilityType.ATTACK) {
+		if (abilityType == Ability.AbilityType.ATTACK || attacker.Action.Ability.Id == AbilityConstants.MEASURED_STRIKE) {
 
 			//determine which way to swing, dependent on the direction the enemy is
 			Unit.TileDirection facing = attacker.GetDirectionToTarget (direction);

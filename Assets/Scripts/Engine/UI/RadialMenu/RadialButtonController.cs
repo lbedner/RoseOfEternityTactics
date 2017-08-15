@@ -92,7 +92,10 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 		if (!_isScalingOut && !_isScalingIn) {
 			_highlightOutline.enabled = true;
 			StartCoroutine (ScaleButtonUp ());
-			_radioButtonContainer.RadialMenuController.PopupText = Name;
+			if (Ability != null)
+				_radioButtonContainer.RadialMenuController.ActivateRadialButtonToolTip (Ability);
+			else
+				_radioButtonContainer.RadialMenuController.PopupText = Name;
 		}
 	}
 
@@ -104,7 +107,10 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 		if (!_isScalingOut && !_isScalingIn) {
 			_highlightOutline.enabled = false;
 			StartCoroutine (ScaleButtonDown ());
-			_radioButtonContainer.RadialMenuController.PopupText = "";
+			if (Ability != null)
+				_radioButtonContainer.RadialMenuController.DeactivateRadialButtonToolTip ();
+			else
+				_radioButtonContainer.RadialMenuController.PopupText = "";
 		}
 	}
 

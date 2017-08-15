@@ -11,6 +11,7 @@ public class Ability {
 
 	public enum AbilityType {
 		ATTACK,
+		DEFEND,
 		MAGIC,
 		TALENT,
 		LAST_RESORT,

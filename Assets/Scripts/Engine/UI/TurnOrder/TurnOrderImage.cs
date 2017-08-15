@@ -2,10 +2,13 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 
 using EternalEngine;
 
 public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+
+	[SerializeField] Image _statusImage;
 	
 	private const float TIME_TO_SCALE = 0.125f;
 
@@ -43,7 +46,10 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	public void OnPointerEnter (PointerEventData eventData) {
 
 		// Don't allow events if other UI is up
-		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf && !_combatController.UnitMenuController.IsActive()) {
+		if (!_combatController.MissionObjectivesPanel.activeSelf && 
+			!_combatController.PostCombatStatsPanel.activeSelf && 
+			!_combatController.UnitMenuController.IsActive() &&
+			!_combatController.Head2HeadPanel.activeSelf) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = true;
 				Highlight (true);
@@ -60,7 +66,10 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	public void OnPointerExit (PointerEventData eventData) {
 
 		// Don't allow events if other UI is up
-		if (!_combatController.MissionObjectivesPanel.activeSelf && !_combatController.PostCombatStatsPanel.activeSelf && !_combatController.UnitMenuController.IsActive()) {
+		if (!_combatController.MissionObjectivesPanel.activeSelf &&
+			!_combatController.PostCombatStatsPanel.activeSelf && 
+			!_combatController.UnitMenuController.IsActive() &&
+			!_combatController.Head2HeadPanel.activeSelf) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = false;
 				DeHighlight ();
@@ -94,10 +103,20 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 		Unit.Highlight ();
 		_image.color = Unit.SelectedColor;
 		StartCoroutine(ScaleComponentUp());
-		Unit.TileHighlighter.HighlightTiles (Unit, TileMapUtil.WorldCenteredToTileMap(Unit.transform.position, _tileMap.TileSize));
 
 		if (activateTurnOrderUnitStats)
 			_turnOrderController.ActivateTurnOrderUnitStatus (Unit);
+
+		// If there is a deferred ability, target all units targeted by the ability
+		if (Unit.HasDeferredAbility) {
+			foreach (var unit in Unit.Action.Targets) {
+				_turnOrderController.TargetUnitImage (unit);
+				unit.Highlight ();
+				unit.TileHighlighter.HighlightAttackTile (unit, unit.Tile.x, unit.Tile.z);
+			}
+		}
+		else
+			Unit.TileHighlighter.HighlightTiles (Unit, TileMapUtil.WorldCenteredToTileMap(Unit.transform.position, _tileMap.TileSize));
 	}
 
 	/// <summary>
@@ -117,6 +136,32 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 		StartCoroutine(ScaleComponentDown());
 		Unit.TileHighlighter.RemoveHighlightedTiles ();
 		_turnOrderController.DeactivateTurnOrderUnitStatus ();
+
+		// If there is a deferred ability, un-target all units targeted by ability
+		if (Unit.HasDeferredAbility) {
+			_turnOrderController.UntargetUnitImages();
+			foreach (var unit in Unit.Action.Targets) {
+				unit.Dehighlight ();
+				unit.TileHighlighter.RemoveHighlightedTiles ();
+			}
+		}	
+	}
+
+	/// <summary>
+	/// Activates the status image.
+	/// </summary>
+	/// <param name="sprite">Sprite.</param>
+	public void ActivateStatusImage(Sprite sprite) {
+		_statusImage.sprite = sprite;
+		_statusImage.gameObject.SetActive (true);
+	}
+
+	/// <summary>
+	/// Deactivates the status image.
+	/// </summary>
+	public void DeactivateStatusImage() {
+		_statusImage.sprite = null;
+		_statusImage.gameObject.SetActive(false);
 	}
 
 	/// <summary>

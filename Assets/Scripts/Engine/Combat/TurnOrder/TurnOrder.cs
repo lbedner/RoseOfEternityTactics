@@ -27,15 +27,24 @@ public class TurnOrder {
 	/// Adds the unit.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	public void AddCombatant(Unit unit) {
+	public void AddUnit(Unit unit) {
 		_units.Add(unit);
+	}
+
+	/// <summary>
+	/// Inserts the unit at the specified index.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="orderIndex">Order index.</param>
+	public void InsertUnit(Unit unit, int orderIndex) {
+		_units.Insert (orderIndex, unit);
 	}
 
 	/// <summary>
 	/// Removes the unit.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	public void RemoveCombatant(Unit unit) {
+	public void RemoveUnit(Unit unit) {
 		_units.Remove (unit);
 	}
 
@@ -48,24 +57,6 @@ public class TurnOrder {
 			return _units [0];
 		else
 			return null;
-	}
-
-	/// <summary>
-	/// Gets the turn order slot number for a unit.
-	/// </summary>
-	/// <returns>The turn order slot.</returns>
-	/// <param name="unit">Unit.</param>
-	public int GetTurnOrderSlotNumber (Unit unit) {
-		return (_units.IndexOf (unit)) + 1;
-	}
-
-	/// <summary>
-	/// Finishs the turn for the unit, removing them from the front of the collection and adding them to the back.
-	/// </summary>
-	/// <param name="unit">Unit.</param>
-	public void FinishTurn(Unit unit) {
-		RemoveCombatant(unit);
-		AddCombatant(unit);
 	}
 
 	/// <summary>

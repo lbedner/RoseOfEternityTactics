@@ -38,7 +38,7 @@
       "ToolTip": "Elicit",
       "IconPath": "Prefabs/Icons/Abilities/Talents/elicit",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "DEFAULT",
       "Attributes": {
         "HIT_PERCENT": 90.0,
@@ -54,7 +54,7 @@
       "ToolTip": "Whirlwind Slash",
       "IconPath": "Prefabs/Icons/Abilities/Talents/whirlwind_slash",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "SELF",
       "Attributes": {
         "HIT_PERCENT": 90.0,
@@ -70,7 +70,7 @@
       "ToolTip": "Leaping Slice",
       "IconPath": "Prefabs/Icons/Abilities/Talents/leaping_slice",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "DEFAULT",
       "Attributes": {
         "HIT_PERCENT": 90.0,
@@ -87,7 +87,7 @@
       "IconPath": "Prefabs/Icons/Abilities/Spells/flame",
 	  "VFXPath": "Prefabs/VFX/Spells/flame",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 3.0,
@@ -103,7 +103,7 @@
       "IconPath": "Prefabs/Icons/Abilities/Spells/freeze",
 	  "VFXPath": "Prefabs/VFX/Spells/freeze",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 5.0,
@@ -119,12 +119,24 @@
       "IconPath": "Prefabs/Icons/Abilities/Spells/lightning",
 	  "VFXPath": "Prefabs/VFX/Spells/lightning",
 	  "Cost": 3,
-	  "Turns": 1,
+	  "Turns": 0,
 	  "TargetType": "DEFAULT",
       "Attributes": {
 		"RANGE": 4.0,
 		"AOE_RANGE": 1.0
 	  }
+    },
+    {
+      "Id": 8,
+	  "Type": "DEFEND",
+      "Name": "Defend",
+      "Description": "Defend against any incoming attacks.",
+      "ToolTip": "Defend",
+      "IconPath": "Prefabs/Icons/RadialMenu/defend",
+	  "Cost": 0,
+	  "Turns": 0,
+	  "TargetType": "DEFAULT",
+      "Attributes": {}
     }
   ]
 }

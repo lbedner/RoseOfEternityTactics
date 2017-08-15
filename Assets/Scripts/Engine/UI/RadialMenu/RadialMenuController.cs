@@ -31,11 +31,15 @@ public class RadialMenuController : MonoBehaviour {
 		}
 	};
 
-	public RadialButtonContainer radialButtonContainerPrefab;
 
 	public string PopupText { get { return _popupText.text; } set { _popupText.text = value; } }
 
 	public bool IsRootMenuOpen { get; set; }
+
+	[SerializeField] private RadialButtonContainer _radialButtonContainerPrefab;
+	[SerializeField] private RadialButtonToolTipController _radialButtonToolTipPrefab;
+
+	private RadialButtonToolTipController _radialButtonToolTipController;
 
 	private Text _popupText;
 
@@ -49,6 +53,7 @@ public class RadialMenuController : MonoBehaviour {
 		_combatController = GameObject.Find ("CombatController").GetComponent<CombatController> ();
 		_unit = _combatController.HighlightedUnit;
 		_popupText = GetComponentInChildren<Text> ();
+		_radialButtonToolTipController = InstantiateRadialButtonToolTipController ();
 		InstantiateRootButtons();
 	}
 
@@ -234,6 +239,21 @@ public class RadialMenuController : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Activates the radial button tool tip.
+	/// </summary>
+	/// <param name="ability">Ability.</param>
+	public void ActivateRadialButtonToolTip(Ability ability) {
+		_radialButtonToolTipController.Activate (ability);
+	}
+
+	/// <summary>
+	/// Deactivates the radial button tool tip.
+	/// </summary>
+	public void DeactivateRadialButtonToolTip() {
+		_radialButtonToolTipController.Deactivate ();
+	}
+
+	/// <summary>
 	/// Instantiates the button.
 	/// </summary>
 	/// <returns>The button.</returns>
@@ -296,8 +316,18 @@ public class RadialMenuController : MonoBehaviour {
 	/// </summary>
 	/// <returns>The radial button container.</returns>
 	private RadialButtonContainer InstantiateRadialButtonContainer() {
-		RadialButtonContainer instance = Instantiate(radialButtonContainerPrefab);
+		RadialButtonContainer instance = Instantiate(_radialButtonContainerPrefab);
 		instance.Initialize (this);
+		return instance;
+	}
+
+	/// <summary>
+	/// Instantiates the radial button tool tip controller.
+	/// </summary>
+	/// <returns>The radial button tool tip controller.</returns>
+	private RadialButtonToolTipController InstantiateRadialButtonToolTipController() {
+		RadialButtonToolTipController instance = Instantiate (_radialButtonToolTipPrefab);
+		instance.Initialize(this);
 		return instance;
 	}
 

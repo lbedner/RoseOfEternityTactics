@@ -61,6 +61,9 @@ public abstract class Unit : MonoBehaviour {
 
 	public TileHighlighter TileHighlighter { get; private set; }
 
+	public bool HasDeferredAbility { get; set; }
+	public bool HasExecutedDeferredAbility { get; set; }
+
 	/// <summary>
 	/// Gets or sets the tile.
 	/// </summary>

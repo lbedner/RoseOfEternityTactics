@@ -3,6 +3,7 @@
 /// </summary>
 public class AbilityConstants {
 	public const int ATTACK = 0;
+	public const int DEFEND = 8;
 
 	//** TALENTS **//
 

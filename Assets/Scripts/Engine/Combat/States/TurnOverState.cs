@@ -52,7 +52,19 @@ public class TurnOverState : CombatState {
 			Unit unit = controller.HighlightedUnit;
 			unit.DeactivateCombatMenu ();
 			unit.TileHighlighter.RemoveHighlightedTiles ();
-			turnOrderController.FinishTurn (unit);
+
+			// Determine where the unit will be placed in the turn order
+			int orderIndex = -1;
+			if (!unit.HasExecutedDeferredAbility) {
+				Action action = unit.Action;
+				if (action != null && action.Ability != null && action.Ability.Turns > 0)
+					orderIndex = action.Ability.Turns;
+			}
+			else
+				unit.HasExecutedDeferredAbility = false;
+			turnOrderController.FinishTurn (unit, orderIndex);
+
+			controller.HighlightedUnit.Unselect ();
 			controller.HighlightedUnit = null;
 			
 			controller.ChangeState<InitTurnState> ();

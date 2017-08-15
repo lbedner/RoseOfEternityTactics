@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 public class TurnOrderUnitStatus : MonoBehaviour {
 	[SerializeField] private Text _name;
-	[SerializeField] private Text _speed;
+	[SerializeField] private Text _action;
 	[SerializeField] private Text _target;
 	[SerializeField] private Text _targetedBy;
 	[SerializeField] private Text _status;
@@ -15,10 +17,18 @@ public class TurnOrderUnitStatus : MonoBehaviour {
 	/// <param name="unit">Unit.</param>
 	public void Activate(Unit unit) {
 		_name.text = unit.GetFullName ();
-		_speed.text = string.Format("Speed: {0}", unit.GetSpeedAttribute ().CurrentValue.ToString ());
-		_target.text = "Target: N/A";
-		_targetedBy.text = "Targeted By: N/A";
-		_status.text = "Status: N/A";
+
+		// Target(s) if applicable
+		if (unit.HasDeferredAbility) {
+			_action.text = string.Format ("Action: {0}", unit.Action.Ability.Name);
+			_target.text = string.Format ("Target: {0}", GetTargetsAsString (unit.Action.Targets));
+		}
+		else {
+			_action.text = "Action: None";
+			_target.text = "Target: None";
+		}
+		_targetedBy.text = "Targeted By: None";
+		_status.text = "Status: None";
 
 		gameObject.SetActive (true);
 	}
@@ -28,5 +38,17 @@ public class TurnOrderUnitStatus : MonoBehaviour {
 	/// </summary>
 	public void Deactivate() {
 		gameObject.SetActive (false);
+	}
+
+	/// <summary>
+	/// Gets the targets as string.
+	/// </summary>
+	/// <returns>The targets as string.</returns>
+	/// <param name="targets">Targets.</param>
+	private string GetTargetsAsString(List<Unit> targets) {
+		StringBuilder sb = new StringBuilder ();
+		foreach (var target in targets)
+			sb.Append (string.Format("{0} | ", target.GetFullName()));
+		return sb.ToString ();	
 	}
 }

@@ -115,6 +115,14 @@ public class TileHighlighter {
 	}
 
 	/// <summary>
+	/// Highlights the attack tile.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	public void HighlightAttackTile(Unit unit, float x, float z)  {
+		HighlightTile (unit, unit.Tile.x, unit.Tile.z, unit.AttackTileColor, HighlightType.ATTACK, true);
+	}
+
+	/// <summary>
 	/// Highlights the movement tiles for a unit.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
@@ -133,6 +141,55 @@ public class TileHighlighter {
 
 		// Highlight the rest of the tiles within range
 		HighlightTilesInRange (unit, x, z, range, tileColor, highlightType);
+	}
+
+	/// <summary>
+	/// Instantiates the movement hightlight cube.
+	/// </summary>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	/// <param name="movementTileColor">Movement tile color.</param>
+	/// <param name="isMovement">Determines if this is a tile you can move to.</param>
+	private void HighlightTile(Unit unit, float x, float z, Color movementTileColor, HighlightType highlightType, bool skip_checks = false) {
+
+		// Don't try to overwrite an existing highlighted area
+		Vector3 key = new Vector3(x, 0, z);
+		if (_movementAttackTiles.ContainsKey (key) || _movementTiles.ContainsKey (key))
+			return;
+
+		// Don't highlight orphaned tile if unit can't get to it
+		if (!skip_checks && IsOrphanedTile (key, highlightType))
+			return;
+
+		// Don't highlight unwalkable areas (i.e. mountains) for movements
+		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt ((int)x, (int)z);
+		if (!skip_checks && highlightType == HighlightType.MOVEMENT) {
+			if (!tileData.IsWalkable || (tileData.Unit && tileData.Unit != unit))
+				return;
+		}
+		// Don't highlight tiles occupied by allies for attacks
+		else if (!skip_checks && (highlightType == HighlightType.MOVEMENT_ATTACK || highlightType == HighlightType.ATTACK)) {
+			if (tileData.Unit && unit.IsFriendlyUnit(tileData.Unit))
+				return;
+		}
+
+		// Create highlight cube and set the material's color
+		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.TileSize;
+		GameObject hightlightCubeClone = GameObject.Instantiate (_highlightCube.gameObject, vector, Quaternion.identity) as GameObject;
+		hightlightCubeClone.transform.Find ("Cube").gameObject.GetComponent<Renderer> ().material.color = movementTileColor;
+
+		// Add highlight cube to dictionary based off type
+		switch (highlightType) {
+		case HighlightType.MOVEMENT:
+			_movementTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
+			break;
+		case HighlightType.MOVEMENT_ATTACK:
+			_movementAttackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
+			break;
+		case HighlightType.ATTACK:
+			_attackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
+			break;
+		}
 	}
 
 	/// <summary>
@@ -170,55 +227,6 @@ public class TileHighlighter {
 		Dictionary<Vector3, Object> discoveredTiles = _tileDiscoverer.DiscoverTilesInRange ((int) x, (int) z, range);
 		foreach (Vector3 tile in discoveredTiles.Keys)
 			HighlightTile (unit, tile.x, tile.z, tileColor, highlightType);
-	}
-
-	/// <summary>
-	/// Instantiates the movement hightlight cube.
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	/// <param name="movementTileColor">Movement tile color.</param>
-	/// <param name="isMovement">Determines if this is a tile you can move to.</param>
-	private void HighlightTile(Unit unit, float x, float z, Color movementTileColor, HighlightType highlightType) {
-
-		// Don't try to overwrite an existing highlighted area
-		Vector3 key = new Vector3(x, 0, z);
-		if (_movementAttackTiles.ContainsKey (key) || _movementTiles.ContainsKey (key))
-			return;
-
-		// Don't highlight orphaned tile if unit can't get to it
-		if (IsOrphanedTile (key, highlightType))
-			return;
-
-		// Don't highlight unwalkable areas (i.e. mountains) for movements
-		TileData tileData = _tileMap.GetTileMapData ().GetTileDataAt ((int)x, (int)z);
-		if (highlightType == HighlightType.MOVEMENT) {
-			if (!tileData.IsWalkable || (tileData.Unit && tileData.Unit != unit))
-				return;
-		}
-		// Don't highlight tiles occupied by allies for attacks
-		else if (highlightType == HighlightType.MOVEMENT_ATTACK || highlightType == HighlightType.ATTACK) {
-			if (tileData.Unit && unit.IsFriendlyUnit(tileData.Unit))
-				return;
-		}
-
-		// Create highlight cube and set the material's color
-		Vector3 vector = new Vector3 (x, 0, z) * _tileMap.TileSize;
-		GameObject hightlightCubeClone = GameObject.Instantiate (_highlightCube.gameObject, vector, Quaternion.identity) as GameObject;
-		hightlightCubeClone.transform.Find ("Cube").gameObject.GetComponent<Renderer> ().material.color = movementTileColor;
-
-		// Add highlight cube to dictionary based off type
-		switch (highlightType) {
-		case HighlightType.MOVEMENT:
-			_movementTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
-			break;
-		case HighlightType.MOVEMENT_ATTACK:
-			_movementAttackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
-			break;
-		case HighlightType.ATTACK:
-			_attackTiles.Add (new Vector3 (x, 0, z), hightlightCubeClone);
-			break;
-		}
 	}
 
 	/// <summary>

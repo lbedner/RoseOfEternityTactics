@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerState : CombatState {
 
@@ -16,9 +17,8 @@ public class PlayerState : CombatState {
 	/// Adds listeners when the state is entered.
 	/// </summary>
 	public override void Enter() {
-		print ("PlayerState.Enter");
 		base.Enter ();
-		Init ();
+		StartCoroutine(Init ());
 	}
 
 	/// <summary>
@@ -121,7 +121,7 @@ public class PlayerState : CombatState {
 	/// <summary>
 	/// Init this instance.
 	/// </summary>
-	private void Init() {
+	private IEnumerator Init() {
 
 		selectionIcon = controller.SelectionIcon;
 		characterSheetController = controller.CharacterSheetController;
@@ -132,5 +132,12 @@ public class PlayerState : CombatState {
 		tileHighlighter = nextUnitInLine.TileHighlighter;
 
 		controller.ShowCursorAndTileSelector (true);
+
+		// If the unit had a deferred Ability, use that right now
+		if (nextUnitInLine.HasDeferredAbility) {
+			controller.HighlightedUnit = nextUnitInLine;
+			yield return null;
+			controller.ChangeState<PlayerPerformActionState> ();
+		}
 	}
 }
