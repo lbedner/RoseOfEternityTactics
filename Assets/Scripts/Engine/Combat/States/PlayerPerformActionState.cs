@@ -15,7 +15,8 @@ public class PlayerPerformActionState : PerformActionState {
 	private void Init() {
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 		controller.ClearActionTargets ();
-		controller.Head2HeadPanel.SetActive (false);
+		controller.Head2HeadPanel.gameObject.SetActive (false);
+		controller.Head2HeadPanel.ClearPanels ();
 		controller.ShowCursorAndTileSelector (false);
 		controller.SelectionIndicator.ClearIndicators ();
 		StartCoroutine (PerformAbilityAction (controller.HighlightedUnit));

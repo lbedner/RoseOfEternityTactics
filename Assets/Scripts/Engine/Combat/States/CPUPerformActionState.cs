@@ -16,7 +16,7 @@ public class CPUPerformActionState : PerformActionState {
 
 		Unit attacker = controller.HighlightedUnit;
 		Unit defender = attacker.Action.Targets[0];
-		GameObject head2HeadPanel = controller.Head2HeadPanel;
+		GameObject head2HeadPanel = controller.Head2HeadPanel.gameObject;
 		GameObject head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
 
 		// Show head 2 head panel for a bit
@@ -29,6 +29,7 @@ public class CPUPerformActionState : PerformActionState {
 		yield return new WaitForSeconds (2.0f);
 		head2HeadPanel.SetActive (false);
 		head2HeadPanelConfirmation.SetActive (true);
+		controller.Head2HeadPanel.ClearPanels ();
 
 		// Continue performing action
 		controller.ClearActionTargets ();

@@ -90,5 +90,6 @@ public class Head2HeadPanelController : MonoBehaviour {
 			usedAbility.text = "";
 			turns.text = "";
 		}
+		this.gameObject.SetActive (true);
 	}
 }

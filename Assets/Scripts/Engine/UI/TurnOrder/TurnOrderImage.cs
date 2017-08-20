@@ -49,7 +49,7 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 		if (!_combatController.MissionObjectivesPanel.activeSelf && 
 			!_combatController.PostCombatStatsPanel.activeSelf && 
 			!_combatController.UnitMenuController.IsActive() &&
-			!_combatController.Head2HeadPanel.activeSelf) {
+			!_combatController.Head2HeadPanel.gameObject.activeSelf) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = true;
 				Highlight (true);
@@ -69,7 +69,7 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 		if (!_combatController.MissionObjectivesPanel.activeSelf &&
 			!_combatController.PostCombatStatsPanel.activeSelf && 
 			!_combatController.UnitMenuController.IsActive() &&
-			!_combatController.Head2HeadPanel.activeSelf) {
+			!_combatController.Head2HeadPanel.gameObject.activeSelf) {
 			if (!Unit.TileHighlighter.IsPersistent) {
 				_turnOrderController.IsImageHighlighted = false;
 				DeHighlight ();

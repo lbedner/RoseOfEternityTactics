@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UnitActionConfirmationMenuState : CombatState {
 
@@ -58,9 +59,10 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// </summary>
 	/// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
 	private void CancelAction() {
-		controller.Head2HeadPanel.SetActive (false);
+		controller.Head2HeadPanel.gameObject.SetActive (false);
 		controller.HighlightedUnit.ActivateCharacterSheet ();
 		controller.HighlightedUnit.Action.ClearTargets ();
+		controller.Head2HeadPanel.ClearPanels ();
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
@@ -68,10 +70,11 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// Init this instance.
 	/// </summary>
 	private void Init() {
-		if (!controller.Head2HeadPanel.activeInHierarchy) {
-			controller.SourceHead2HeadPanelController.Load (controller.HighlightedUnit, Head2HeadPanelController.Head2HeadState.ATTACKING);
-			controller.TargetHead2HeadPanelController.Load (controller.HighlightedUnit.Action.Targets[0], Head2HeadPanelController.Head2HeadState.DEFENDING);
-			controller.Head2HeadPanel.SetActive (true);
+		if (!controller.Head2HeadPanel.gameObject.activeInHierarchy) {
+			controller.Head2HeadPanel.InstantiateSourceHead2HeadPanel (new List<Unit> {controller.HighlightedUnit});
+			controller.Head2HeadPanel.InstantiateTargetHead2HeadPanel (controller.HighlightedUnit.Action.Targets);
+
+			controller.Head2HeadPanel.gameObject.SetActive (true);
 			controller.HighlightedUnit.DeactivateCharacterSheet ();
 		}		
 	}

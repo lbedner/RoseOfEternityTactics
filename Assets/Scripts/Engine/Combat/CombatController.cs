@@ -23,7 +23,7 @@ public class CombatController : StateMachine {
 	public TileDiscoverer TileDiscoverer { get; private set; }
 
 	public ActionController ActionController { get { return _actionController; } }
-	public GameObject Head2HeadPanel { get { return _head2HeadPanel; } }
+	public Head2HeadRootPanelController Head2HeadPanel { get { return _head2HeadPanel; } }
 	public SelectionIndicator SelectionIndicator { get { return _selectionIndicator; } }
 	public Transform SelectionIcon { get { return _selectionIcon; } }
 	public RawImage FadeOutUIImage { get { return _fadeOutUIImage; } }
@@ -51,7 +51,7 @@ public class CombatController : StateMachine {
 	public RadialButtonContainer PreviousRadialButtonContainer { get; set; }
 
 	[SerializeField] private ActionController _actionController;
-	[SerializeField] private GameObject _head2HeadPanel;
+	[SerializeField] private Head2HeadRootPanelController _head2HeadPanel;
 	[SerializeField] private SelectionIndicator _selectionIndicator;
 	[SerializeField] private Transform _movementHighlightCube;
 	[SerializeField] private RawImage _fadeOutUIImage;
