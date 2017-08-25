@@ -16,8 +16,50 @@ public class PerformActionState : CombatState {
 	/// <param name="attacker">Attacker.</param>
 	 protected IEnumerator PerformAbilityAction(Unit attacker) {
 
+		if (attacker.Action.Item != null) {
+
+			// Lower music so you can hear ability SFX
+			yield return StartCoroutine (controller.MusicController.LowerCombatMusic ());
+
+			// Show name of ability being used
+			attacker.TileHighlighter.RemoveHighlightedTiles ();
+			Item item = attacker.Action.Item;
+			controller.ActionController.Activate (item.Name);
+			yield return new WaitForSeconds (0.5f);
+
+			// Get effects of item
+			List<Effect.EffectDelegate> effects = ConsumableEffectCalculator.GetConsumableEffects(attacker, item);
+			foreach (var effect in effects)
+				effect.Invoke ();
+				
+			attacker.UpdateHealthbar ();
+			PopupTextController.Initialize (attacker.GetCanvas ());
+			//PopupTextController.CreatePopupText (itemEffectValue.ToString (), attacker.transform.position, Color.green);
+			PopupTextController.CreatePopupText ("10", attacker.transform.position, Color.green);
+
+			// Spawn VFX on all targets
+			List<Unit> targets = attacker.Action.Targets;
+			List<GameObject> vfxGameObjects = ApplyVFXToTargets (item.VFXPath, targets);
+
+			yield return new WaitForSeconds (1.0f);
+
+			// Show XP floaty text
+			ShowXPFloatyText (10, attacker);
+			yield return new WaitForSeconds (1.0f);
+
+			// Destroy VFX's
+			DestroyVFX (vfxGameObjects);
+
+			// Remove name of used ability
+			controller.ActionController.Deactivate ();
+
+			// Bring music back up to normal volume
+			yield return StartCoroutine (controller.MusicController.RaiseCombatMusic ());
+
+			controller.ChangeState<TurnOverState> ();
+		}
 		// If the ability takes more than x turns, defer the ability action
-		if (!attacker.HasDeferredAbility && attacker.Action.Ability.Turns > 1) {
+		else if (!attacker.HasDeferredAbility && attacker.Action.Ability.Turns > 1) {
 			attacker.HasDeferredAbility = true;
 			yield return null;
 			controller.ChangeState<TurnOverState> ();

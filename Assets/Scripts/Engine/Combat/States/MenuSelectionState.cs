@@ -21,6 +21,7 @@ public class MenuSelectionState : CombatState {
 		controller.EndTurnButton.onClick.AddListener (OnEndTurnButtonClicked);
 		RadialButtonController.buttonClickEvent += OnButtonClicked;
 		RadialButtonController.abilityButtonClickEvent += OnAbilityButtonClicked;
+		RadialButtonController.itemButtonClickEvent += OnItemButtonClicked;
 		InputController.keyDownEscapeEvent += OnKeyDownEscape;
 	}
 
@@ -32,6 +33,7 @@ public class MenuSelectionState : CombatState {
 		controller.EndTurnButton.onClick.RemoveListener (OnEndTurnButtonClicked);
 		RadialButtonController.buttonClickEvent -= OnButtonClicked;
 		RadialButtonController.abilityButtonClickEvent -= OnAbilityButtonClicked;
+		RadialButtonController.itemButtonClickEvent -= OnItemButtonClicked;
 		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
 	}
 
@@ -75,7 +77,7 @@ public class MenuSelectionState : CombatState {
 	/// </summary>
 	private void OnAttackButtonClicked() {
 		_radialMenuController.gameObject.SetActive (false);
-		controller.HighlightedUnit.Action = new Action ();
+		controller.HighlightedUnit.Action = new Action (Action.ActionType.ABILITY);
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 
@@ -126,8 +128,20 @@ public class MenuSelectionState : CombatState {
 	/// <param name="e">E.</param>
 	private void OnAbilityButtonClicked(object sender, InfoEventArgs<Ability> e) {
 		_radialMenuController.gameObject.SetActive (false);
-		controller.HighlightedUnit.Action = new Action ();
+		controller.HighlightedUnit.Action = new Action (Action.ActionType.ABILITY);
 		controller.HighlightedUnit.Action.Ability = e.info;
+		controller.ChangeState<PlayerTargetSelectionState> ();
+	}
+
+	/// <summary>
+	/// Raises the item button clicked event.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="e">E.</param>
+	private void OnItemButtonClicked(object sender, InfoEventArgs<Item> e) {
+		_radialMenuController.gameObject.SetActive (false);
+		controller.HighlightedUnit.Action = new Action (Action.ActionType.ITEM);
+		controller.HighlightedUnit.Action.Item = e.info;
 		controller.ChangeState<PlayerTargetSelectionState> ();
 	}
 

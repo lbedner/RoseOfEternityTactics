@@ -13,11 +13,15 @@ public class Head2HeadRootPanelController : MonoBehaviour {
 	private List<GameObject> _sourcePanels = new List<GameObject>();
 	private List<GameObject> _targetPanels = new List<GameObject>();
 
+	private Vector3 _sourcePanelStartPosition = Vector3.left;
+	private Vector3 _targetPanelStartPosition = Vector3.left;
+
 	/// <summary>
 	/// Instantiates the source head2 head panel.
 	/// </summary>
 	/// <param name="sources">Sources.</param>
 	public void InstantiateSourceHead2HeadPanel(List<Unit> sources) {
+		CacheRootPanelStartPosition (_sourcePanel, out _sourcePanelStartPosition);
 		InstantiateHead2HeadPanel (_sourceHead2HeadPanelPrefab, sources, Head2HeadPanelController.Head2HeadState.ATTACKING, _sourcePanel);
 	}
 
@@ -26,6 +30,7 @@ public class Head2HeadRootPanelController : MonoBehaviour {
 	/// </summary>
 	/// <param name="targets">Targets.</param>
 	public void InstantiateTargetHead2HeadPanel(List<Unit> targets) {
+		CacheRootPanelStartPosition (_targetPanel, out _targetPanelStartPosition);
 		InstantiateHead2HeadPanel (_targetHead2HeadPanelPrefab, targets, Head2HeadPanelController.Head2HeadState.DEFENDING, _targetPanel);
 	}
 
@@ -40,6 +45,29 @@ public class Head2HeadRootPanelController : MonoBehaviour {
 		foreach (var panel in _targetPanels)
 			Destroy(panel);
 		_targetPanels.Clear();
+
+		ResetCachedRootPanelStartPosition (_sourcePanel, _sourcePanelStartPosition);
+		ResetCachedRootPanelStartPosition (_targetPanel, _targetPanelStartPosition);
+	}
+
+	/// <summary>
+	/// Caches the root panel start position.
+	/// </summary>
+	/// <param name="parentPanel">Parent panel.</param>
+	/// <param name="cachedStartPosition">Cached start position.</param>
+	private void CacheRootPanelStartPosition(GameObject parentPanel, out Vector3 cachedStartPosition) {
+		RectTransform transform = (RectTransform)parentPanel.transform;
+		cachedStartPosition = transform.localPosition;		
+	}
+
+	/// <summary>
+	/// Resets the cached root panel start position.
+	/// </summary>
+	/// <param name="parentPanel">Parent panel.</param>
+	/// <param name="cachedStartPosition">Cached start position.</param>
+	private void ResetCachedRootPanelStartPosition(GameObject parentPanel, Vector3 cachedStartPosition) {
+		RectTransform transform = (RectTransform)parentPanel.transform;
+		transform.localPosition = cachedStartPosition;		
 	}
 
 	/// <summary>

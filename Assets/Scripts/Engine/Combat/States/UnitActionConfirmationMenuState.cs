@@ -72,7 +72,10 @@ public class UnitActionConfirmationMenuState : CombatState {
 	private void Init() {
 		if (!controller.Head2HeadPanel.gameObject.activeInHierarchy) {
 			controller.Head2HeadPanel.InstantiateSourceHead2HeadPanel (new List<Unit> {controller.HighlightedUnit});
-			controller.Head2HeadPanel.InstantiateTargetHead2HeadPanel (controller.HighlightedUnit.Action.Targets);
+
+			// Don't show target UI if target is self
+			if (controller.HighlightedUnit.Action.Targets[0] != controller.HighlightedUnit)
+				controller.Head2HeadPanel.InstantiateTargetHead2HeadPanel (controller.HighlightedUnit.Action.Targets);
 
 			controller.Head2HeadPanel.gameObject.SetActive (true);
 			controller.HighlightedUnit.DeactivateCharacterSheet ();

@@ -40,7 +40,7 @@ public abstract class AI {
 	/// </summary>
 	/// <returns>The action.</returns>
 	public Action GetAction() {
-		Action action = new Action ();
+		Action action = new Action (Action.ActionType.ABILITY);
 
 		Unit target = GetTarget();
 		action.TargetTile = GetTargetTile (target);

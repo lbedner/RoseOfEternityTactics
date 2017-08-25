@@ -5,15 +5,11 @@ using System.Collections.Generic;
 
 public class CombatController : StateMachine { 
 
-	public GameObject flame;
-
 	public CameraController CameraController { get; private set; }
 	public CharacterSheetController CharacterSheetController { get; private set; }
 	public TileMap TileMap { get; private set; }
 	public TurnOrderController TurnOrderController { get; private set; }
 	public MusicController MusicController { get; private set; }
-	public Head2HeadPanelController SourceHead2HeadPanelController { get; private set; }
-	public Head2HeadPanelController TargetHead2HeadPanelController { get; private set; }
 	public UnitMenuController UnitMenuController { get; private set; }
 	public ScreenFader ScreenFader { get; private set; }
 	public TerrainDetailsController TerrainDetailsController { get; private set; }
@@ -78,8 +74,6 @@ public class CombatController : StateMachine {
 		TileMap = gameManager.GetTileMap ();
 		TurnOrderController = gameManager.GetTurnOrderController ();
 		MusicController = gameManager.GetMusicController ();
-		SourceHead2HeadPanelController = gameManager.GetSourceHead2HeadPanelController ();
-		TargetHead2HeadPanelController = gameManager.GetTargetHead2HeadPanelController ();
 		UnitMenuController = gameManager.GetUnitMenuController ();
 		UnitMenuController.Initialize ();
 		ScreenFader = new ScreenFader ();

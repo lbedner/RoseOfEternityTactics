@@ -39,6 +39,7 @@ public class Item {
 	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public ItemType Type { get; private set; }
 	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public InventorySlots.SlotType SlotType { get; private set; }
 	[JsonProperty] [JsonConverter(typeof(StringEnumConverter))] public ItemTier Tier { get; private set; }
+	[JsonProperty] public string VFXPath { get; private set; }
 
 	[JsonIgnore] public Sprite Icon { get; set; }
 	[JsonIgnore] public AudioClip Sound { get; private set; }
@@ -65,8 +66,9 @@ public class Item {
 	/// <param name="slot">Slot.</param>
 	/// <param name="tier">Tier.</param>
 	/// <param name="iconPath">Icon path.</param>
-	public Item(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath) {
-		Init (id, itemType, name, description, toolTip, attributeCollection, slot, tier, iconPath, soundPath);
+	/// <param name="vfxPath">VFX path.</param>
+	public Item(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath, string vfxPath) {
+		Init (id, itemType, name, description, toolTip, attributeCollection, slot, tier, iconPath, soundPath, vfxPath);
 	}
 
 	/// <summary>
@@ -83,9 +85,10 @@ public class Item {
 	/// <param name="tier">Tier.</param>
 	/// <param name="iconPath">Icon path.</param>
 	/// <param name="soundPath">Sound path.</param>
+	/// <param name="vfxPath">VFX path.</param>
 	[JsonConstructor]
-	private Item(int id, ItemType itemType, string name, string description, string toolTip, Dictionary<AttributeEnums.AttributeType, float> attributes, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath) {
-		Init (id, itemType, name, description, toolTip, null, slot, tier, iconPath, soundPath);
+	private Item(int id, ItemType itemType, string name, string description, string toolTip, Dictionary<AttributeEnums.AttributeType, float> attributes, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath, string vfxPath) {
+		Init (id, itemType, name, description, toolTip, null, slot, tier, iconPath, soundPath, vfxPath);
 
 		AttributeCollection globalAttributeCollection = AttributeManager.Instance.GlobalAttributeCollection;
 		if (_attributeCollection == null)
@@ -98,7 +101,7 @@ public class Item {
 	/// </summary>
 	/// <returns>The deep copied instance.</returns>
 	public Item DeepCopy() {
-		return new Item (Id, Type, Name, Description, ToolTip, _attributeCollection, SlotType, Tier, IconPath, SoundPath);
+		return new Item (Id, Type, Name, Description, ToolTip, _attributeCollection, SlotType, Tier, IconPath, SoundPath, VFXPath);
 	}
 
 	/// <summary>
@@ -139,7 +142,8 @@ public class Item {
 	/// <param name="slot">Slot.</param>
 	/// <param name="tier">Tier.</param>
 	/// <param name="iconPath">Icon path.</param>
-	private void Init(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath) {
+	/// <param name="vfxPath">VFX path.</param>
+	private void Init(int id, ItemType itemType, string name, string description, string toolTip, AttributeCollection attributeCollection, InventorySlots.SlotType slot, ItemTier tier, string iconPath, string soundPath, string vfxPath) {
 		Id = id;
 		Type = itemType;
 		Name = name;
@@ -154,6 +158,7 @@ public class Item {
 		Icon = Resources.Load<Sprite> (IconPath);
 		SoundPath = soundPath;
 		Sound = Resources.Load<AudioClip> (SoundPath);
+		VFXPath = vfxPath;
 	}
 
 	/// <summary>

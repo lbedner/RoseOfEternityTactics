@@ -8,6 +8,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 
 	public static event EventHandler<InfoEventArgs<RadialButtonType>> buttonClickEvent;
 	public static event EventHandler<InfoEventArgs<Ability>> abilityButtonClickEvent;
+	public static event EventHandler<InfoEventArgs<Item>> itemButtonClickEvent;
 
 	public enum RadialButtonType {
 		ATTACK,
@@ -26,6 +27,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 	public RadialButtonType Type { get; private set; }
 	public string Name { get; private set; }
 	public Ability Ability { get; set; }
+	public Item Item { get; set; }
 
 	private static RadialButtonContainer _radioButtonContainer;
 
@@ -77,10 +79,12 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 			_radioButtonContainer.RadialMenuController.PopupText = "";
 
 			// Send different events based upon the type of button that is clicked
-			if (Ability == null)
-				buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
-			else
+			if (Type == RadialButtonType.ABILITY_USE || Type == RadialButtonType.ATTACK)
 				abilityButtonClickEvent (this, new InfoEventArgs<Ability> (Ability));
+			else if (Type == RadialButtonType.ITEM_USE)
+				itemButtonClickEvent (this, new InfoEventArgs<Item> (Item));
+			else if (Ability == null)
+				buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
 		}
 	}
 

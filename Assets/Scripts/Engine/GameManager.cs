@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private CameraController _cameraController;
 	[SerializeField] private TurnOrderController _turnOrderController;
 	[SerializeField] private MusicController _musicController;
-	[SerializeField] private Head2HeadPanelController _sourceHead2HeadPanelController;
-	[SerializeField] private Head2HeadPanelController _targetHead2HeadPanelController;
 	[SerializeField] private UnitMenuController _unitMenuController;
 	[SerializeField] private CharacterSheetController _characterSheetController;
 	[SerializeField] private CombatMenuController _combatMenuController;
@@ -84,18 +82,6 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <returns>The music controller.</returns>
 	public MusicController GetMusicController() {return _musicController;}
-
-	/// <summary>
-	/// Gets the source head2 head panel controller.
-	/// </summary>
-	/// <returns>The source head2 head panel controller.</returns>
-	public Head2HeadPanelController GetSourceHead2HeadPanelController() {return _sourceHead2HeadPanelController;}
-
-	/// <summary>
-	/// Gets the target head2 head panel controller.
-	/// </summary>
-	/// <returns>The source head2 head panel controller.</returns>
-	public Head2HeadPanelController GetTargetHead2HeadPanelController() {return _targetHead2HeadPanelController;}
 
 	/// <summary>
 	/// Gets the unit menu controller.

@@ -5,7 +5,7 @@ public class ExperienceManager {
 
 	private const int BASE_AMOUNT = 10;
 
-	private const int KILLING_BLOW_MODIFIER = 3;
+	private const int KILLING_BLOW_MODIFIER = 2;
 
 	/// <summary>
 	/// Awards the combat experience.

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CPUPerformActionState : PerformActionState {
 
@@ -20,8 +21,8 @@ public class CPUPerformActionState : PerformActionState {
 		GameObject head2HeadPanelConfirmation = head2HeadPanel.transform.Find ("Confirmation").gameObject;
 
 		// Show head 2 head panel for a bit
-		controller.SourceHead2HeadPanelController.Load (attacker, Head2HeadPanelController.Head2HeadState.ATTACKING);
-		controller.TargetHead2HeadPanelController.Load (defender, Head2HeadPanelController.Head2HeadState.DEFENDING);
+		controller.Head2HeadPanel.InstantiateSourceHead2HeadPanel (new List<Unit> { attacker });
+		controller.Head2HeadPanel.InstantiateTargetHead2HeadPanel (new List<Unit> { defender });
 		attacker.DeactivateCharacterSheet ();
 		head2HeadPanelConfirmation.SetActive (false);
 		head2HeadPanel.SetActive (true);

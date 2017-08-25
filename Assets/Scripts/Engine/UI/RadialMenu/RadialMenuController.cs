@@ -148,6 +148,7 @@ public class RadialMenuController : MonoBehaviour {
 		for (int index = 0; index < items.Count; index++) {
 			Item item = items [index];
 			RadialButtonController button = InstantiateButton (radialButtonContainer, numberOfButtons, index, item.IconPath, RadialButtonController.RadialButtonType.ITEM_USE, item.Name);
+			button.Item = item;
 			radialButtonContainer.Add (button);
 		}
 		RadialButtonController cancelButton = InstantiateCancelButton (radialButtonContainer, numberOfButtons, items.Count, _combatOptions [4]);

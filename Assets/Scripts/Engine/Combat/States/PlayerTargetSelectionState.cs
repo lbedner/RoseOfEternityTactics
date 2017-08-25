@@ -13,7 +13,7 @@ public class PlayerTargetSelectionState : PlayerState {
 	/// Adds listeners when the state is entered.
 	/// </summary>
 	public override void Enter() {
-		print ("PlayerSelectedState.Enter");
+		print ("PlayerTargetSelectionState.Enter");
 		base.Enter ();
 		Init ();
 	}
@@ -24,7 +24,7 @@ public class PlayerTargetSelectionState : PlayerState {
 	/// <param name="sender">Sender.</param>
 	/// <param name="e">E.</param>
 	protected override void OnMove(object sender, InfoEventArgs<Vector3> e) {
-		if (controller.UnitMenuController.IsActive () || controller.HighlightedUnit.Action.Ability.TargetType == Ability.TargetTypeEnum.SELF)
+		if (controller.UnitMenuController.IsActive() || controller.HighlightedUnit.Action.IsSelfOnly())
 			return;
 		HandleCursorOver ();
 	}
@@ -94,13 +94,18 @@ public class PlayerTargetSelectionState : PlayerState {
 
 		// Determine the selection indicator based on action
 		Ability ability = controller.HighlightedUnit.Action.Ability;
+		Item item = controller.HighlightedUnit.Action.Item;
 		if (ability != null && ability.Id != AbilityConstants.ATTACK) {
 
 			// Get AOE Range
-			_aoeRange = ability.GetAOERange();
+			_aoeRange = controller.HighlightedUnit.Action.GetAOERange(controller.HighlightedUnit);
 
 			// Get Range
-			_range = ability.GetRange();			
+			_range = controller.HighlightedUnit.Action.GetRange(controller.HighlightedUnit);
+		}
+		else if (item != null) {
+			_range = (int) item.GetAttributeCollection ().Get (AttributeEnums.AttributeType.RANGE).CurrentValue;
+			controller.HighlightedUnit.Action.Targets = new List<Unit> () {controller.HighlightedUnit};
 		}
 		else
 			_range = controller.HighlightedUnit.GetWeaponRange ();
@@ -112,7 +117,8 @@ public class PlayerTargetSelectionState : PlayerState {
 		controller.ShowTileSelector (true);
 		tileHighlighter.HighlightAttackTiles (controller.HighlightedUnit, _range);
 
-		if (controller.HighlightedUnit.Action.Ability.TargetType == Ability.TargetTypeEnum.SELF) {
+		// If action is self only, there will be now cursor events, but we still need to highlight tiles/units
+		if (controller.HighlightedUnit.Action.IsSelfOnly()) {
 
 			TileData tileData = controller.TileMap.GetTileMapData ().GetTileDataAt (controller.HighlightedUnit.Tile);
 			ProcessTilesInRange (tileData);

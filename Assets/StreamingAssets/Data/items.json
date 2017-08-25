@@ -15,7 +15,7 @@
         "HIT_PERCENT": 90.0,
         "CRITICAL_CHANCE": 10.0,
 		"RANGE": 1.0,
-		"AOE_RANGE": 1.0
+		"AOE_RANGE": 0.0
       }
     },
     {
@@ -33,7 +33,7 @@
         "HIT_PERCENT": 100.0,
         "CRITICAL_CHANCE": 25.0,
 		"RANGE": 1.0,
-		"AOE_RANGE": 1.0
+		"AOE_RANGE": 0.0
       }
     },
     {
@@ -51,7 +51,7 @@
         "HIT_PERCENT": 70.0,
         "CRITICAL_CHANCE": 20.0,
 		"RANGE": 2.0,
-		"AOE_RANGE": 1.0
+		"AOE_RANGE": 0.0
       }
     },
     {
@@ -69,7 +69,7 @@
         "HIT_PERCENT": 100.0,
         "CRITICAL_CHANCE": 5.0,
 		"RANGE": 3.0,
-		"AOE_RANGE": 1.0
+		"AOE_RANGE": 0.0
       }
     },
     {
@@ -137,7 +137,11 @@
       "IconPath": "Prefabs/Icons/Items/Tonics/fleetness_tonic",
       "SlotType": "CONSUMABLE",
       "Tier": "TIER_2",
-      "Attributes": {}
+	  "VFXPath": "Prefabs/VFX/Spells/regeneration",
+      "Attributes": {
+		"RANGE": 0.0,
+		"AOE_RANGE": 0.0
+      }
     },
     {
       "Id": 9,
@@ -215,7 +219,11 @@
       "IconPath": "Prefabs/Icons/Items/Tonics/robustness_tonic_1",
       "SlotType": "CONSUMABLE",
       "Tier": "TIER_1",
-      "Attributes": {}
+	  "VFXPath": "Prefabs/VFX/Spells/regeneration",
+      "Attributes": {
+		"RANGE": 0.0,
+		"AOE_RANGE": 0.0
+      }
     },
     {
       "Id": 15,

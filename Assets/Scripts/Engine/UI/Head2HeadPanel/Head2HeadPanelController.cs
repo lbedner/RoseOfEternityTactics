@@ -64,6 +64,7 @@ public class Head2HeadPanelController : MonoBehaviour {
 
 			int finalDamage = 0;
 			Ability ability = unit.Action.Ability;
+			Item item = unit.Action.Item;
 			if (ability != null) {
 				finalDamage = new Calculator (unit).Action.DamageToTargets [0];				
 				usedAbility.text = ability.Name;
@@ -75,14 +76,26 @@ public class Head2HeadPanelController : MonoBehaviour {
 				else
 					turnsText = string.Format ("{0} Turns", ability.Turns);
 				turns.text = string.Format ("Execution Time: {0}", turnsText);
+				damage.text = string.Format ("Dmg: {0}",(finalDamage));
+				attackHitPercent.text = string.Format ("Hit: {0}%", 100);
+				crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
+			}
+			else if (item != null) {
+				//finalDamage = 10;
+				usedAbility.text = item.Name;
+				turns.text = "Instant";
+				damage.text = "";
+				//attackHitPercent.text = string.Format ("Heal: {0}",(finalDamage));
+				attackHitPercent.text = "";
+				crititalHitPercent.text = "";
 			}
 			else {
 				finalDamage = damageAttribute * currentLevel;
 				usedAbility.text = weapon.Name;
+				damage.text = string.Format ("Dmg: {0}",(finalDamage));
+				attackHitPercent.text = string.Format ("Hit: {0}%", 100);
+				crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
 			}
-			damage.text = string.Format ("Dmg: {0}",(finalDamage));
-			attackHitPercent.text = string.Format ("Hit: {0}%", 100);
-			crititalHitPercent.text = string.Format ("Crit: {0}%", criticalChance);
 		} else {
 			damage.text = "";
 			attackHitPercent.text = "";
