@@ -20,52 +20,60 @@ public class TurnOverState : CombatState {
 	/// </summary>
 	private IEnumerator Init() {
 
-		yield return null; 
+		yield return null;
 
-		if (controller.HighlightedUnit.IsPlayerControlled)
-			controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
+		// If there is no highlighted unit, it means no actual unit performed an actual action the past turn
+		if (controller.HighlightedUnit != null) {
 
-		_tileMap = controller.TileMap;
-		TurnOrderController turnOrderController = controller.TurnOrderController;
+			if (controller.HighlightedUnit.IsPlayerControlled)
+				controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
 
-		// Clear out radial button container list
-		controller.RadialButtonContainers.Clear();
+			_tileMap = controller.TileMap;
+			TurnOrderController turnOrderController = controller.TurnOrderController;
 
-		// Clear existing action targets and reset them
-		controller.ClearActionTargets ();
-		controller.TurnOrderController.UntargetUnitImages ();
+			// Clear out radial button container list
+			controller.RadialButtonContainers.Clear ();
 
-		// Destroy Radial Menu on unit that just finished turn if they have it
-		Unit finishedUnit = turnOrderController.GetNextUp();
-		if (finishedUnit.IsPlayerControlled) {
-			RadialMenuController radialMenuController = finishedUnit.GetCanvas ().GetComponentInChildren<RadialMenuController> (true);
-			if (radialMenuController != null)
-				Destroy (radialMenuController.gameObject);
+			// Clear existing action targets and reset them
+			controller.ClearActionTargets ();
+			controller.TurnOrderController.UntargetUnitImages ();
+
+			// Destroy Radial Menu on unit that just finished turn if they have it
+			Unit finishedUnit = turnOrderController.GetNextUp ();
+			if (finishedUnit.IsPlayerControlled) {
+				RadialMenuController radialMenuController = finishedUnit.GetCanvas ().GetComponentInChildren<RadialMenuController> (true);
+				if (radialMenuController != null)
+					Destroy (radialMenuController.gameObject);
+			}
 		}
 
 		// If all objectives are complete, end combat
 		if (_tileMap.AreAllEnemiesDefeated ()) {
+			controller.MusicController.TransitionMusic (true);
 			controller.TurnOrderController.DeHighlightUnitImage ();
 			controller.ChangeState<DisplayPostCombatStatsState> ();
 		}
 		else {
-			Unit unit = controller.HighlightedUnit;
-			unit.DeactivateCombatMenu ();
-			unit.TileHighlighter.RemoveHighlightedTiles ();
 
-			// Determine where the unit will be placed in the turn order
-			int orderIndex = -1;
-			if (!unit.HasExecutedDeferredAbility) {
-				Action action = unit.Action;
-				if (action != null && action.Ability != null && action.Ability.Turns > 0)
-					orderIndex = action.Ability.Turns;
+			// If there is no highlighted unit, it means no actual unit performed an actual action the past turn
+			if (controller.HighlightedUnit != null) {
+				Unit unit = controller.HighlightedUnit;
+				unit.DeactivateCombatMenu ();
+				unit.TileHighlighter.RemoveHighlightedTiles ();
+
+				// Determine where the unit will be placed in the turn order
+				int orderIndex = -1;
+				if (!unit.HasExecutedDeferredAbility) {
+					Action action = unit.Action;
+					if (action != null && action.Ability != null && action.Ability.Turns > 0)
+						orderIndex = action.Ability.Turns;
+				} else
+					unit.HasExecutedDeferredAbility = false;
+				controller.TurnOrderController.FinishTurn (unit, orderIndex);
+
+				controller.HighlightedUnit.Unselect ();
+				controller.HighlightedUnit = null;
 			}
-			else
-				unit.HasExecutedDeferredAbility = false;
-			turnOrderController.FinishTurn (unit, orderIndex);
-
-			controller.HighlightedUnit.Unselect ();
-			controller.HighlightedUnit = null;
 			
 			controller.ChangeState<InitTurnState> ();
 		}

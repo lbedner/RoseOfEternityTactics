@@ -28,34 +28,6 @@ public class Combat {
 
 		// iterate over all defenders
 		foreach (var defender in _defenders) {
-			int damage = GetDamage ();
-
-			// Damage defender
-			defender.GetHitPointsAttribute ().Decrement (damage);
-
-			// Show pop up text for damage
-			PopupTextController.Initialize (defender.GetCanvas ());
-			PopupTextController.CreatePopupText (damage.ToString (), defender.transform.position, Color.red);
-
-			// If dead, then destroy
-			if (defender.GetHitPointsAttribute ().CurrentValue <= 0) {
-
-				// Show death animation
-				GameObject deathAnimation = Resources.Load<GameObject> ("Prefabs/Characters/Animations/Death/DeathParent");
-				GameObject instance = GameObject.Instantiate (deathAnimation);
-				Vector3 defenderPosition = defender.transform.position;
-				instance.transform.position = new Vector3 (defenderPosition.x, 0.1f, defenderPosition.z);
-				GameObject.Destroy (instance, 2.0f);
-
-				// Remove all highlighted tiles
-				defender.TileHighlighter.RemovePersistentHighlightedTiles ();
-
-				GameManager.Instance.GetTurnOrderController ().RemoveUnit (defender);
-				GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (defender.Tile).Unit = null;
-				GameManager.Instance.GetTileMap ().GetEnemies ().Remove (defender);
-				GameObject.Destroy (defender.gameObject, 1.0f);
-			} else
-				defender.UpdateHealthbar ();
 
 			// Give out XP
 			_awardedExperience += manager.AwardCombatExperience (_attacker, defender);

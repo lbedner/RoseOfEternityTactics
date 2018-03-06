@@ -7,6 +7,7 @@ public class TileMapDataManager : MonoBehaviour {
 
 	private const string EE_DATA_FILE    = "Data/TileMaps/0000.json";
 	private const string TILED_DATA_FILE = "Data/TileMaps/Tiled/0000.json";
+	//private const string TILED_DATA_FILE = "Data/TileMaps/Tiled/0000_less_units.json";
 
 	private static TileMapDataManager _instance;
 

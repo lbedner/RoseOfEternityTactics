@@ -1,35 +1,87 @@
-﻿public class Effect
+﻿using UnityEngine;
+
+/// <summary>
+/// Effect type.
+/// </summary>
+public enum EffectType {
+	INSTANT,
+	OVER_TIME,
+	TEMPORARY,
+}
+
+/// <summary>
+/// Effect.
+/// </summary>
+public class Effect
 {
-	/// <summary>
-	/// Effect delegate.
-	/// </summary>
-	public delegate void EffectDelegate();
+
+	protected int _turns;
+	protected EffectType effectType;
 
 	/// <summary>
-	/// Heal effect
+	/// Gets the type.
+	/// </summary>
+	/// <returns>The type.</returns>
+	public virtual EffectType GetEffectType() { return EffectType.INSTANT; }
+
+	/// <summary>
+	/// Applies the effect.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	/// <param name="value">Value.</param>
-	public static void EffectHeal(Unit unit, int value) {
-		unit.GetHitPointsAttribute ().Increment (value);
+	public virtual void ApplyEffect (Unit unit) {
+
+		// If this is a temporary effect, add it to the unit
+		if (_turns > 0)
+			unit.AddEffect (this);
 	}
 
 	/// <summary>
-	/// Damage effect.
+	/// Apples the incremental effect.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	/// <param name="value">Value.</param>
-	public static void EffectDamage(Unit unit, int value) {
-		unit.GetHitPointsAttribute ().Decrement (value);
-	}
+	public virtual void ApplyIncrementalEffect(Unit unit) {}
 
 	/// <summary>
-	/// Speed effect.
+	/// Removes the effect.
 	/// </summary>
 	/// <param name="unit">Unit.</param>
-	/// <param name="value">Value.</param>
-	/// <param name="turns">Turns.</param>
-	public static void EffectSpeed(Unit unit, int value, int turns) {
-		unit.GetSpeedAttribute ().Increment (value);
+	public virtual void RemoveEffect (Unit unit) {}
+
+	/// <summary>
+	/// Gets the display string.
+	/// </summary>
+	/// <returns>The display string.</returns>
+	public virtual string GetDisplayString() { return ""; }
+
+	/// <summary>
+	/// Gets the display string.
+	/// </summary>
+	/// <returns>The display string.</returns>
+	public virtual string GetIncrementalDisplayString() { return ""; }
+
+	/// <summary>
+	/// Gets the color.
+	/// </summary>
+	/// <returns>The color.</returns>
+	public virtual Color GetColor() { return new Color(); }
+
+	/// <summary>
+	/// Gets the VFX path.
+	/// </summary>
+	/// <returns>The VFX path.</returns>
+	public virtual string GetVFXPath() { return ""; }
+
+	/// <summary>
+	/// Decrements the turn.
+	/// </summary>
+	/// <returns>The turn.</returns>
+	/// <param name="unit">Unit.</param>
+	public virtual Effect DecrementTurn (Unit unit) {
+		_turns--;
+		if (_turns <= 0) {
+			RemoveEffect (unit);
+			return this;
+		}
+		return null;
 	}
 }

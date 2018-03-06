@@ -15,10 +15,31 @@ public class UnitMenuAttributesController : MonoBehaviour {
 	/// </summary>
 	/// <param name="unit">Unit.</param>
 	public void SetAttributes(Unit unit) {
-		_strength.text = unit.GetAttribute (AttributeEnums.AttributeType.STRENGTH).CurrentValue.ToString ();
-		_defense.text = unit.GetAttribute (AttributeEnums.AttributeType.DEFENSE).CurrentValue.ToString ();
-		_dexterity.text = unit.GetAttribute (AttributeEnums.AttributeType.DEXTERITY).CurrentValue.ToString ();
-		_speed.text = unit.GetAttribute (AttributeEnums.AttributeType.SPEED).CurrentValue.ToString ();
-		_magic.text = unit.GetAttribute (AttributeEnums.AttributeType.MAGIC).CurrentValue.ToString ();
+		SetAttribute (unit, AttributeEnums.AttributeType.STRENGTH, _strength);
+		SetAttribute (unit, AttributeEnums.AttributeType.DEFENSE, _defense);
+		SetAttribute (unit, AttributeEnums.AttributeType.DEXTERITY, _dexterity);
+		SetAttribute (unit, AttributeEnums.AttributeType.SPEED, _speed);
+		SetAttribute (unit, AttributeEnums.AttributeType.MAGIC, _magic);
+	}
+
+	/// <summary>
+	/// Sets the attribute.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="attributeType">Attribute type.</param>
+	/// <param name="text">Text.</param>
+	private void SetAttribute(Unit unit, AttributeEnums.AttributeType attributeType, Text text) {
+		text.text = unit.GetAttribute (attributeType).CurrentValue.ToString ();
+		text.color = Color.black;
+
+		// If attribute has been raised, make green, if lowered, red, else, do nothing
+		ModifyAttributeEffect effect = unit.GetModifyAttributeEffect(attributeType);
+		if (effect != null) {
+			int effectValue = effect.GetValue ();
+			if (effectValue < 0)
+				text.color = Color.red;
+			else if (effectValue > 0)
+				text.color = Color.green;
+		}
 	}
 }

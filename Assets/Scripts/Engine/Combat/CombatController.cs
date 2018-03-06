@@ -157,5 +157,6 @@ public class CombatController : StateMachine {
 			if (!unit.TileHighlighter.IsPersistent)
 				unit.ShowDamagedColor(false);
 		IntendedActionTargets.Clear ();
+		TurnOrderController.UntargetUnitImages ();
 	}
 }

@@ -16,6 +16,9 @@ public class Action {
 	public List<int> DamageToTargets { get; set; }
 	public ActionType Type { get; private set; }
 
+	private Dictionary<Unit, int> _damageByUnit = new Dictionary<Unit, int>();
+	private Dictionary<Unit, List<Effect>> _effectsByUnit = new Dictionary<Unit, List<Effect>>();
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Action"/> class.
 	/// </summary>
@@ -75,6 +78,40 @@ public class Action {
 			return 0;
 		else
 			return 0;
+	}
+
+	/// <summary>
+	/// Adds the damage by unit.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="damage">Damage.</param>
+	public void AddDamageByUnit(Unit unit, int damage) {
+		_damageByUnit [unit] = damage;
+	}
+
+	/// <summary>
+	/// Gets the damage by unit.
+	/// </summary>
+	/// <returns>The damage by unit.</returns>
+	public Dictionary<Unit, int> GetDamageByUnit() {
+		return _damageByUnit;
+	}
+
+	/// <summary>
+	/// Adds the effects by unit.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	/// <param name="effects">Effects.</param>
+	public void AddEffectsByUnit(Unit unit, List<Effect> effects) {
+		_effectsByUnit [unit] = effects;
+	}
+
+	/// <summary>
+	/// Gets the effects by unit.
+	/// </summary>
+	/// <returns>The effects by unit.</returns>
+	public Dictionary<Unit, List<Effect>> GetEffectsByUnit() {
+		return _effectsByUnit;
 	}
 
 	/// <summary>

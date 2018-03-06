@@ -27,24 +27,19 @@ public class PerformActionState : CombatState {
 			controller.ActionController.Activate (item.Name);
 			yield return new WaitForSeconds (0.5f);
 
-			// Get effects of item
-			List<Effect.EffectDelegate> effects = ConsumableEffectCalculator.GetConsumableEffects(attacker, item);
-			foreach (var effect in effects)
-				effect.Invoke ();
-				
-			attacker.UpdateHealthbar ();
-			PopupTextController.Initialize (attacker.GetCanvas ());
-			//PopupTextController.CreatePopupText (itemEffectValue.ToString (), attacker.transform.position, Color.green);
-			PopupTextController.CreatePopupText ("10", attacker.transform.position, Color.green);
-
 			// Spawn VFX on all targets
 			List<Unit> targets = attacker.Action.Targets;
 			List<GameObject> vfxGameObjects = ApplyVFXToTargets (item.VFXPath, targets);
 
-			yield return new WaitForSeconds (1.0f);
+			// Iterate over all effects, apply them, and if there is something to display, show it
+			PopupTextController.Initialize (attacker.GetCanvas ());
+			List<Effect> effects = ConsumableEffectCalculator.GetConsumableEffects(item);
+			yield return StartCoroutine(ApplyEffects (targets, effects));
+				
+			attacker.UpdateHealthbar ();
 
 			// Show XP floaty text
-			ShowXPFloatyText (10, attacker);
+			ShowXPFloatyText (new ExperienceManager().AwardConsumableExperience(attacker), attacker);
 			yield return new WaitForSeconds (1.0f);
 
 			// Destroy VFX's
@@ -99,6 +94,11 @@ public class PerformActionState : CombatState {
 
 			// Play animations
 			yield return StartCoroutine (PlayAttackAnimations (attacker, targets [0].Tile));
+
+			// Iterate over all effects, apply them, and if there is something to display, show it
+			PopupTextController.Initialize (attacker.GetCanvas ());
+			yield return StartCoroutine(ApplyEffectsByUnit(attacker.Action.GetEffectsByUnit()));
+
 			yield return new WaitForSeconds (1.0f);
 
 			// Stop showing target(s) being damaged
@@ -173,35 +173,6 @@ public class PerformActionState : CombatState {
 	}
 
 	/// <summary>
-	/// Applies the VFX to targets.
-	/// </summary>
-	/// <returns>The VFX to targets.</returns>
-	/// <param name="vfxPath">Vfx path.</param>
-	/// <param name="targets">Targets.</param>
-	private List<GameObject> ApplyVFXToTargets(string vfxPath, List<Unit> targets) {
-		List<GameObject> vfxGameObjects = new List<GameObject> ();
-		if (vfxPath != null && vfxPath != "") {
-			GameObject VFXPrefab = Resources.Load<GameObject> (vfxPath);
-			foreach (var target in targets) {
-				GameObject VFX = Instantiate (VFXPrefab);
-				VFX.transform.SetParent (target.transform, false);
-				VFX.transform.localPosition = new Vector3 (0, 1, 0);
-				vfxGameObjects.Add (VFX);
-			}
-		}
-		return vfxGameObjects;
-	}
-
-	/// <summary>
-	/// Destroys the VFX's.
-	/// </summary>
-	/// <param name="vfxGameObjects">Vfx game objects.</param>
-	private void DestroyVFX(List<GameObject> vfxGameObjects) {
-		foreach (var vfx in vfxGameObjects)
-			Destroy(vfx);		
-	}
-
-	/// <summary>
 	/// Shows the damaged color on targets.
 	/// </summary>
 	/// <param name="showDamagedColor">If set to <c>true</c> show damaged color.</param>
@@ -209,5 +180,66 @@ public class PerformActionState : CombatState {
 	private void ShowDamagedColorOnTargets(bool showDamagedColor, List<Unit> targets) {
 		foreach (var target in targets)
 			target.ShowDamagedColor (showDamagedColor);
+	}
+
+	/// <summary>
+	/// Applies the effects.
+	/// </summary>
+	/// <param name="targets">Targets.</param>
+	/// <param name="effects">Effects.</param>
+	private IEnumerator ApplyEffects(List<Unit> targets, List<Effect> effects) {
+		if (effects.Count <= 0)
+			yield break;
+
+		int index = 0;
+		do {
+			Effect effect = effects [index];
+			bool showedEffectPopupText = false;
+			foreach (var target in targets) {
+				if (target != null) {
+					effect.ApplyEffect (target);
+
+					if (effect.GetDisplayString () != "") {
+						showedEffectPopupText = true;
+						PopupTextController.CreatePopupText (effect.GetDisplayString (), target.transform.position, effect.GetColor ());
+					}
+
+					// If unit is killed after application of effect, handle death
+					target.UpdateHealthbar ();
+					if (target.IsDead())
+						HandleDeath(target);
+				}
+			}
+
+			// If pop up text was shown, wait x seconds so it doesn't stack with other potential ones
+			if (showedEffectPopupText)
+				yield return new WaitForSeconds (0.75f);
+			index++;
+		} while (index < effects.Count);
+
+		yield return null;
+	}
+
+	/// <summary>
+	/// Applies the effects by unit.
+	/// </summary>
+	/// <returns>The effects by unit.</returns>
+	/// <param name="effectsByUnit">Effects by unit.</param>
+	private IEnumerator ApplyEffectsByUnit(Dictionary<Unit, List<Effect>> effectsByUnit) {
+		if (effectsByUnit.Count <= 0)
+			yield break;
+
+		// Iterate over each unit and apply effects
+		List<Coroutine> applyEffectCoroutines = new List<Coroutine> ();
+		foreach (var item in effectsByUnit) {
+			List<Unit> targets = new List<Unit> () { item.Key };
+			applyEffectCoroutines.Add(StartCoroutine(ApplyEffects(targets, item.Value)));
+		}
+
+		// wait for all coroutines to finish before proceeding
+		foreach (var item in applyEffectCoroutines)
+			yield return item;
+		
+		yield return null;
 	}
 }

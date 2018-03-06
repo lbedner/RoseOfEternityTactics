@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -44,6 +45,9 @@ public abstract class Unit : MonoBehaviour {
 	private AttributeCollection _attributeCollection;
 	private Inventory _inventory;
 	private InventorySlots _inventorySlots;
+	private EffectCollection _effectCollection;
+	private ModifyAttributeEffectCollection _modifyAttributeEffectCollection;
+	private List<UnitColorEffect> _unitColorEffects;
 
 	private Canvas _canvas;
 
@@ -51,6 +55,13 @@ public abstract class Unit : MonoBehaviour {
 	private AudioSource _weaponAudioSource;
 
 	[SerializeField] private Transform _movementHighlightCube;
+
+	private Color _currentColor;
+	private bool _changingColors = false;
+	private Coroutine _currentChangingColorsCoroutine;
+	private Coroutine _currentChangingColorsToCoroutine;
+	private Coroutine _currentChangingColorsFromCoroutine;
+	private bool _highlighted = false;
 
 	public UnitData UnitData { get; set; }
 	public string ResRef { get; private set; }
@@ -70,12 +81,24 @@ public abstract class Unit : MonoBehaviour {
 	/// <value>The tile.</value>
 	public Vector3 Tile { get; set; }
 
-	// Use this for initialization
+	public Color DefaultColor { get { return Color.white; } }
+
+	// Implement these in children classes
+	public abstract Color MovementTileColor { get; }
+	public abstract bool IsPlayerControlled { get; }
+	public abstract Color SelectedColor { get; }
+
+	/// <summary>
+	/// Start this instance.
+	/// </summary>
 	void Start () {
 		Transform unitSpriteTransform = transform.Find ("Sprite(Clone)");
 		_unitAnimationController = unitSpriteTransform.GetComponent<UnitAnimationController> ();
 		_spriteRenderer = unitSpriteTransform.GetComponent<SpriteRenderer> ();
 		_attributeCollection = UnitData.AttributeCollection;
+		_effectCollection = new EffectCollection ();
+		_modifyAttributeEffectCollection = new ModifyAttributeEffectCollection ();
+		_unitColorEffects = new List<UnitColorEffect> ();
 		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.HIT_POINTS);
 		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.ABILITY_POINTS);
 		_inventorySlots = UnitData.InventorySlots;
@@ -89,6 +112,18 @@ public abstract class Unit : MonoBehaviour {
 
 		_movementAudioSource = gameObject.AddComponent<AudioSource> ();
 		_weaponAudioSource = gameObject.AddComponent<AudioSource> ();
+
+		_currentColor = DefaultColor;
+	}
+
+	/// <summary>
+	/// Update this instance.
+	/// </summary>
+	void Update() {
+		
+		// Show color effects on units if available
+		if (!_highlighted)
+			_currentChangingColorsCoroutine = StartCoroutine(ChangeColors());
 	}
 
 	/// <summary>
@@ -127,13 +162,6 @@ public abstract class Unit : MonoBehaviour {
 		return unit;
 	}
 
-	public Color DefaultColor { get { return Color.white; } }
-
-	// Implement these in children classes
-	public abstract Color MovementTileColor { get; }
-	public abstract bool IsPlayerControlled { get; }
-	public abstract Color SelectedColor { get; }
-
 	/// <summary>
 	/// Gets the full name.
 	/// </summary>
@@ -146,7 +174,13 @@ public abstract class Unit : MonoBehaviour {
 	/// Sets the unit as selected.
 	/// </summary>
 	public void Highlight() {
+
+		// If unit is highlighted, need to stop all coroutines that change colors
+		StopChangeColorCoroutines();
+
+		// Change to highlighted/selected color
 		_spriteRenderer.color = SelectedColor;
+		_highlighted = true;
 	}
 
 	/// <summary>
@@ -154,7 +188,8 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	public void Dehighlight() {
 		if (!TileHighlighter.IsPersistent && _spriteRenderer != null)
-			_spriteRenderer.color = DefaultColor;
+			_spriteRenderer.color = _currentColor;
+		_highlighted = false;
 	}
 
 	/// <summary>
@@ -171,6 +206,66 @@ public abstract class Unit : MonoBehaviour {
 		if (!TileHighlighter.IsPersistent)
 			current_highlight_color_transparency = HIGHTLIGHT_COLOR_TRANSPARENCY;
 	}
+
+	/// <summary>
+	/// Changes the colors of a unit over time.
+	/// </summary>
+	/// <returns>The colors.</returns>
+	public IEnumerator ChangeColors() {
+
+		// Show color effects on units if available
+		float duration = 1.0f;
+		if (!_changingColors && _unitColorEffects.Count > 0) {
+			_changingColors = true;
+			foreach (var effect in _unitColorEffects) {
+				_currentChangingColorsToCoroutine = StartCoroutine (ChangeColor (duration, _currentColor, effect.GetColor ()));
+				yield return _currentChangingColorsToCoroutine;
+			}
+			_currentChangingColorsFromCoroutine = StartCoroutine (ChangeColor (duration, _currentColor, DefaultColor));
+			yield return _currentChangingColorsFromCoroutine;
+			_changingColors = false;
+		}
+	}
+
+	/// <summary>
+	/// Changes the color of a unit over time.
+	/// </summary>
+	/// <returns>The colors.</returns>
+	/// <param name="duration">Duration.</param>
+	/// <param name="oldColor">Old color.</param>
+	/// <param name="newColor">New color.</param>
+	public IEnumerator ChangeColor(float duration, Color oldColor, Color newColor) {
+		float elapsedTime = 0.0f;
+		while (elapsedTime < duration) {
+			_spriteRenderer.color = Color.Lerp (oldColor, newColor, (elapsedTime / duration));
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
+		_currentColor = newColor;
+	}
+
+	/// <summary>
+	/// Stops the change color coroutines.
+	/// </summary>
+	public void StopChangeColorCoroutines() {
+		if (_currentChangingColorsCoroutine != null) {
+			StopCoroutine (_currentChangingColorsCoroutine);
+			_currentChangingColorsCoroutine = null;
+		}
+		if (_currentChangingColorsToCoroutine != null) {
+			StopCoroutine (_currentChangingColorsToCoroutine);
+			_currentChangingColorsToCoroutine = null;
+		}
+		if (_currentChangingColorsFromCoroutine != null) {
+			StopCoroutine (_currentChangingColorsFromCoroutine);
+			_currentChangingColorsFromCoroutine = null;
+		}
+
+		// Reset all color changing fields
+		_currentColor = DefaultColor;
+		_changingColors = false;
+		_spriteRenderer.color = _currentColor;
+	}		
 
 	/// <summary>
 	/// Gets the animation controller.
@@ -369,6 +464,14 @@ public abstract class Unit : MonoBehaviour {
 	// ---------------- ATTRIBUTES WRAPPERS ---------------- //
 
 	/// <summary>
+	/// Determines whether this instance is dead.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is dead; otherwise, <c>false</c>.</returns>
+	public bool IsDead() {
+		return GetHitPointsAttribute ().CurrentValue <= 0;
+	}
+
+	/// <summary>
 	/// Gets the attribute.
 	/// </summary>
 	/// <returns>The attribute.</returns>
@@ -487,6 +590,101 @@ public abstract class Unit : MonoBehaviour {
 				return;
 		}
 		_weaponAudioSource.PlayOneShot (_weaponAudioSource.clip);
+	}
+
+	// ---------------- EFFECTS ---------------- //
+
+	/// <summary>
+	/// Adds the effect.
+	/// </summary>
+	/// <param name="effect">Effect.</param>
+	public void AddEffect(Effect effect) {
+		_effectCollection.Add (effect);
+	}
+
+	/// <summary>
+	/// Removes the effect.
+	/// </summary>
+	/// <param name="effect">Effect.</param>
+	public void RemoveEffect(Effect effect) {
+		_effectCollection.Remove (effect);
+	}
+
+	/// <summary>
+	/// Decrements the effect turns.
+	/// </summary>
+	public void DecrementEffectTurns() {
+		List<Effect> effectsToRemove = new List<Effect> ();
+		List<Effect> effects = _effectCollection.GetEffects ();
+
+		// Decrement turns on all effects
+		foreach (var effect in effects) {
+			Effect effectToRemove = effect.DecrementTurn (this);
+			if (effectToRemove != null)
+				effectsToRemove.Add (effectToRemove);
+		}
+
+		// Remove all effects that have no more returns
+		foreach (var effect in effectsToRemove)
+			RemoveEffect (effect);
+	}
+
+	/// <summary>
+	/// Gets the effects.
+	/// </summary>
+	/// <returns>The effects.</returns>
+	public List<Effect> GetEffects() {
+		return _effectCollection.GetEffects ();
+	}
+
+	/// <summary>
+	/// Adds the modify attribute effect.
+	/// </summary>
+	/// <param name="attributeType">Attribute type.</param>
+	/// <param name="effect">Effect.</param>
+	public void AddModifyAttributeEffect(AttributeEnums.AttributeType attributeType, ModifyAttributeEffect effect) {
+		_modifyAttributeEffectCollection.Add (attributeType, effect);
+	}
+
+	/// <summary>
+	/// Removes the modify attribute effect.
+	/// </summary>
+	/// <param name="attributeType">Attribute type.</param>
+	public void RemoveModifyAttributeEffect(AttributeEnums.AttributeType attributeType) {
+		_modifyAttributeEffectCollection.Remove (attributeType);
+	}
+
+	/// <summary>
+	/// Gets the modify attribute effect.
+	/// </summary>
+	/// <returns>The modify attribute effect.</returns>
+	/// <param name="attributeType">Attribute type.</param>
+	public ModifyAttributeEffect GetModifyAttributeEffect(AttributeEnums.AttributeType attributeType) {
+		return _modifyAttributeEffectCollection.Get (attributeType);
+	}
+
+	/// <summary>
+	/// Modifies the attribute effects to string.
+	/// </summary>
+	/// <returns>The attribute effects to string.</returns>
+	public string ModifyAttributeEffectsToString() {
+		return _modifyAttributeEffectCollection.ToString();
+	}
+
+	/// <summary>
+	/// Adds the unit color effect to a collection.
+	/// </summary>
+	/// <param name="effect">Effect.</param>
+	public void AddUnitColorEffect(UnitColorEffect effect) {
+		_unitColorEffects.Add (effect);
+	}
+
+	/// <summary>
+	/// Removes the unit color effect from the collection.
+	/// </summary>
+	/// <param name="effect">Effect.</param>
+	public void RemoveUnitColorEffect(UnitColorEffect effect) {
+		_unitColorEffects.Remove (effect);
 	}
 
 	/// <summary>

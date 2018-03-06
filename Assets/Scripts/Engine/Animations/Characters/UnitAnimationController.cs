@@ -28,6 +28,22 @@ public class UnitAnimationController : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the speed.
+	/// </summary>
+	/// <returns>The speed.</returns>
+	public float GetSpeed() {
+		return _animator.speed;
+	}
+
+	/// <summary>
+	/// Sets the speed.
+	/// </summary>
+	/// <param name="speed">Speed.</param>
+	public void SetSpeed(float speed) {
+		_animator.speed = speed;
+	}
+
+	/// <summary>
 	/// Start walking north.
 	/// </summary>
 	public void WalkNorth() {

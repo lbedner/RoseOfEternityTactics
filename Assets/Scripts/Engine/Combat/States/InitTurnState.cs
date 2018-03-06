@@ -34,11 +34,63 @@ public class InitTurnState : CombatState {
 		else
 			musicController.TransitionMusic (true);
 
+		// Incremental Effects
+		List<Effect> effects = unit.GetEffects();
+		if (effects != null && effects.Count > 0) {
+
+			// Lower music so you can hear ability SFX
+			yield return StartCoroutine (controller.MusicController.LowerCombatMusic ());
+
+			int index = 0;
+			do {
+				Effect effect = effects [index];
+
+				// Only run this logic with over time effects
+				if (effect.GetEffectType() == EffectType.OVER_TIME) {
+					bool showedEffectPopupText = false;
+					effect.ApplyIncrementalEffect (unit);
+
+					List<GameObject> vfxGameObjects = ApplyVFXToTargets(effect.GetVFXPath(), new List<Unit>() { unit });
+					if (effect.GetDisplayString() != "") {
+						showedEffectPopupText = true;
+						PopupTextController.CreatePopupText (effect.GetIncrementalDisplayString(), unit.transform.position, effect.GetColor());
+					}
+
+					// If unit is killed after application of effect, handle death
+					unit.UpdateHealthbar();
+
+					// If pop up text was shown, wait x seconds so it doesn't stack with other potential ones
+					if (showedEffectPopupText)
+						yield return new WaitForSeconds (2.0f);
+					
+					if (unit.IsDead())
+						HandleDeath(unit);
+
+					DestroyVFX(vfxGameObjects);
+				}
+
+				index++;
+			} while (index < effects.Count && unit != null);
+
+			// Bring music back up to normal volume
+			yield return StartCoroutine (controller.MusicController.RaiseCombatMusic ());
+		}
+
+		// Decrement Effect Turns
+		if (unit != null)
+			unit.DecrementEffectTurns();
+
 		yield return null;
-		if (unit.IsPlayerControlled)
-			controller.ChangeState<PlayerTurnState> ();
-		else
-			controller.ChangeState<CPUTurnState> ();
+
+		// If unit is not available at this point, switch state to next unit in the turn order
+		if (unit == null)
+			controller.ChangeState<TurnOverState> ();
+		else {
+			if (unit.IsPlayerControlled)
+				controller.ChangeState<PlayerTurnState> ();
+			else
+				controller.ChangeState<CPUTurnState> ();
+		}
 	}
 
 	/// <summary>

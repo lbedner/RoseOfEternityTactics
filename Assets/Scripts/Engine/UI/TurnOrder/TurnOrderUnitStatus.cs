@@ -28,7 +28,12 @@ public class TurnOrderUnitStatus : MonoBehaviour {
 			_target.text = "Target: None";
 		}
 		_targetedBy.text = "Targeted By: None";
-		_status.text = "Status: None";
+
+		string effects = unit.ModifyAttributeEffectsToString ();
+		if (effects != "")
+			_status.text = string.Format("Status: {0}", effects);
+		else
+			_status.text = "Status: None";
 
 		gameObject.SetActive (true);
 	}

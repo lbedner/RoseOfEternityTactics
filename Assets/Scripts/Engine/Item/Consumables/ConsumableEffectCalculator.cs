@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class ConsumableEffectCalculator
@@ -7,20 +8,21 @@ public class ConsumableEffectCalculator
 	/// Gets the consumable effects.
 	/// </summary>
 	/// <returns>The consumable effects.</returns>
-	/// <param name="unit">Unit.</param>
 	/// <param name="item">Item.</param>
-	public static List<Effect.EffectDelegate> GetConsumableEffects(Unit unit, Item item) {
-		List<Effect.EffectDelegate> effects = new List<Effect.EffectDelegate> ();
+	public static List<Effect> GetConsumableEffects(Item item) {
+		List<Effect> effects = new List<Effect>();
 		switch (item.Id) {
-			case ConsumableConstants.TONIC_OF_ROBUSTNESS_1:
-			effects.Add(delegate { Effect.EffectHeal(unit, 10); });
-			effects.Add(delegate { Effect.EffectSpeed(unit, 10, 3); });
-				break;
+		case ConsumableConstants.TONIC_OF_ROBUSTNESS_1:
+			effects.Add (new HealEffect (value: 10, color: Color.green));
+			break;
 		case ConsumableConstants.FLEETNESS_TONIC:
-				effects.Add(delegate { Effect.EffectSpeed(unit, 5, 2); });
-				break;				
-			default:
-				break;
+			int turns = 2;
+			effects.Add (new SpeedEffect (value: 5, turns: turns, color: Color.red, incomingEffectType: EffectType.TEMPORARY));
+			effects.Add (new AnimationSpeedEffect(speed: 3, turns: turns));
+			effects.Add (new UnitColorEffect(Color.red, turns: turns));
+			break;				
+		default:
+			break;
 		}
 		return effects;
 	}

@@ -4,6 +4,7 @@ using System.Collections;
 public class ExperienceManager {
 
 	private const int BASE_AMOUNT = 10;
+	private const int CONSUMABLE_BASE_AMOUNT = 5;
 
 	private const int KILLING_BLOW_MODIFIER = 2;
 
@@ -33,6 +34,23 @@ public class ExperienceManager {
 
 		// Increment XP
 		source.GetExperienceAttribute().Increment(xp);
+
+		return xp;
+	}
+
+	/// <summary>
+	/// Awards the consumable experience.
+	/// </summary>
+	/// <returns>The consumable experience.</returns>
+	public int AwardConsumableExperience(Unit source) {
+
+		// Fall back if unit doesn't have experience attribute
+		if (source.GetExperienceAttribute() == null)
+			return 0;
+
+		// Increment XP
+		int xp = CONSUMABLE_BASE_AMOUNT;
+		source.GetExperienceAttribute ().Increment (xp);
 
 		return xp;
 	}
