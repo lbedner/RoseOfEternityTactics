@@ -8653,6 +8653,7 @@ MonoBehaviour:
   imagePrefab: {fileID: 11481082, guid: 7600ac16639ca4cada9526b91d6c6aab, type: 2}
   _statusImage: {fileID: 21300000, guid: 1292fb2f08f4841649c3d463789ac65d, type: 3}
   _turnOrderUnitStatus: {fileID: 274484348}
+  _dividerPrefab: {fileID: 11489788, guid: 83dd23f6c769742b1b48dbaa6eeb0d29, type: 2}
 --- !u!114 &881187211
 MonoBehaviour:
   m_ObjectHideFlags: 0

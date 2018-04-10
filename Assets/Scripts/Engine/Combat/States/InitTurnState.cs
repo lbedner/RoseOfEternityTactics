@@ -22,13 +22,14 @@ public class InitTurnState : CombatState {
 		controller.SelectionIndicator.ClearIndicators ();
 		controller.MissionObjectivesPanel.SetActive (false);
 
+		// Setup turn order
+		TurnOrderController turnOrderController = controller.TurnOrderController;
 		Unit unit = controller.TurnOrderController.GetNextUp ();
 		StartCoroutine (controller.CameraController.MoveToPosition (unit.transform.position));
 		controller.HighlightCharacter (unit);
 
-		TurnOrderController turnOrderController = controller.TurnOrderController;
+		// Determine if music needs to be transitioned higher/lower
 		MusicController musicController = controller.MusicController;
-
 		if (IsEnemyNearby (turnOrderController.GetAllUnits ()))
 			musicController.TransitionMusic (false);
 		else

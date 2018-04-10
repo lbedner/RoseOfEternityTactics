@@ -29,7 +29,9 @@ public abstract class CombatState : State {
 		// Remove all highlighted tiles
 		target.TileHighlighter.RemovePersistentHighlightedTiles ();
 
-		GameManager.Instance.GetTurnOrderController ().RemoveUnit (target);
+		var turnOrders = GameManager.Instance.GetTurnOrderController ().GetTurnOrderCollection ().GetTurnOrders ();
+		foreach (var turnOrder in turnOrders)
+			GameManager.Instance.GetTurnOrderController ().RemoveUnitAndAllImages (target, turnOrder);
 		GameManager.Instance.GetTileMap ().GetTileMapData ().GetTileDataAt (target.Tile).Unit = null;
 		GameManager.Instance.GetTileMap ().GetEnemies ().Remove (target);
 		GameObject.Destroy (target.gameObject);

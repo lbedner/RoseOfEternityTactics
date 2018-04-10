@@ -32,11 +32,12 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	void Awake() {
 		_tileMap = GameManager.Instance.GetTileMap ();
 		_image = GetComponent<Image> ();
-
 		_turnOrderController = GameManager.Instance.GetTurnOrderController ();
 
 		//TODO: Need better solutiuon here. Never reference game objects by name.
 		_combatController = GameObject.Find ("CombatController").GetComponent<CombatController> ();
+		name = string.Format ("{0} - {1}", name, GetInstanceID ());
+		gameObject.name = string.Format ("{0} - {1}", gameObject.name, GetInstanceID ());
 	}
 
 	/// <summary>
@@ -64,7 +65,6 @@ public class TurnOrderImage : MonoBehaviour, IPointerClickHandler, IPointerEnter
 	/// </summary>
 	/// <param name="eventData">Event data.</param>
 	public void OnPointerExit (PointerEventData eventData) {
-
 		// Don't allow events if other UI is up
 		if (!_combatController.MissionObjectivesPanel.activeSelf &&
 			!_combatController.PostCombatStatsPanel.activeSelf && 

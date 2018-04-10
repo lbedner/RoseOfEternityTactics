@@ -63,6 +63,8 @@ public abstract class Unit : MonoBehaviour {
 	private Coroutine _currentChangingColorsFromCoroutine;
 	private bool _highlighted = false;
 
+	private TurnOrderDataCollection _turnOrderDataCollection = new TurnOrderDataCollection();
+
 	public UnitData UnitData { get; set; }
 	public string ResRef { get; private set; }
 
@@ -89,34 +91,6 @@ public abstract class Unit : MonoBehaviour {
 	public abstract Color SelectedColor { get; }
 
 	/// <summary>
-	/// Start this instance.
-	/// </summary>
-	void Start () {
-		Transform unitSpriteTransform = transform.Find ("Sprite(Clone)");
-		_unitAnimationController = unitSpriteTransform.GetComponent<UnitAnimationController> ();
-		_spriteRenderer = unitSpriteTransform.GetComponent<SpriteRenderer> ();
-		_attributeCollection = UnitData.AttributeCollection;
-		_effectCollection = new EffectCollection ();
-		_modifyAttributeEffectCollection = new ModifyAttributeEffectCollection ();
-		_unitColorEffects = new List<UnitColorEffect> ();
-		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.HIT_POINTS);
-		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.ABILITY_POINTS);
-		_inventorySlots = UnitData.InventorySlots;
-		_canvas = transform.Find ("Canvas").GetComponent<Canvas> ();
-		FacedDirection = TileDirection.EAST;
-
-		_characterSheetController = GameManager.Instance.GetCharacterSheetController ();
-		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
-
-		TileHighlighter = new TileHighlighter (GameManager.Instance.GetTileMap (), _movementHighlightCube);
-
-		_movementAudioSource = gameObject.AddComponent<AudioSource> ();
-		_weaponAudioSource = gameObject.AddComponent<AudioSource> ();
-
-		_currentColor = DefaultColor;
-	}
-
-	/// <summary>
 	/// Update this instance.
 	/// </summary>
 	void Update() {
@@ -131,7 +105,6 @@ public abstract class Unit : MonoBehaviour {
 	/// </summary>
 	/// <param name="resRef">Res reference.</param>
 	public static Unit InstantiateUnit(string resRef) {
-
 		// Instantiate base unit and set unit data on it
 		UnitData unitData = UnitDataManager.Instance.GlobalUnitDataCollection.GetByResRef (resRef).DeepCopy();
 		string unitPrefabPath = "Prefabs/Characters/GameObjects/";
@@ -159,7 +132,39 @@ public abstract class Unit : MonoBehaviour {
 		unitSprite.transform.localPosition = new Vector3 (0.0f, 0.1f, z);
 		unitSprite.transform.localEulerAngles = new Vector3 (90.0f, 0.0f, 0.0f);
 
+		unit.Initialize ();
+
 		return unit;
+	}
+
+	/// <summary>
+	/// Start this instance.
+	/// </summary>
+	private void Initialize () {
+		print ("Unit.Initialize");
+		Transform unitSpriteTransform = transform.Find ("Sprite(Clone)");
+		_unitAnimationController = unitSpriteTransform.GetComponent<UnitAnimationController> ();
+		_spriteRenderer = unitSpriteTransform.GetComponent<SpriteRenderer> ();
+		_attributeCollection = UnitData.AttributeCollection;
+		_effectCollection = new EffectCollection ();
+		_modifyAttributeEffectCollection = new ModifyAttributeEffectCollection ();
+		_unitColorEffects = new List<UnitColorEffect> ();
+		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.HIT_POINTS);
+		SetMaximumValueToCurrentValue (AttributeEnums.AttributeType.ABILITY_POINTS);
+		_inventorySlots = UnitData.InventorySlots;
+		_canvas = transform.Find ("Canvas").GetComponent<Canvas> ();
+		FacedDirection = TileDirection.EAST;
+
+		_characterSheetController = GameManager.Instance.GetCharacterSheetController ();
+		_combatMenuController = GameManager.Instance.GetCombatMenuController ();
+
+		TileHighlighter = new TileHighlighter (GameManager.Instance.GetTileMap (), _movementHighlightCube);
+
+		_movementAudioSource = gameObject.AddComponent<AudioSource> ();
+		_weaponAudioSource = gameObject.AddComponent<AudioSource> ();
+
+		_currentColor = DefaultColor;
+
 	}
 
 	/// <summary>
@@ -693,5 +698,113 @@ public abstract class Unit : MonoBehaviour {
 	/// <returns>A <see cref="System.String"/> that represents the current <see cref="Unit"/>.</returns>
 	public override string ToString () {
 		return string.Format("{0} - {1}", GetFullName(), _attributeCollection.ToString ());
+	}
+
+	/// <summary>
+	/// Gets the clock ticks.
+	/// </summary>
+	/// <returns>The clock ticks.</returns>
+	/// <param name="turnOrder">Turn order.</param>
+	public int GetClockTicks(TurnOrder turnOrder) {
+		return _turnOrderDataCollection.Get(turnOrder).ClockTicks;
+	}
+
+	/// <summary>
+	/// Sets the clock ticks.
+	/// </summary>
+	/// <param name="turnOrder">Turn order.</param>
+	/// <param name="clockTicks">Clock ticks.</param>
+	public void SetClockTicks(TurnOrder turnOrder, int clockTicks) {
+		_turnOrderDataCollection.Get(turnOrder).ClockTicks = clockTicks;
+	}
+
+	/// <summary>
+	/// Increments the clock ticks.
+	/// </summary>
+	/// <param name="turnOrder">Turn order.</param>
+	/// <param name="clockTicks">Clock ticks.</param>
+	public void IncrementClockTicks(TurnOrder turnOrder, int clockTicks) {
+		_turnOrderDataCollection.Get(turnOrder).ClockTicks += clockTicks;
+	}
+
+	/// <summary>
+	/// Determines whether this instance is combat ready.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is combat ready; otherwise, <c>false</c>.</returns>
+	/// <param name="turnOrder">Turn order.</param>
+	public bool IsCombatReady(TurnOrder turnOrder) {
+		return _turnOrderDataCollection.Get(turnOrder).IsCombatReady;
+	}
+
+	/// <summary>
+	/// Sets the combat ready flag.
+	/// </summary>
+	/// <param name="turnOrder">Turn order.</param>
+	/// <param name="combatReady">If set to <c>true</c> combat ready.</param>
+	public void SetCombatReady(TurnOrder turnOrder, bool combatReady) {
+		_turnOrderDataCollection.Get(turnOrder).IsCombatReady = combatReady;
+	}
+
+	/// <summary>
+	/// Gets the round appearences.
+	/// </summary>
+	/// <returns>The round appearences.</returns>
+	/// <param name="turnOrder">Turn order.</param>
+	public int GetRoundAppearences(TurnOrder turnOrder) {
+		return _turnOrderDataCollection.Get(turnOrder).RoundAppearences;
+	}
+
+	/// <summary>
+	/// Increments the round appearences.
+	/// </summary>
+	/// <param name="turnOrder">Turn order.</param>
+	public void IncrementRoundAppearences(TurnOrder turnOrder) {
+		_turnOrderDataCollection.Get (turnOrder).RoundAppearences += 1;
+	}
+
+	/// <summary>
+	/// Resets the turn order data.
+	/// </summary>
+	/// <param name="turnOrder">Turn order.</param>
+	public void ResetTurnOrderData(TurnOrder turnOrder) {
+		_turnOrderDataCollection.Get (turnOrder).ClockTicks = 0;
+		_turnOrderDataCollection.Get (turnOrder).IsCombatReady = false;
+		_turnOrderDataCollection.Get (turnOrder).RoundAppearences = 0;
+	}
+
+	/// <summary>
+	/// Turn order data.
+	/// </summary>
+	private class TurnOrderData {
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Unit+TurnOrderData"/> class.
+		/// </summary>
+		public TurnOrderData() {
+			ClockTicks = 0;
+			IsCombatReady = false;
+			RoundAppearences = 0;
+		}
+
+		public int ClockTicks { get; set; }
+		public bool IsCombatReady { get; set; }
+		public int RoundAppearences { get; set; }		
+	}
+
+	/// <summary>
+	/// Turn order data collection.
+	/// </summary>
+	private class TurnOrderDataCollection {
+		private Dictionary<TurnOrder, TurnOrderData> _turnOrderDataCollection = new Dictionary<TurnOrder, TurnOrderData>();
+
+		/// <summary>
+		/// Get the specified turnOrderData.
+		/// </summary>
+		/// <param name="turnOrder">Turn order.</param>
+		public TurnOrderData Get(TurnOrder turnOrder) {
+			if (!_turnOrderDataCollection.ContainsKey (turnOrder))
+				_turnOrderDataCollection [turnOrder] = new TurnOrderData ();
+			return _turnOrderDataCollection [turnOrder];
+		}
 	}
 }

@@ -8,7 +8,7 @@ using EternalEngine;
 
 public class UnitDataManager : MonoBehaviour {
 
-	private const string ITEM_DATA_FILE = "Data/units.json";
+	private const string UNIT_DATA_FILE = "Data/units.json";
 
 	private static UnitDataManager _instance;
 
@@ -30,7 +30,7 @@ public class UnitDataManager : MonoBehaviour {
 	void Awake() {
 		print ("UnitDataManager.Awake()");
 		if (_instance == null) { 
-			string path = Path.Combine (Application.streamingAssetsPath, ITEM_DATA_FILE);
+			string path = Path.Combine (Application.streamingAssetsPath, UNIT_DATA_FILE);
 			string data = File.ReadAllText (path);
 
 			GlobalUnitDataCollection = JsonConvert.DeserializeObject<UnitDataCollection> (data);

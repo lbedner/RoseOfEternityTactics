@@ -142,8 +142,8 @@ public class Calculator {
 		foreach (var item in Action.GetDamageByUnit()) {
 
 			List<Effect> effects = new List<Effect> ();
-			effects.Add (new DamageEffect (value: 5, color: Color.blue));
-			effects.Add (new SpeedEffect (-5, turns: turns, incrementalValue: 0, color: Color.blue, incomingEffectType: EffectType.TEMPORARY, vfxPath: _ability.VFXPath));
+			effects.Add (new DamageEffect (value: item.Value, color: Color.blue));
+			effects.Add (new SpeedEffect (-1, turns: turns, incrementalValue: 0, color: Color.blue, incomingEffectType: EffectType.TEMPORARY, vfxPath: _ability.VFXPath));
 			effects.Add (new AnimationSpeedEffect (0.5f, turns));
 			effects.Add (new UnitColorEffect (Color.blue, turns));
 

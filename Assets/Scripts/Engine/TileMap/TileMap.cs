@@ -185,7 +185,7 @@ public class TileMap : MonoBehaviour {
 					unit.Tile = currentTileData.Position;
 
 					unit.transform.position = TileMapUtil.TileMapToWorldCentered (currentTileData.Position, TileSize);
-					GameManager.Instance.GetTurnOrderController ().AddUnit (unit);
+					GameManager.Instance.GetTurnOrderController().AddUnsortedUnit(unit);
 
 					if (unit.UnitData.Type == UnitData.UnitType.PLAYER)
 						_allies.Add (unit);

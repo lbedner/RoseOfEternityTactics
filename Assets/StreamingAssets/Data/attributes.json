@@ -44,7 +44,7 @@
     "Name": "Speed",
     "ShortName": "SPD",
     "ToolTip": "Determines how often unit can perform an action",
-    "MinimumValue": 0.0,
+    "MinimumValue": 3.0,
     "MaximumValue": 100.0
   },
   "DEXTERITY": {

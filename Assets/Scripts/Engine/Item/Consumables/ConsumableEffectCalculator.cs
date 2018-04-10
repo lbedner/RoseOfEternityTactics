@@ -17,7 +17,7 @@ public class ConsumableEffectCalculator
 			break;
 		case ConsumableConstants.FLEETNESS_TONIC:
 			int turns = 2;
-			effects.Add (new SpeedEffect (value: 5, turns: turns, color: Color.red, incomingEffectType: EffectType.TEMPORARY));
+			effects.Add (new SpeedEffect (value: 1, turns: turns, color: Color.red, incomingEffectType: EffectType.TEMPORARY));
 			effects.Add (new AnimationSpeedEffect(speed: 3, turns: turns));
 			effects.Add (new UnitColorEffect(Color.red, turns: turns));
 			break;				

@@ -22,6 +22,9 @@ public class TurnOverState : CombatState {
 
 		yield return null;
 
+		// Clear all highlighted turn order images
+		controller.TurnOrderController.DeHighlightUnitImage ();
+
 		// If there is no highlighted unit, it means no actual unit performed an actual action the past turn
 		if (controller.HighlightedUnit != null) {
 
@@ -36,7 +39,6 @@ public class TurnOverState : CombatState {
 
 			// Clear existing action targets and reset them
 			controller.ClearActionTargets ();
-			controller.TurnOrderController.UntargetUnitImages ();
 
 			// Destroy Radial Menu on unit that just finished turn if they have it
 			Unit finishedUnit = turnOrderController.GetNextUp ();
@@ -54,7 +56,6 @@ public class TurnOverState : CombatState {
 			controller.ChangeState<DisplayPostCombatStatsState> ();
 		}
 		else {
-
 			// If there is no highlighted unit, it means no actual unit performed an actual action the past turn
 			if (controller.HighlightedUnit != null) {
 				Unit unit = controller.HighlightedUnit;

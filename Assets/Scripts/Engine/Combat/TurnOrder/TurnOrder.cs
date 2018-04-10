@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Holds the turn order of all units participating in battle.
@@ -73,5 +74,36 @@ public class TurnOrder {
 	/// <returns>The all units.</returns>
 	public List<Unit> GetAllUnits() {
 		return _units;
+	}
+
+	/// <summary>
+	/// Contains the specified unit.
+	/// </summary>
+	/// <param name="unit">Unit.</param>
+	public bool Contains(Unit unit) {
+		return _units.Contains (unit);
+	}
+
+	/// <summary>
+	/// Gets the count.
+	/// </summary>
+	/// <returns>The count.</returns>
+	public int GetCount() {
+		return _units.Count;
+	}
+
+	/// <summary>
+	/// Clear this instance.
+	/// </summary>
+	public void Clear() {
+		_units.Clear ();
+	}
+
+	/// <summary>
+	/// Union the two turn orders.
+	/// </summary>
+	/// <param name="b">The blue component.</param>
+	public void Union(TurnOrder b) {
+		_units = _units.Union (b.GetAllUnits ()).ToList();
 	}
 }

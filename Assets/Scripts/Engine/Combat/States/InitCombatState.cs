@@ -9,6 +9,7 @@ public class InitCombatState : CombatState {
 	/// Adds listeners when the state is entered.
 	/// </summary>
 	public override void Enter() {
+		print ("InitCombatState.Enter");
 		base.Enter ();
 		StartCoroutine(Init ());
 	}
@@ -17,6 +18,7 @@ public class InitCombatState : CombatState {
 	/// Init this instance.
 	/// </summary>
 	private IEnumerator Init() {
+		controller.TurnOrderController.SortTurnOrder (controller.TurnOrderController.GetTurnOrderCollection().Primary);
 		controller.ShowCursorAndTileSelector (false);
 		ScreenFader screenFader = controller.ScreenFader;
 		StartCoroutine(screenFader.FadeScreen (controller.FadeOutUIImage, ScreenFader.FadeType.FADE_IN, FADE_IN_DURATION));
