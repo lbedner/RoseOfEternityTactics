@@ -70,18 +70,22 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 	) {
 
 		// Create canvas for slot image
-		Canvas canvas = Instantiate (slotImageCanvasPrefab) as Canvas;
+        Canvas canvas = Instantiate (slotImageCanvasPrefab) as Canvas;
+
+        // Resize canvas
+        //RectTransform rectTransform = (RectTransform)canvas.transform;
+        //rectTransform.sizeDelta = new Vector2(width, height);
 		canvas.transform.SetParent (slotPanel.transform, false);
 
 		// Setup background image
-		Image image = canvas.transform.FindChild("SlotBackgroundImage").GetComponent<Image>();
+		Image image = canvas.transform.Find("SlotBackgroundImage").GetComponent<Image>();
 		image.transform.SetParent (canvas.transform, false);
 		image.color = item.TierColor;
 		RectTransform rectTransform = (RectTransform)image.transform;
 		rectTransform.sizeDelta = new Vector2 (width * 0.85f, height * 0.85f);
 
 		// Setup slot image
-		image = canvas.transform.FindChild("SlotImage").GetComponent<Image>();
+		image = canvas.transform.Find("SlotImage").GetComponent<Image>();
 		image.transform.SetParent (canvas.transform, false);
 
 		// Set icon on slot image
@@ -110,19 +114,19 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 		_unequippedToolTipPanel = uneqippedToolTipPanel;
 		_equippedToolTipPanel = equippedToolTipPanel;
 
-		_unequippedToolTipNameAndTierPanel = _unequippedToolTipPanel.transform.FindChild ("NameAndTier");
-		_unequippedToolTipName = _unequippedToolTipNameAndTierPanel.FindChild("Name").GetComponent<Text> ();
-		_unequippedToolTipTier = _unequippedToolTipNameAndTierPanel.FindChild("Tier").GetComponent<Text> ();
-		_unequippedToolTipDescription = _unequippedToolTipPanel.transform.FindChild ("Description").GetComponent<Text> ();
-		_unequippedToolTipAttribute1 = _unequippedToolTipPanel.transform.FindChild ("Attribute_1").GetComponent<Text> ();
-		_unequippedToolTipAttribute2 = _unequippedToolTipPanel.transform.FindChild ("Attribute_2").GetComponent<Text> ();
+		_unequippedToolTipNameAndTierPanel = _unequippedToolTipPanel.transform.Find ("NameAndTier");
+		_unequippedToolTipName = _unequippedToolTipNameAndTierPanel.Find("Name").GetComponent<Text> ();
+		_unequippedToolTipTier = _unequippedToolTipNameAndTierPanel.Find("Tier").GetComponent<Text> ();
+		_unequippedToolTipDescription = _unequippedToolTipPanel.transform.Find ("Description").GetComponent<Text> ();
+		_unequippedToolTipAttribute1 = _unequippedToolTipPanel.transform.Find ("Attribute_1").GetComponent<Text> ();
+		_unequippedToolTipAttribute2 = _unequippedToolTipPanel.transform.Find ("Attribute_2").GetComponent<Text> ();
 
-		_equippedToolTipNameAndTierPanel = _equippedToolTipPanel.transform.FindChild ("NameAndTier");
-		_equippedToolTipName = _equippedToolTipNameAndTierPanel.FindChild("Name").GetComponent<Text> ();
-		_equippedToolTipTier = _equippedToolTipNameAndTierPanel.FindChild("Tier").GetComponent<Text> ();
-		_equippedToolTipDescription = _equippedToolTipPanel.transform.FindChild ("Description").GetComponent<Text> ();
-		_equippedToolTipAttribute1 = _equippedToolTipPanel.transform.FindChild ("Attribute_1").GetComponent<Text> ();
-		_equippedToolTipAttribute2 = _equippedToolTipPanel.transform.FindChild ("Attribute_2").GetComponent<Text> ();
+		_equippedToolTipNameAndTierPanel = _equippedToolTipPanel.transform.Find ("NameAndTier");
+		_equippedToolTipName = _equippedToolTipNameAndTierPanel.Find("Name").GetComponent<Text> ();
+		_equippedToolTipTier = _equippedToolTipNameAndTierPanel.Find("Tier").GetComponent<Text> ();
+		_equippedToolTipDescription = _equippedToolTipPanel.transform.Find ("Description").GetComponent<Text> ();
+		_equippedToolTipAttribute1 = _equippedToolTipPanel.transform.Find ("Attribute_1").GetComponent<Text> ();
+		_equippedToolTipAttribute2 = _equippedToolTipPanel.transform.Find ("Attribute_2").GetComponent<Text> ();
 
 		_item = item;
 
@@ -455,10 +459,10 @@ public class SlotImageCanvas : MonoBehaviour, IPointerEnterHandler, IPointerExit
 		float width = rectTransform.rect.width;
 
 		//rectTransform = (RectTransform)slotImageCanvas.transform.GetChild (0);
-		rectTransform = (RectTransform) slotImageCanvas.transform.FindChild("SlotImage");
+		rectTransform = (RectTransform) slotImageCanvas.transform.Find("SlotImage");
 		rectTransform.sizeDelta = new Vector2 (width, height);
 
-		rectTransform = (RectTransform) slotImageCanvas.transform.FindChild("SlotBackgroundImage");
+		rectTransform = (RectTransform) slotImageCanvas.transform.Find("SlotBackgroundImage");
 		rectTransform.sizeDelta = new Vector2 (width * 0.85f, height * 0.85f);
 	}
 

@@ -46,7 +46,7 @@ public class EquippedItemsController : MonoBehaviour {
 		foreach (Item item in _inventorySlots.GetInventorySlots().Values) {
 			SetAllAttributesText (item);
 
-			GameObject slotPanel = GetPanelBySlot (item.SlotType).transform.FindChild("Slot").gameObject;
+			GameObject slotPanel = GetPanelBySlot (item.SlotType).transform.Find("Slot").gameObject;
 
 			RectTransform rectTransform = (RectTransform)slotPanel.transform;
 			float height = rectTransform.rect.height;
@@ -140,7 +140,7 @@ public class EquippedItemsController : MonoBehaviour {
 	public Slot GetSlot(InventorySlots.SlotType slot) {
 		GameObject panel = GetPanelBySlot (slot);
 		if (panel != null)
-			return panel.transform.FindChild ("Slot").GetComponent<Slot> ();
+			return panel.transform.Find ("Slot").GetComponent<Slot> ();
 		return null;
 	}
 
@@ -160,7 +160,7 @@ public class EquippedItemsController : MonoBehaviour {
 	/// </summary>
 	/// <param name="slotPanel">Slot panel.</param>
 	private void ClearSlotImage(GameObject slotPanel) {
-		Slot slot = slotPanel.transform.FindChild("Slot").GetComponent<Slot>();
+		Slot slot = slotPanel.transform.Find("Slot").GetComponent<Slot>();
 		if (slot.SlotImage)
 			Destroy (slot.SlotImage);
 	}
@@ -194,7 +194,7 @@ public class EquippedItemsController : MonoBehaviour {
 	/// <param name="panel">Panel.</param>
 	/// <param name="slot">Slot.</param>
 	private bool CanEquip(GameObject panel, InventorySlots.SlotType slotType) {
-		return slotType == panel.transform.FindChild ("Slot").GetComponent<Slot> ().slotType;
+		return slotType == panel.transform.Find ("Slot").GetComponent<Slot> ().slotType;
 	}
 
     /// <summary>
