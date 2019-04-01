@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class NewGameButton : MonoBehaviour, IPointerClickHandler {
 
@@ -49,7 +48,7 @@ public class NewGameButton : MonoBehaviour, IPointerClickHandler {
 			break;
 
 		case GameState.LOAD_NEXT_SCENE:
-			SceneManager.LoadScene ("scene");
+			SceneManager.LoadScene ("ExampleScene");
 			_gameState = GameState.WAITING;
 			break;
 		}			

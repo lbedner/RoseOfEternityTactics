@@ -18,6 +18,6 @@ public class EndCombatState : CombatState {
 	/// </summary>
 	private void Init() {
 		controller.MusicController.StopAllMusic ();
-		SceneManager.LoadScene ("scene_0000");
+		SceneManager.LoadScene ("ExampleScene");
 	}
 }
