@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine.Video;
 
 public class SplashScreenMoviePlayer : MonoBehaviour {
 
@@ -18,22 +18,20 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 
 
 	[SerializeField] private RawImage _fadeOutUIImage;
-	[SerializeField] private AudioSource _audioSource;
+	[SerializeField] private VideoPlayer _videoPlayer;
 
 	private GameState _gameState;
-	private MovieTexture _movieTexture;
 	private ScreenFader _screenFader;
 
 	/// <summary>
 	/// Start this instance.
 	/// </summary>
 	void Start () {
-		Renderer renderer = GetComponent<Renderer> ();
-		_movieTexture = (MovieTexture)renderer.material.mainTexture;
+		
 		_screenFader = new ScreenFader ();
-
-		_movieTexture.Play ();
-		_audioSource.Play ();
+		_fadeOutUIImage.enabled = false;
+		_videoPlayer.loopPointReached += EndReached;
+		_videoPlayer.Play ();
 
 		_gameState = GameState.MOVIE_PLAYING;
 	}
@@ -44,11 +42,6 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 	void Update() {
 
 		switch (_gameState) {
-
-		case GameState.MOVIE_PLAYING:
-			if (!_movieTexture.isPlaying)
-				_gameState = GameState.START_FADE;
-			break;
 
 		case GameState.START_FADE:
 			StartCoroutine (_screenFader.FadeScreen (_fadeOutUIImage, ScreenFader.FadeType.FADE_OUT, 2.0f));
@@ -66,4 +59,9 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 			break;
 		}
 	}
+
+	void EndReached(VideoPlayer vp)
+    {
+        _gameState = GameState.START_FADE;
+    }
 }
