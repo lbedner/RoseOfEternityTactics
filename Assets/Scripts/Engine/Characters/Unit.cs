@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ public abstract class Unit : MonoBehaviour {
 
 	private Canvas _canvas;
 
-	private AudioSource _movementAudioSource;
+	private AudioSource 	_movementAudioSource;
 	private AudioSource _weaponAudioSource;
 
 	[SerializeField] private Transform _movementHighlightCube;
