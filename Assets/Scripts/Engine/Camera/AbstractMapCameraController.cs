@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections;
 
 public class AbstractMapCameraController : MonoBehaviour
 {
-
-    public static event EventHandler<InfoEventArgs<Vector3>> moveEvent;
-
     public float delta = 10.0f;
     public float speed = 3.0f;
 
