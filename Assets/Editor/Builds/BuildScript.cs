@@ -1,4 +1,5 @@
-using System.IO;
+#if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,7 +7,6 @@ using UnityEditor.Build.Reporting;
 
 public class BuildScript : MonoBehaviour
 {
-
     [MenuItem("Builds/Run Builds/Build All")]
     public static void BuildAll()
     {
@@ -42,8 +42,6 @@ public class BuildScript : MonoBehaviour
         }
     }
 
-
-
     private static string[] GetScenes()
     {
         int sceneCount = SceneManager.sceneCountInBuildSettings;
@@ -56,3 +54,5 @@ public class BuildScript : MonoBehaviour
         return scenes;
     }
 }
+
+#endif
