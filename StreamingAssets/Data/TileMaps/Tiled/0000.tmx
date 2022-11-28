@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="37" height="27" tilewidth="72" tileheight="72" nextobjectid="1">
+ <tileset firstgid="1" name="plains" tilewidth="100" tileheight="100" tilecount="62" columns="0">
+  <tile id="0">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass1.png"/>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass2.png"/>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass3.png"/>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass4.png"/>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass5.png"/>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass6.png"/>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass7.png"/>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Grass"/>
+    <property name="TerrainType" value="GRASS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/grass8.png"/>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/ground1.png"/>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/ground2.png"/>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path1.png"/>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path2.png"/>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path3.png"/>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path4.png"/>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path5.png"/>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path6.png"/>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path7.png"/>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path8.png"/>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path9.png"/>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path10.png"/>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path11.png"/>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path12.png"/>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path13.png"/>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path14.png"/>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path15.png"/>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path16.png"/>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path17.png"/>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="-1"/>
+    <property name="IsWalkable" value="true"/>
+    <property name="MovementModifier" value="-2"/>
+    <property name="Name" value="Desert"/>
+    <property name="TerrainType" value="DESERT"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path18.png"/>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path19.png"/>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path20.png"/>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path21.png"/>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path22.png"/>
+  </tile>
+  <tile id="32">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path23.png"/>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path24.png"/>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path25.png"/>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path26.png"/>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path27.png"/>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path28.png"/>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path29.png"/>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path30.png"/>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path31.png"/>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path32.png"/>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path33.png"/>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path34.png"/>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path35.png"/>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path36.png"/>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path37.png"/>
+  </tile>
+  <tile id="47">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path38.png"/>
+  </tile>
+  <tile id="48">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path39.png"/>
+  </tile>
+  <tile id="49">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Mountains"/>
+    <property name="TerrainType" value="MOUNTAINS"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/path40.png"/>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water1.png"/>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water2.png"/>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water3.png"/>
+  </tile>
+  <tile id="55">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water4.png"/>
+  </tile>
+  <tile id="56">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water5.png"/>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water6.png"/>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water7.png"/>
+  </tile>
+  <tile id="59">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water8.png"/>
+  </tile>
+  <tile id="60">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water9.png"/>
+  </tile>
+  <tile id="61">
+   <properties>
+    <property name="AccuracyModifier" value="0"/>
+    <property name="DefenseModifier" value="0"/>
+    <property name="DodgeModifier" value="0"/>
+    <property name="IsWalkable" value="false"/>
+    <property name="MovementModifier" value="0"/>
+    <property name="Name" value="Water"/>
+    <property name="TerrainType" value="WATER"/>
+   </properties>
+   <image width="72" height="72" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/water10.png"/>
+  </tile>
+  <tile id="62">
+   <image width="100" height="100" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/tree.png"/>
+  </tile>
+  <tile id="63">
+   <image width="100" height="100" source="../../../../AssetPacks/RPG_Pack/Terrain_Tiles/tree2.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="65" name="units" tilewidth="100" tileheight="100" tilecount="5" columns="0">
+  <tile id="0">
+   <properties>
+    <property name="UnitResRef" value="aramus"/>
+   </properties>
+   <image width="100" height="100" source="../../../../Pixels/Characters/Allies/Aramus/Walking/Horizontal/1.png"/>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="UnitResRef" value="jarl"/>
+   </properties>
+   <image width="100" height="100" source="../../../../Pixels/Characters/Allies/Jarl/Walking/Horizontal/1.png"/>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="UnitResRef" value="orelle"/>
+   </properties>
+   <image width="100" height="100" source="../../../../Pixels/Characters/Allies/Orelle/Walking/Horizontal/1.png"/>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="UnitResRef" value="sinteres"/>
+   </properties>
+   <image width="100" height="100" source="../../../../Pixels/Characters/Allies/Sinteres/Walking/Horizontal/1.png"/>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="UnitResRef" value="muck_petty"/>
+   </properties>
+   <image width="100" height="100" source="../../../../Pixels/Characters/Enemies/Mucks/PettyMucks/Idle/1.png"/>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="37" height="27">
+  <data encoding="csv">
+39,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,42,
+33,50,48,49,50,48,50,48,50,49,49,48,48,50,48,48,49,48,50,48,49,48,49,48,48,48,49,50,49,50,48,49,49,48,48,50,31,
+33,50,49,50,49,48,48,50,48,48,50,50,49,50,50,50,48,48,48,48,50,50,49,48,48,50,48,49,50,48,50,48,50,50,49,50,31,
+33,48,50,50,50,50,50,50,50,49,49,50,49,50,48,50,48,50,50,48,49,50,48,50,50,34,34,49,50,49,49,50,48,49,48,48,31,
+33,50,50,49,48,48,50,49,49,50,50,49,50,50,34,34,34,34,34,34,34,34,34,34,45,1,3,29,6,6,17,16,20,50,50,50,31,
+33,48,50,49,48,48,50,49,48,50,48,48,49,41,1,2,3,2,3,2,1,3,2,1,1,2,1,37,2,1,6,18,13,50,48,49,31,
+33,48,49,48,49,48,49,48,49,49,48,48,31,2,3,1,3,2,2,1,2,2,1,3,3,3,1,2,2,2,2,5,19,50,48,50,31,
+33,48,49,50,50,49,49,48,50,49,50,34,41,2,1,1,1,1,2,3,2,3,3,1,3,3,2,3,3,3,2,1,5,50,50,48,31,
+33,49,48,48,50,48,49,50,50,49,41,59,55,55,55,55,55,21,16,20,55,55,55,55,62,1,1,35,2,2,2,2,5,50,48,49,31,
+33,49,50,50,50,50,49,49,49,41,59,53,57,57,57,57,57,22,15,23,57,57,57,57,57,55,62,40,42,3,1,3,5,50,49,50,31,
+33,49,49,50,48,48,34,34,41,59,53,61,3,1,1,2,1,3,2,1,1,2,3,2,3,60,57,62,40,30,30,30,30,49,49,48,31,
+33,48,50,49,48,31,59,55,55,53,58,1,3,1,3,1,3,2,2,3,1,2,3,1,2,3,3,56,55,55,55,55,62,33,48,48,31,
+33,49,49,49,48,31,56,53,54,53,58,2,2,2,1,2,2,2,1,3,2,3,2,1,2,3,59,54,54,53,53,54,58,33,49,48,31,
+33,49,50,48,49,31,56,53,54,53,58,1,2,2,1,2,3,1,2,1,3,3,2,1,3,59,53,53,53,53,54,54,58,33,48,48,31,
+33,48,48,48,49,31,56,54,53,53,58,1,3,1,1,1,2,1,21,16,24,1,2,3,1,56,53,54,54,57,57,57,61,33,50,48,31,
+33,50,48,48,49,31,56,54,53,54,53,55,55,55,55,55,55,55,9,9,10,55,55,55,55,53,54,54,61,1,3,3,3,33,49,50,31,
+33,50,49,48,49,31,60,57,57,57,57,57,57,57,57,57,57,57,9,10,9,57,57,57,57,57,57,61,3,2,1,3,17,33,50,48,31,
+33,49,49,48,49,31,3,2,2,2,3,2,1,1,3,1,1,1,22,15,23,1,1,1,2,1,2,3,3,2,1,21,9,33,49,48,31,
+33,50,48,49,49,31,3,2,1,2,3,1,2,1,1,2,2,1,3,2,3,1,1,1,3,2,1,3,1,2,17,10,9,33,48,48,31,
+33,50,49,49,50,31,1,2,1,3,3,3,1,1,2,2,2,2,2,2,2,1,2,3,3,2,3,1,21,16,10,9,10,33,50,48,31,
+33,49,48,48,48,31,2,1,2,2,2,3,1,3,1,1,3,3,2,1,2,3,2,2,3,1,17,16,10,9,10,10,9,33,48,48,31,
+33,48,49,49,50,31,2,3,1,1,3,1,2,3,3,3,1,3,3,1,1,2,2,2,2,21,10,10,9,10,9,9,10,33,48,48,31,
+33,49,49,48,50,50,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,48,48,49,31,
+33,48,50,48,49,49,49,49,49,50,48,50,49,49,50,50,50,50,50,48,50,48,49,48,50,48,49,50,48,49,48,49,49,49,49,49,31,
+33,49,48,50,48,49,50,50,49,48,50,48,50,50,50,50,50,50,49,49,48,50,48,49,50,50,48,49,50,49,48,48,50,49,49,48,31,
+33,49,49,50,49,49,50,48,50,50,48,50,48,49,48,50,50,50,49,49,49,48,48,50,49,50,50,48,49,50,49,50,48,48,50,50,31,
+44,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,41
+</data>
+ </layer>
+ <layer name="Trees" width="37" height="27">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,64,64,63,0,0,0,0,0,0,0,0,0,63,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,63,64,64,64,63,0,0,0,0,0,0,0,64,63,63,63,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,63,64,64,64,63,63,0,0,0,0,0,63,64,64,63,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,63,63,63,63,64,0,0,0,0,0,0,0,63,63,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,63,63,64,63,0,0,0,0,0,0,0,0,0,64,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,64,63,64,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,64,64,64,0,0,0,0,0,
+0,0,0,0,0,0,63,64,63,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,63,63,64,64,63,0,0,0,0,0,0,
+0,0,0,0,0,0,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,64,64,64,63,64,0,0,0,0,0,0,0,
+0,0,0,0,0,0,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,63,64,63,64,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,63,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,64,64,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="Units" width="37" height="27">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,69,0,0,0,0,0,0,69,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,69,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,65,67,0,0,0,69,69,69,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,66,68,0,0,0,0,69,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,69,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
