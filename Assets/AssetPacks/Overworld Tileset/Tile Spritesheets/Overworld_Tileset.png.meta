@@ -1965,16 +1965,16 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -1986,7 +1986,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Server
     maxTextureSize: 2048
@@ -1998,7 +1998,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
@@ -2010,7 +2010,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -15279,8 +15279,8 @@ TextureImporter:
       Overworld_Cave_1: 21300362
       Overworld_CliffBeachEnd_4: 21301020
       Overworld_OceanBeachGrass_5_2: 21300578
-      Overworld_OceanCliff_9_3: 21301056
-      Overworld_River_11_1: 21300186
+      Overworld_OceanBeach_2_3: 21301108
+      Overworld_CliffBeachGrass_0: 21301128
       Overworld_Mountain_34: 21300486
       Overworld_Cliffs_5: 21300814
       Overworld_Tree_1: 21300534
@@ -15291,9 +15291,9 @@ TextureImporter:
       Overworld_OceanBeachGrass_4_2: 21300576
       Overworld_OceanGrass_8_2: 21300870
       Overworld_Trees_9: 21300598
-      Overworld_OceanBeach_2_3: 21301108
-      Overworld_CliffBeachGrass_0: 21301128
+      Overworld_OceanSparkleA_1: 21300590
       Overworld_Path_5: 21300090
+      Overworld_OceanBeachGrass_1_0: 21300558
       Overworld_OceanGrass_3_3: 21300792
       Overworld_River_13_3: 21300130
       Overworld_OceanCliff_13_0: 21300984
@@ -15905,8 +15905,8 @@ TextureImporter:
       Overworld_OceanCliffBeach_6_1: 21300502
       Overworld_River_13_1: 21300114
       Overworld_OceanBeach_4_2: 21301102
-      Overworld_OceanSparkleA_1: 21300590
-      Overworld_OceanBeachGrass_1_0: 21300558
+      Overworld_OceanCliff_9_3: 21301056
+      Overworld_River_11_1: 21300186
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 
