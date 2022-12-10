@@ -870,16 +870,16 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
-    crunchedCompression: 0
+    crunchedCompression: 1
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -891,7 +891,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Server
     maxTextureSize: 2048
@@ -903,7 +903,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
@@ -915,7 +915,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -6537,7 +6537,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      OceanNoTransparency_Tileset_227: 21300442
+      OceanNoTransparency_Tileset_179: 21300352
       OceanNoTransparency_Tileset_259: 21300500
       OceanNoTransparency_Tileset_151: 21300296
       OceanNoTransparency_Tileset_173: 21300340
@@ -6593,23 +6593,23 @@ TextureImporter:
       OceanNoTransparency_Tileset_157: 21300308
       OceanNoTransparency_Tileset_95: 21300190
       OceanNoTransparency_Tileset_128: 21300252
-      OceanNoTransparency_Tileset_136: 21300266
+      OceanNoTransparency_Tileset_177: 21300348
+      OceanNoTransparency_Tileset_223: 21300434
       OceanNoTransparency_Tileset_104: 21300208
+      OceanNoTransparency_Tileset_136: 21300266
       OceanNoTransparency_Tileset_36: 21300072
-      OceanNoTransparency_Tileset_81: 21300162
       OceanNoTransparency_Tileset_46: 21300092
       OceanNoTransparency_Tileset_84: 21300168
+      OceanNoTransparency_Tileset_81: 21300162
       OceanNoTransparency_Tileset_166: 21300326
       OceanNoTransparency_Tileset_154: 21300302
       OceanNoTransparency_Tileset_162: 21300318
-      OceanNoTransparency_Tileset_177: 21300348
       OceanNoTransparency_Tileset_112: 21300224
       OceanNoTransparency_Tileset_146: 21300286
       OceanNoTransparency_Tileset_105: 21300210
       OceanNoTransparency_Tileset_147: 21300288
-      OceanNoTransparency_Tileset_183: 21300358
       OceanNoTransparency_Tileset_188: 21300366
-      OceanNoTransparency_Tileset_223: 21300434
+      OceanNoTransparency_Tileset_183: 21300358
       OceanNoTransparency_Tileset_44: 21300088
       OceanNoTransparency_Tileset_64: 21300128
       OceanNoTransparency_Tileset_260: 21300502
@@ -6655,13 +6655,13 @@ TextureImporter:
       OceanNoTransparency_Tileset_164: 21300322
       OceanNoTransparency_Tileset_31: 21300062
       OceanNoTransparency_Tileset_214: 21300416
-      OceanNoTransparency_Tileset_54: 21300108
+      OceanNoTransparency_Tileset_272: 21300526
       OceanNoTransparency_Tileset_87: 21300174
       OceanNoTransparency_Tileset_108: 21300216
       OceanNoTransparency_Tileset_163: 21300320
+      OceanNoTransparency_Tileset_54: 21300108
       OceanNoTransparency_Tileset_130: 21300256
       OceanNoTransparency_Tileset_219: 21300426
-      OceanNoTransparency_Tileset_272: 21300526
       OceanNoTransparency_Tileset_40: 21300080
       OceanNoTransparency_Tileset_221: 21300430
       OceanNoTransparency_Tileset_120: 21300240
@@ -6677,12 +6677,12 @@ TextureImporter:
       OceanNoTransparency_Tileset_171: 21300336
       OceanNoTransparency_Tileset_148: 21300290
       OceanNoTransparency_Tileset_78: 21300156
-      OceanNoTransparency_Tileset_117: 21300234
-      OceanNoTransparency_Tileset_124: 21300246
       OceanNoTransparency_Tileset_225: 21300438
+      OceanNoTransparency_Tileset_124: 21300246
+      OceanNoTransparency_Tileset_117: 21300234
       OceanNoTransparency_Tileset_88: 21300176
       OceanNoTransparency_Tileset_43: 21300086
-      OceanNoTransparency_Tileset_53: 21300106
+      OceanNoTransparency_Tileset_237: 21300462
       OceanNoTransparency_Tileset_10: 21300020
       OceanNoTransparency_Tileset_215: 21300418
       OceanNoTransparency_Tileset_34: 21300068
@@ -6690,13 +6690,13 @@ TextureImporter:
       OceanNoTransparency_Tileset_144: 21300282
       OceanNoTransparency_Tileset_18: 21300036
       OceanNoTransparency_Tileset_193: 21300374
-      OceanNoTransparency_Tileset_237: 21300462
+      OceanNoTransparency_Tileset_53: 21300106
       OceanNoTransparency_Tileset_5: 21300010
       OceanNoTransparency_Tileset_119: 21300238
       OceanNoTransparency_Tileset_21: 21300042
+      OceanNoTransparency_Tileset_184: 21300360
       OceanNoTransparency_Tileset_76: 21300152
       OceanNoTransparency_Tileset_68: 21300136
-      OceanNoTransparency_Tileset_184: 21300360
       OceanNoTransparency_Tileset_109: 21300218
       OceanNoTransparency_Tileset_222: 21300432
       OceanNoTransparency_Tileset_199: 21300386
@@ -6802,8 +6802,8 @@ TextureImporter:
       OceanNoTransparency_Tileset_110: 21300220
       OceanNoTransparency_Tileset_143: 21300280
       OceanNoTransparency_Tileset_103: 21300206
+      OceanNoTransparency_Tileset_227: 21300442
       OceanNoTransparency_Tileset_101: 21300202
-      OceanNoTransparency_Tileset_179: 21300352
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 
