@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MusicController : MonoBehaviour {
 
-	public AudioSource musicCalm;
-	public AudioSource musicFire;
+	[SerializeField]
+	private AudioSource _musicCalm;
+	[SerializeField]
+	private AudioSource _musicFire;
 
-	private bool isMusicCalm = false;
+	[SerializeField]
+	private List<AudioSource> _playlist;
+
+	private bool _isMusicCalm;
+	private float _raisedVolume;
+	private float _loweredVolume;
 
 	/// <summary>
 	/// Start this instance.
@@ -19,12 +27,13 @@ public class MusicController : MonoBehaviour {
 	/// Initialize the music for the level.
 	/// </summary>
 	public void Initialize() {
-		
-		musicCalm.Play();
-		isMusicCalm = true;
-		if (musicFire != null) {
-			musicFire.Play ();
-			musicFire.volume = 0.0f;
+		_musicCalm = GetRandomPlaylistTrack();
+		_musicCalm.Play();
+		_isMusicCalm = true;
+		_raisedVolume = _musicCalm.volume;
+		if (_musicFire != null) {
+			_musicFire.Play ();
+			_musicFire.volume = 0.0f;
 		}
 	}
 
@@ -32,8 +41,8 @@ public class MusicController : MonoBehaviour {
 	/// Stops all music.
 	/// </summary>
 	public void StopAllMusic() {
-		musicCalm.Stop ();
-		musicFire.Stop ();
+		_musicCalm.Stop ();
+		_musicFire.Stop ();
 	}
 		
 	/// <summary>
@@ -44,21 +53,21 @@ public class MusicController : MonoBehaviour {
 	public void TransitionMusic(bool isTransitionCalm) {
 
 		// Bail out if there is nothing to transition to or already on that type of music
-		if (musicFire == null  || (isTransitionCalm && isMusicCalm) || (!isTransitionCalm && !isMusicCalm))
+		if (_musicFire == null  || (isTransitionCalm && _isMusicCalm) || (!isTransitionCalm && !_isMusicCalm))
 			return;
 		
 		AudioSource audioSourceStop;
 		AudioSource audioSourceStart;
 
-		if (isMusicCalm) {
-			audioSourceStop = musicCalm;
-			audioSourceStart = musicFire;
-			isMusicCalm = false;
+		if (_isMusicCalm) {
+			audioSourceStop = _musicCalm;
+			audioSourceStart = _musicFire;
+			_isMusicCalm = false;
 		}
 		else {
-			audioSourceStop = musicFire;
-			audioSourceStart = musicCalm;
-			isMusicCalm = true;
+			audioSourceStop = _musicFire;
+			audioSourceStart = _musicCalm;
+			_isMusicCalm = true;
 		}
 		StartCoroutine (FadeOutMusic (audioSourceStop));
 		StartCoroutine (FadeInMusic (audioSourceStart));
@@ -68,24 +77,14 @@ public class MusicController : MonoBehaviour {
 	/// Lowers the combat music.
 	/// </summary>
 	public IEnumerator LowerCombatMusic() {
-		AudioSource audioSource;
-		if (isMusicCalm)
-			audioSource = musicCalm;
-		else
-			audioSource = musicFire;
-		yield return StartCoroutine (LowerMusic (audioSource));
+		yield return StartCoroutine (LowerMusic (GetAudioSource()));
 	}
 
 	/// <summary>
 	/// Raises the combat music.
 	/// </summary>
 	public IEnumerator RaiseCombatMusic() {
-		AudioSource audioSource;
-		if (isMusicCalm)
-			audioSource = musicCalm;
-		else
-			audioSource = musicFire;
-		yield return StartCoroutine (RaiseMusic (audioSource));
+		yield return StartCoroutine (RaiseMusic (GetAudioSource()));
 	}
 
 	/// <summary>
@@ -94,13 +93,14 @@ public class MusicController : MonoBehaviour {
 	/// <returns>The music.</returns>
 	/// <param name="audioSource">Audio source.</param>
 	/// <param name="targetVolume">Target volume.</param>
-	private IEnumerator LowerMusic(AudioSource audioSource, float targetVolume = 0.5f) {
-		float currentVolume = 1.0f;
+	private IEnumerator LowerMusic(AudioSource audioSource, float targetVolumePercent = 0.5f) {
+		float currentVolume = _raisedVolume;
+		float targetVolume = currentVolume * targetVolumePercent;
 		while (currentVolume > targetVolume) {
 			currentVolume -= Time.deltaTime;
 			audioSource.volume = currentVolume;
 			yield return null;
-		}				
+		}
 	}
 
 	/// <summary>
@@ -109,9 +109,9 @@ public class MusicController : MonoBehaviour {
 	/// <returns>The music.</returns>
 	/// <param name="audioSource">Audio source.</param>
 	/// <param name="targetVolume">Target volume.</param>
-	private IEnumerator RaiseMusic(AudioSource audioSource, float targetVolume = 1.0f) {
-		float currentVolume = 0.5f;
-		while (currentVolume < targetVolume) {
+	private IEnumerator RaiseMusic(AudioSource audioSource) {
+		float currentVolume = _loweredVolume;
+		while (currentVolume < _raisedVolume) {
 			currentVolume += Time.deltaTime;
 			audioSource.volume = currentVolume;
 			yield return null;
@@ -144,5 +144,21 @@ public class MusicController : MonoBehaviour {
 			audioSource.volume = volume;
 			yield return null;
 		}
+	}
+
+	private AudioSource GetRandomPlaylistTrack() 
+	{
+		int index = Random.Range(0, _playlist.Count);
+		return _playlist[index];
+	}
+
+	private AudioSource GetAudioSource() 
+	{
+		AudioSource audioSource;
+		if (_isMusicCalm)
+			audioSource = _musicCalm;
+		else
+			audioSource = _musicFire;
+		return audioSource;
 	}
 }
