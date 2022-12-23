@@ -54,7 +54,7 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 			break;
 
 		case GameState.LOAD_NEXT_SCENE:
-			SceneManager.LoadScene ("scene_0000");
+			SceneManager.LoadScene ("title_screen");
 			_gameState = GameState.LOADING_SCENE;
 			break;
 		}
