@@ -325,7 +325,7 @@ public class TurnOrderController : MonoBehaviour {
 	/// Adds the divider.
 	/// </summary>
 	private void AddDivider() {
-		_dividerImage.transform.SetParent (_panel.transform, false);
+		_dividerImage.transform.SetParent (_panel.transform, true);
 	}
 
 	/// <summary>
