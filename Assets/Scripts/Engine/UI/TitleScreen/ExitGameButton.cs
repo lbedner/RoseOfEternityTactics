@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
-public class ExitGameButton : MonoBehaviour, IPointerClickHandler {
+public class ExitGameButton : MonoBehaviour
+{
+	[SerializeField] private AudioSource _sfx;
+	private InputAction _selectAction;
 
-	/// <summary>
-	/// Exits the game when the button is clicked.
-	/// </summary>
-	/// <param name="eventData">Event data.</param>
-	public void OnPointerClick (PointerEventData eventData)
-	{
-		#if UNITY_EDITOR
-		UnityEditor.EditorApplication.isPlaying = false;
-		#else
-		Application.Quit ();
-		#endif
+	public void OnSelect()
+ 	{
+		if (EventSystem.current.currentSelectedGameObject == this.gameObject)
+		{
+			_sfx.PlayOneShot(_sfx.clip);
+			#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+			#else
+			Application.Quit ();
+			#endif
+		}
 	}
 }

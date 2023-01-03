@@ -27,16 +27,20 @@ public class WorldMapController : MonoBehaviour
     private ScreenFader _screenFader;
     private bool _isFading = false;
 
+    private void Awake() {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.SetCursor(null,Vector2.zero,CursorMode.Auto);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         foreach (var audioSource in _audioSources)
             audioSource.Play();
-        _fadeImage.gameObject.SetActive(true);
-        _screenFader = new ScreenFader();
-        _gameState = GameState.START_FADE;
+        //_fadeImage.gameObject.SetActive(true);
+        //_screenFader = new ScreenFader();
+        _gameState = GameState.ACTIVATE_SCREEN;
     }
 
     // Update is called once per frame

@@ -25,9 +25,10 @@ public class PlayerState : CombatState {
 	/// Adds the listeners.
 	/// </summary>
 	protected override void AddListeners() {
+		print(string.Format("{0} - AddListeners", this));
 		CameraController.moveEvent += OnMove;
 		InputController.mouseMoveEvent += OnMove;
-		InputController.mouseButtonLeftEvent += OnMouseButtonLeft;
+		InputController.selectEvent += OnMouseButtonLeft;
 		InputController.keyDownInventoryEvent += OnKeyDownInventory;
 		InputController.keyDownEscapeEvent += OnKeyDownEscape;
 	}
@@ -38,7 +39,7 @@ public class PlayerState : CombatState {
 	protected override void RemoveListeners() {
 		CameraController.moveEvent -= OnMove;
 		InputController.mouseMoveEvent -= OnMove;
-		InputController.mouseButtonLeftEvent -= OnMouseButtonLeft;
+		InputController.selectEvent -= OnMouseButtonLeft;
 		InputController.keyDownInventoryEvent -= OnKeyDownInventory;
 		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
 	}

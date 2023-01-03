@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 using System.Collections;
 
@@ -13,6 +14,12 @@ public class CameraController : MonoBehaviour {
 	private float _tileMapSizeZ;
 
 	private Vector3 _oldPosition = Vector3.zero;
+
+	private InputAction _moveAction;
+
+	private void Awake() {
+		_moveAction = GetComponent<PlayerInput>().actions["Move"];
+	}
 
 	/// <summary>
 	/// Init the specified tileMapSizeX and tileMapSizeY.
@@ -30,7 +37,7 @@ public class CameraController : MonoBehaviour {
 	}
 		
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
 		if (!IsMoving) {
 			Vector3 direction = Vector3.zero;
@@ -52,6 +59,9 @@ public class CameraController : MonoBehaviour {
 			if ((screenCoordinates.y <= 0.0f + delta || Input.GetKey(KeyCode.S)) && minBorderCoordinates.z >= 0.0f)
 				direction -= Vector3.forward;
 
+
+            var moveVector = _moveAction.ReadValue<Vector2>();
+			direction = new Vector3(moveVector.x, 0, moveVector.y);
 			transform.position += direction * Time.deltaTime * speed;
 
 			// Send events when position changes

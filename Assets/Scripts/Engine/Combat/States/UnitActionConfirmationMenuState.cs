@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class UnitActionConfirmationMenuState : CombatState {
@@ -20,6 +19,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 		controller.ActionConfirmButton.onClick.AddListener (OnActionConfirmButtonClicked);
 		controller.ActionCancelButton.onClick.AddListener (OnActionCancelButtonClicked);
 		InputController.keyDownEscapeEvent += OnKeyDownEscape;
+		InputController.selectEvent += OnSelect;
 	}
 
 	/// <summary>
@@ -29,6 +29,7 @@ public class UnitActionConfirmationMenuState : CombatState {
 		controller.ActionConfirmButton.onClick.RemoveListener (OnActionConfirmButtonClicked);
 		controller.ActionCancelButton.onClick.RemoveListener (OnActionCancelButtonClicked);
 		InputController.keyDownEscapeEvent -= OnKeyDownEscape;
+		InputController.selectEvent -= OnSelect;
 	}
 
 	/// <summary>
@@ -36,6 +37,12 @@ public class UnitActionConfirmationMenuState : CombatState {
 	/// </summary>
 	private void OnActionConfirmButtonClicked() {
 		controller.ChangeState<PlayerPerformActionState> ();
+	}
+
+	private void OnSelect(object sender, InfoEventArgs<int> e)
+	{
+		print(string.Format("{0}.OnSelect", this));
+		OnActionConfirmButtonClicked();
 	}
 
 	/// <summary>

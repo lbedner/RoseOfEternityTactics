@@ -29,6 +29,7 @@ public class PlayerSelectedState : PlayerState {
 	/// <param name="sender">Sender.</param>
 	/// <param name="e">E.</param>
 	protected override void OnMouseButtonLeft(object sender, InfoEventArgs<int> e) {
+		print("PlayerSelectedState.OnMouseButtonLeft");
 		if (controller.UnitMenuController.IsActive ())
 			return;
 		controller.ConfirmationSource.PlayOneShot (controller.ConfirmationSource.clip);
