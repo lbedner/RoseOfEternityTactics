@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class NewGameButton : MonoBehaviour, IPointerClickHandler {
+[RequireComponent(typeof(PlayerInput))]
+public class NewGameButton : MonoBehaviour {
 
 	/// <summary>
 	/// Game state.
@@ -16,9 +18,12 @@ public class NewGameButton : MonoBehaviour, IPointerClickHandler {
 	}
 		
 	[SerializeField] private RawImage _fadeImage;
+	[SerializeField] private AudioSource _sfx;
 
 	private GameState _gameState;
 	private ScreenFader _screenFader;
+
+	private InputAction _selectAction;
 
 	/// <summary>
 	/// Start this instance.
@@ -54,12 +59,12 @@ public class NewGameButton : MonoBehaviour, IPointerClickHandler {
 		}			
 	}
 
-	/// <summary>
-	/// Raises the pointer click event.
-	/// </summary>
-	/// <param name="eventData">Event data.</param>
-	public void OnPointerClick (PointerEventData eventData)
-	{
-		_gameState = GameState.START_FADE;
+	public void OnSelect()
+ 	{
+		if (EventSystem.current.currentSelectedGameObject == this.gameObject)
+		{
+			_sfx.PlayOneShot(_sfx.clip);
+			_gameState = GameState.START_FADE;
+		}
 	}
 }

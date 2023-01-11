@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 
+[RequireComponent(typeof(PlayerInput))]
 public class SplashScreenMoviePlayer : MonoBehaviour {
 
 	/// <summary>
@@ -23,10 +25,18 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 	private GameState _gameState;
 	private ScreenFader _screenFader;
 
+	private InputAction _clickAction;
+	
+	private void Awake() {
+		PlayerInput playerInput = GetComponent<PlayerInput>();
+		_clickAction = playerInput.actions["Click"];
+		_clickAction.performed += OnClick;
+	}
+
 	/// <summary>
 	/// Start this instance.
 	/// </summary>
-	void Start () {
+	private void Start () {
 		
 		_screenFader = new ScreenFader ();
 		_fadeOutUIImage.enabled = false;
@@ -39,7 +49,7 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 	/// <summary>
 	/// Update this instance.
 	/// </summary>
-	void Update() {
+	private void Update() {
 
 		switch (_gameState) {
 
@@ -60,8 +70,7 @@ public class SplashScreenMoviePlayer : MonoBehaviour {
 		}
 	}
 
-	void EndReached(VideoPlayer vp)
-    {
-        _gameState = GameState.START_FADE;
-    }
+	private void EndReached(VideoPlayer vp) => _gameState = GameState.START_FADE;
+
+	private void OnClick(InputAction.CallbackContext obj) => _gameState = GameState.LOAD_NEXT_SCENE;
 }

@@ -17,6 +17,7 @@ public class DisplayPostCombatStatsState : CombatState {
 	/// </summary>
 	protected override void AddListeners() {
 		controller.MissionEndPanelContinueButton.onClick.AddListener (OnContinueButtonClicked);
+		InputController.selectEvent += OnSelect;
 	}
 
 	/// <summary>
@@ -24,6 +25,7 @@ public class DisplayPostCombatStatsState : CombatState {
 	/// </summary>
 	protected override void RemoveListeners() {
 		controller.MissionEndPanelContinueButton.onClick.RemoveListener (OnContinueButtonClicked);
+		InputController.selectEvent -= OnSelect;
 	}
 
 	/// <summary>
@@ -39,5 +41,11 @@ public class DisplayPostCombatStatsState : CombatState {
 	private void Init() {
 		controller.PostCombatStatsPanel.SetActive (true);
 		controller.ShowCursor (true);
-	}	
+	}
+
+	private void OnSelect(object sender, InfoEventArgs<int> e)
+	{
+		print(string.Format("{0}.OnSelect", this));
+		OnContinueButtonClicked();
+	}
 }

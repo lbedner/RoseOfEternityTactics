@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -50,6 +49,7 @@ public class RadialMenuController : MonoBehaviour {
 	/// Awake this instance.
 	/// </summary>
 	void Awake() {
+		print("RadialMenuController.Awake");
 		_combatController = GameObject.Find ("CombatController").GetComponent<CombatController> ();
 		_unit = _combatController.HighlightedUnit;
 		_popupText = GetComponentInChildren<Text> ();

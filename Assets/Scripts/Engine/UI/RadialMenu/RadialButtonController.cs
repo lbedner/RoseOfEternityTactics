@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 
-public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+public class RadialButtonController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
 	public static event EventHandler<InfoEventArgs<RadialButtonType>> buttonClickEvent;
 	public static event EventHandler<InfoEventArgs<Ability>> abilityButtonClickEvent;
@@ -59,6 +60,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 	/// <param name="Name">Name.</param>
 	/// <param name="position">Position.</param>
 	public void Initialize(string iconPath, RadialButtonType type, string name, Vector3 position) {
+		print(String.Format("RadialButonController.Initialize - {0}", type));
 		SetIcon (iconPath);
 		Type = type;
 		Name = name;
@@ -67,24 +69,26 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 		StartCoroutine (ScaleButtonOut (position));
 	}
 
-	/// <summary>
-	/// Raises the pointer click event.
-	/// </summary>
-	/// <param name="eventData">Event data.</param>
-	public void OnPointerClick (PointerEventData eventData)
+	public void OnSelect(InputAction.CallbackContext obj)
 	{
-		if (buttonClickEvent != null) {
-			_highlightOutline.enabled = false;
-			transform.localScale = new Vector3 (1, 1, 1);
-			_radioButtonContainer.RadialMenuController.PopupText = "";
+		if (obj.performed && EventSystem.current.currentSelectedGameObject == this.gameObject)
+		{
+			if (buttonClickEvent != null)
+			{
+				_highlightOutline.enabled = false;
+				transform.localScale = new Vector3 (1, 1, 1);
+				_radioButtonContainer.RadialMenuController.PopupText = "";
 
-			// Send different events based upon the type of button that is clicked
-			if (Type == RadialButtonType.ABILITY_USE || Type == RadialButtonType.ATTACK)
-				abilityButtonClickEvent (this, new InfoEventArgs<Ability> (Ability));
-			else if (Type == RadialButtonType.ITEM_USE)
-				itemButtonClickEvent (this, new InfoEventArgs<Item> (Item));
-			else if (Ability == null)
-				buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
+				print(Type);
+
+				// Send different events based upon the type of button that is clicked
+				if (Type == RadialButtonType.ABILITY_USE || Type == RadialButtonType.ATTACK)
+					abilityButtonClickEvent (this, new InfoEventArgs<Ability> (Ability));
+				else if (Type == RadialButtonType.ITEM_USE)
+					itemButtonClickEvent (this, new InfoEventArgs<Item> (Item));
+				else if (Ability == null)
+					buttonClickEvent (this, new InfoEventArgs<RadialButtonType> (Type));
+			}
 		}
 	}
 
@@ -93,6 +97,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 	/// </summary>
 	/// <param name="eventData">Event data.</param>
 	public void OnPointerEnter (PointerEventData eventData) {
+		EventSystem.current.SetSelectedGameObject(this.gameObject);
 		if (!_isScalingOut && !_isScalingIn) {
 			_highlightOutline.enabled = true;
 			StartCoroutine (ScaleButtonUp ());
@@ -108,6 +113,7 @@ public class RadialButtonController : MonoBehaviour, IPointerClickHandler, IPoin
 	/// </summary>
 	/// <param name="eventData">Event data.</param>
 	public void OnPointerExit (PointerEventData eventData) {
+		EventSystem.current.SetSelectedGameObject(null);
 		if (!_isScalingOut && !_isScalingIn) {
 			_highlightOutline.enabled = false;
 			StartCoroutine (ScaleButtonDown ());

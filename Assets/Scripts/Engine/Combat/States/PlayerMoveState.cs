@@ -34,7 +34,6 @@ public class PlayerMoveState : PlayerState {
 		controller.OldUnitPosition = controller.HighlightedUnit.Tile;
 		yield return StartCoroutine (MoveToTiles ());
 		controller.CurrentUnitPosition = controller.HighlightedUnit.Tile;
-
 		controller.ChangeState<MenuSelectionState> ();
 	}
 

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public abstract class CombatState : State {
@@ -11,6 +10,7 @@ public abstract class CombatState : State {
 	/// </summary>
 	protected virtual void Awake() {
 		controller = GetComponent<CombatController> ();
+		print(string.Format("{0}.Awake() - [{1}]", this, controller));
 	}
 
 	/// <summary>

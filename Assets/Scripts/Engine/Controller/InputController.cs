@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 
 public class InputController : MonoBehaviour {
@@ -6,7 +7,7 @@ public class InputController : MonoBehaviour {
 	public const int MOUSE_BUTTON_LEFT = 0;
 
 	public static event EventHandler<InfoEventArgs<Vector3>> mouseMoveEvent;
-	public static event EventHandler<InfoEventArgs<int>> mouseButtonLeftEvent;
+	public static event EventHandler<InfoEventArgs<int>> selectEvent;
 
 	public static event EventHandler<InfoEventArgs<KeyCode>> keyDownInventoryEvent;
 	public static event EventHandler<InfoEventArgs<KeyCode>> keyDownEscapeEvent;
@@ -22,22 +23,33 @@ public class InputController : MonoBehaviour {
 			_oldMousePosition = mousePosition;
 			if (mouseMoveEvent != null)
 				mouseMoveEvent (this, new InfoEventArgs<Vector3> (mousePosition));
-		}
+		}			
+	}
 
-		// Check mouse clicks
-		if ((Input.GetMouseButtonDown(MOUSE_BUTTON_LEFT))) {
-			if (mouseButtonLeftEvent != null)
-				mouseButtonLeftEvent (this, new InfoEventArgs<int> (MOUSE_BUTTON_LEFT));
+	public void OnSelect(InputAction.CallbackContext obj)
+	{
+		if (obj.performed)
+		{
+			if (selectEvent != null)
+				selectEvent (this, new InfoEventArgs<int> (MOUSE_BUTTON_LEFT));
 		}
+	}
 
-		// Check key button presses
-		if (Input.GetKeyDown (KeyCode.I)) {
+	public void OnOpenInventory(InputAction.CallbackContext obj)
+	{
+		if (obj.performed)
+		{
 			if (keyDownInventoryEvent != null)
 				keyDownInventoryEvent (this, new InfoEventArgs<KeyCode> (KeyCode.I));
 		}
-		else if (Input.GetKeyDown (KeyCode.Escape)) {
+	}
+
+	public void OnEscape(InputAction.CallbackContext obj)
+	{
+		if (obj.performed)
+		{
 			if (keyDownEscapeEvent != null)
 				keyDownEscapeEvent (this, new InfoEventArgs<KeyCode> (KeyCode.Escape));
-		}				
+		}
 	}
 }

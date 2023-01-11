@@ -42,7 +42,8 @@ public class MusicController : MonoBehaviour {
 	/// </summary>
 	public void StopAllMusic() {
 		_musicCalm.Stop ();
-		_musicFire.Stop ();
+		if (_musicFire != null)
+			_musicFire.Stop ();
 	}
 		
 	/// <summary>

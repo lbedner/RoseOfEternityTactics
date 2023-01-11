@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class DisplayMissionObjectivesState : CombatState {
+﻿public class DisplayMissionObjectivesState : CombatState {
 
 	/// <summary>
 	/// Adds listeners when the state is entered.
@@ -11,11 +8,17 @@ public class DisplayMissionObjectivesState : CombatState {
 		Init ();
 	}
 
+	private void OnSelect(object sender, InfoEventArgs<int> e)
+	{
+		OnContinueButtonClicked();
+	}
+
 	/// <summary>
 	/// Adds the listeners.
 	/// </summary>
 	protected override void AddListeners () {
 		controller.MissionObjectivesPanelContinueButton.onClick.AddListener (OnContinueButtonClicked);
+		InputController.selectEvent += OnSelect;
 	}
 
 	/// <summary>
@@ -23,12 +26,14 @@ public class DisplayMissionObjectivesState : CombatState {
 	/// </summary>
 	protected override void RemoveListeners() {
 		controller.MissionObjectivesPanelContinueButton.onClick.RemoveListener (OnContinueButtonClicked);
+		InputController.selectEvent -= OnSelect;
 	}
 
 	/// <summary>
 	/// Raises the continue button clicked event.
 	/// </summary>
 	private void OnContinueButtonClicked() {
+		print(string.Format("{0}.OnContinueButtonClicked() - [{1}]", this, controller));
 		controller.ChangeState<InitTurnState> ();
 	}
 
@@ -36,6 +41,7 @@ public class DisplayMissionObjectivesState : CombatState {
 	/// Init this instance.
 	/// </summary>
 	private void Init() {
+		print(string.Format("MissionObjective.Init() - {0}", controller));
 		controller.MissionObjectivesPanel.SetActive (true);
 		controller.ShowCursor (true);
 	}
