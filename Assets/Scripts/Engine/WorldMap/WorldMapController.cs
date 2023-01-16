@@ -38,9 +38,9 @@ public class WorldMapController : MonoBehaviour
     {
         foreach (var audioSource in _audioSources)
             audioSource.Play();
-        //_fadeImage.gameObject.SetActive(true);
-        //_screenFader = new ScreenFader();
-        _gameState = GameState.ACTIVATE_SCREEN;
+        _fadeImage.gameObject.SetActive(true);
+        _screenFader = new ScreenFader();
+        _gameState = GameState.START_FADE;
     }
 
     // Update is called once per frame
@@ -49,7 +49,7 @@ public class WorldMapController : MonoBehaviour
         switch (_gameState)
         {
             case GameState.START_FADE:
-                StartCoroutine(_screenFader.FadeScreen(_fadeImage, ScreenFader.FadeType.FADE_IN, 5.0f));
+                StartCoroutine(_screenFader.FadeScreen(_fadeImage, ScreenFader.FadeType.FADE_IN, 3.0f));
                 _gameState = GameState.END_FADE;
                 break;
 
@@ -59,7 +59,7 @@ public class WorldMapController : MonoBehaviour
                 break;
 
             case GameState.START_TEXT_FADE:
-                StartCoroutine(FadeTitle(_worldMapText, ScreenFader.FadeType.FADE_IN, 2.0f));
+                StartCoroutine(FadeTitle(_worldMapText, ScreenFader.FadeType.FADE_IN, 1.0f));
                 _gameState = GameState.END_TEXT_FADE;
                 break;
 
