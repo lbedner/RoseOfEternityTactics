@@ -2,13 +2,13 @@
   "Units": [
     {
       "ResRef": "aramus",
-      "FirstName": "Aramus",
-      "LastName": "Galladoran",
-      "Class": "Kilveran Swordsman",
-      "PortraitLocation": "Prefabs/Portraits/p-aramus",
-	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
-	  "Sprite": "Prefabs/Characters/Animations/Allies/aramus/Sprite",
-	  "UnitType": "PLAYER",
+      "FirstName": "Jonan",
+      "LastName": "",
+      "Class": "Knight of Dundalas",
+      "PortraitLocation": "Prefabs/Portraits/p-jonan",
+      "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
+      "Sprite": "Prefabs/Characters/Animations/Allies/aramus/Sprite",
+      "UnitType": "PLAYER",
       "Attributes": {
         "EXPERIENCE": 0.0,
         "LEVEL": 5.0,
@@ -23,28 +23,28 @@
       },
       "Inventory": {
         "RIGHT_HAND": 0,
-		"LEFT_HAND": 7,
-		"BODY": 4,
-		"HANDS": 5,
-		"FEET": 6
+        "LEFT_HAND": 7,
+        "BODY": 4,
+        "HANDS": 5,
+        "FEET": 6
       },
       "Abilities": [
         0,
-		1,
-		3,
-		4,
-		8,
+        1,
+        3,
+        4,
+        8,
       ]
     },
     {
       "ResRef": "sinteres",
-      "FirstName": "Sinteres",
-      "LastName": "",
-      "Class": "Daishan Assassin",
-      "PortraitLocation": "Prefabs/Portraits/p-sinteres",
-	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
-	  "Sprite": "Prefabs/Characters/Animations/Allies/sinteres/Sprite",
-	  "UnitType": "PLAYER",
+      "FirstName": "Linard",
+      "LastName": "Janson",
+      "Class": "Justice Prevails Recruit",
+      "PortraitLocation": "Prefabs/Portraits/p-linard",
+      "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
+      "Sprite": "Prefabs/Characters/Animations/Allies/sinteres/Sprite",
+      "UnitType": "PLAYER",
       "Attributes": {
         "EXPERIENCE": 0.0,
         "LEVEL": 1.0,
@@ -62,11 +62,11 @@
       },
       "Abilities": [
         0,
-		1,
-		2,
-		3,
+        1,
+        2,
+        3,
         4,
-		8,
+        8,
       ]
     },
     {
@@ -75,9 +75,9 @@
       "LastName": "",
       "Class": "Knight of Dundalas",
       "PortraitLocation": "Prefabs/Portraits/p-orelle",
-	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
-	  "Sprite": "Prefabs/Characters/Animations/Allies/orelle/Sprite",
-	  "UnitType": "PLAYER",
+      "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
+      "Sprite": "Prefabs/Characters/Animations/Allies/orelle/Sprite",
+      "UnitType": "PLAYER",
       "Attributes": {
         "EXPERIENCE": 0.0,
         "LEVEL": 4.0,
@@ -95,9 +95,9 @@
       },
       "Abilities": [
         0,
-		1,
-		2,
-		8,
+        1,
+        2,
+        8,
       ]
     },
     {
@@ -106,9 +106,9 @@
       "LastName": "Thuvik",
       "Class": "Stramadonian Seeker",
       "PortraitLocation": "Prefabs/Portraits/p-jarl",
-	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
-	  "Sprite": "Prefabs/Characters/Animations/Allies/jarl/Sprite",
-	  "UnitType": "PLAYER",
+      "MovementSoundLocation": "Prefabs/Audio/Units/Movement/Footsteps",
+      "Sprite": "Prefabs/Characters/Animations/Allies/jarl/Sprite",
+      "UnitType": "PLAYER",
       "Attributes": {
         "EXPERIENCE": 0.0,
         "LEVEL": 3.0,
@@ -126,10 +126,10 @@
       },
       "Abilities": [
         0,
-		5,
-		6,
-		7,
-		8,
+        5,
+        6,
+        7,
+        8,
       ]
     },
     {
@@ -138,9 +138,9 @@
       "LastName": "",
       "Class": "Monster",
       "PortraitLocation": "Prefabs/Portraits/p-muck_petty",
-	  "MovementSoundLocation": "Prefabs/Audio/Units/Movement/SlimeMovement",
-	  "Sprite": "Prefabs/Characters/Animations/Enemies/muck_petty/Sprite",
-	  "UnitType": "ENEMY",
+      "MovementSoundLocation": "Prefabs/Audio/Units/Movement/SlimeMovement",
+      "Sprite": "Prefabs/Characters/Animations/Enemies/muck_petty/Sprite",
+      "UnitType": "ENEMY",
       "Attributes": {
         "EXPERIENCE": 0.0,
         "LEVEL": 4.0,
@@ -158,7 +158,7 @@
       },
       "Abilities": [
         0,
-		8,
+        8,
       ]
     }
   ]
