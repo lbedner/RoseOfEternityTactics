@@ -10,7 +10,7 @@ public class MusicController : MonoBehaviour {
 	private AudioSource _musicFire;
 
 	[SerializeField]
-	private List<AudioSource> _playlist;
+	private List<AudioClip> _playlist;
 
 	private bool _isMusicCalm;
 	private float _raisedVolume;
@@ -27,10 +27,8 @@ public class MusicController : MonoBehaviour {
 	/// Initialize the music for the level.
 	/// </summary>
 	public void Initialize() {
-		_musicCalm = GetRandomPlaylistTrack();
-		_musicCalm.Play();
+		StartCoroutine(PlayAudioSequentially());
 		_isMusicCalm = true;
-		_raisedVolume = _musicCalm.volume;
 		if (_musicFire != null) {
 			_musicFire.Play ();
 			_musicFire.volume = 0.0f;
@@ -147,7 +145,7 @@ public class MusicController : MonoBehaviour {
 		}
 	}
 
-	private AudioSource GetRandomPlaylistTrack() 
+	private AudioClip GetRandomPlaylistTrack() 
 	{
 		int index = Random.Range(0, _playlist.Count);
 		return _playlist[index];
@@ -161,5 +159,44 @@ public class MusicController : MonoBehaviour {
 		else
 			audioSource = _musicFire;
 		return audioSource;
+	}
+
+	private IEnumerator PlayAudioSequentially()
+	{
+		yield return null;
+
+		ShufflePlaylist();
+
+		// Loop forever
+		while (true)
+		{
+			// Loop through each AudioClip
+			for (int i = 0; i < _playlist.Count; i++)
+			{
+				_musicCalm.clip = _playlist[i];
+				_raisedVolume = _musicCalm.volume;
+				_musicCalm.Play();
+
+				// Wait for it to finish playing
+				while (_musicCalm.isPlaying)
+				{
+					yield return null;
+				}
+			}
+		}
+	}
+
+	private void ShufflePlaylist()
+	{
+		System.Random rng = new System.Random();
+		int n = _playlist.Count;
+		while (n > 1)
+		{
+			n--;
+			int k = rng.Next(n + 1);
+			AudioClip value = _playlist[k];
+			_playlist[k] = _playlist[n];
+			_playlist[n] = value;
+		}
 	}
 }
