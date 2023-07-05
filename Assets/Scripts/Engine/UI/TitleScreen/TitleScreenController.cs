@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class TitleScreenController : MonoBehaviour {
 
@@ -15,7 +14,8 @@ public class TitleScreenController : MonoBehaviour {
 	}
 
 	[SerializeField] private RawImage _fadeImage;
-	[SerializeField] private AudioSource titleScreenMusic;
+	[SerializeField] private AudioSource _titleScreenMusic;
+	[SerializeField] private float _fadeInTime = 2.0f;
 
 	private GameState _gameState;
 	private ScreenFader _screenFader;
@@ -26,7 +26,7 @@ public class TitleScreenController : MonoBehaviour {
 	void Start () {
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
-		titleScreenMusic.Play ();
+		_titleScreenMusic.Play ();
 		_screenFader = new ScreenFader ();
 		_gameState = GameState.START_FADE;
 	}
@@ -39,7 +39,7 @@ public class TitleScreenController : MonoBehaviour {
 		switch (_gameState) {
 
 		case GameState.START_FADE:
-			StartCoroutine (_screenFader.FadeScreen (_fadeImage, ScreenFader.FadeType.FADE_IN, 2.0f));
+			StartCoroutine (_screenFader.FadeScreen (_fadeImage, ScreenFader.FadeType.FADE_IN, _fadeInTime));
 			_gameState = GameState.END_FADE;
 			break;
 
